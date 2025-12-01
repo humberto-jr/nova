@@ -1,0 +1,77 @@
+# Maximum width of an array literal before falling back to vertical formatting.
+array_width = 80
+
+# Maximum width of the args of a function-like attributes before falling back to vertical formatting.
+attr_fn_like_width = 190
+
+# Maximum width of a chain to fit on one line.
+chain_width = 190
+
+# Don't reformat anything.
+disable_all_formatting = false
+
+# Specifies which edition is used by the parser.
+edition = "2024"
+
+# Control the layout of arguments in a function.
+fn_params_layout = "Tall"
+
+# Maximum width of the args of a function call before falling back to vertical formatting.
+fn_call_width = 190
+
+# Always print the abi for extern items.
+force_explicit_abi = true
+
+# Use tab characters for indentation, spaces for alignment.
+hard_tabs = true
+
+# Controls whether to include a leading pipe on match arms.
+match_arm_leading_pipes = "Never"
+
+# Put a trailing comma after a block based match arm (non-block arms are not affected).
+match_block_trailing_comma = true
+
+# Maximum width of each line.
+max_width = 200
+
+# Merge multiple derives into a single one.
+merge_derives = true
+
+# Unix or Windows line endings ('\n' on Unix-like).
+newline_style = "Unix"
+
+# Remove nested parens.
+remove_nested_parens = true
+
+# Reorder import and extern crate statements alphabetically in groups separated by a newline.
+reorder_imports = true
+
+# Reorder mod declarations alphabetically in groups separated by a newline.
+reorder_modules = true
+
+# The width threshold for an array element to be considered short.
+short_array_element_width_threshold = 10
+
+# Maximum line length for single line if-else expressions.
+single_line_if_else_max_width = 0
+
+# Maximum line length for single line let-else statements.
+single_line_let_else_max_width = 0
+
+# Maximum width in the body of a struct literal before falling back to vertical formatting.
+struct_lit_width = 0
+
+# Maximum width in the body of a struct variant before falling back to vertical formatting.
+struct_variant_width = 0
+
+# Number of spaces per tab.
+tab_spaces = 4
+
+# Use field initialize shorthand if possible.
+use_field_init_shorthand = true
+
+# Management and bulk updates of the granular width configuration settings.
+use_small_heuristics = "Off"
+
+# Replace uses of the try! macro by the ? shorthand.
+use_try_shorthand = true

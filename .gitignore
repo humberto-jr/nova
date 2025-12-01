@@ -1,0 +1,93 @@
+# Build systems
+*.d
+*.lock
+target/
+
+# Compiled object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+*.rlib
+
+# Compiled static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Fortran module files
+*.mod
+*.smod
+
+# CUDA
+*.i
+*.ii
+*.gpu
+*.ptx
+*.cubin
+*.fatbin
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Logs and datafiles
+*.txt
+*.log
+*.dat
+*.inp
+*.bkp
+*.backup
+*.old
+
+# Vim
+*.swp
+
+# LyX
+*.lyx~
+
+# Core Tex/pdflatex auxiliary files
+*.aux
+*.lof
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+
+# Bibliography auxiliary files
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+# Plotting tools
+*.agr
+*.table
+*.gnuplot
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# macOS
+.DS_Store
