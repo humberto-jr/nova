@@ -255,7 +255,7 @@ impl_simd!(f32, f32x4, [f32; 4], float32x4_set, float32x4_eq, float32x4_add, flo
 // f32x8:
 //
 
-#[derive(Clone, Copy)]
+#[derive(Copy, Clone)]
 pub union f32x8 {
 	val: [f32; 8],
 	reg: float32x8,
