@@ -1,4 +1,4 @@
-use super::spirv::*;
+pub use super::spirv::*;
 
 // NOTE: The typenames of fields whose types are anonymous C structs are defined
 // using the parent's typename followed by the suffix "AnonStruct."

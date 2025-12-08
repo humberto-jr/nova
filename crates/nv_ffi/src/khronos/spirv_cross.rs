@@ -1,4 +1,4 @@
-use super::spirv::*;
+pub use super::spirv::*;
 
 pub const SPVC_C_API_VERSION_MAJOR: u32 = 0;
 pub const SPVC_C_API_VERSION_MINOR: u32 = 67;
