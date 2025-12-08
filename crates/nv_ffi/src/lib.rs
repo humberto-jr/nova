@@ -8,3 +8,5 @@ pub extern crate libc;
 pub mod khronos;
 pub mod stb;
 pub mod unix;
+
+pub use ::core::ffi::CStr;
