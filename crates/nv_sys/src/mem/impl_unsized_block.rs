@@ -55,6 +55,6 @@ impl<U: ?marker::Sized> super::UnsizedBlock<U> {
 
 	#[inline]
 	pub fn as_mut_pin(&mut self) -> super::Pin<&mut U> {
-		unsafe { super::Pin::new_unchecked(&mut *self.fat) }
+		unsafe { super::Pin::new_unchecked(&mut (*self.fat)) }
 	}
 }
