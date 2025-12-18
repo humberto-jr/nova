@@ -5,7 +5,10 @@ use core::{
 	task,
 };
 
-use crate::ffi::unix::x11;
+use crate::{
+	ffi::unix::wayland::client::protocol as wl, //
+	ffi::unix::x11,
+};
 
 pub trait Dispatcher {
 	type Event;
@@ -25,6 +28,8 @@ pub enum WindowBackend {
 	None,
 
 	X11(*mut x11::xcb_connection_t, x11::xproto::xcb_window_t),
+
+	Wayland(*mut wl::wl_display, *mut wl::wl_surface),
 }
 
 pub trait Window {
