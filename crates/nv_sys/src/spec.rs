@@ -45,12 +45,6 @@ pub trait Window {
 
 	fn resize(&mut self, x: i32, y: i32, width: u32, height: u32);
 
-	fn track_pointer(&mut self);
-
-	fn track_keyboard(&mut self);
-
-	fn track_joystick(&mut self);
-
 	fn poll_input_events(&mut self) -> u32;
 
 	fn flush_queued_events(&mut self) -> &[Self::Event];
