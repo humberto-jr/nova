@@ -97,6 +97,8 @@ pub trait File: marker::Sized {
 
 	fn clone(&self) -> FileAccessResult<Self>;
 
+	fn size(&self) -> usize;
+
 	fn write<T: marker::Sized>(&mut self, buf: &[T]) -> u32;
 
 	fn read<T: marker::Sized>(&mut self, buf: &mut [T]) -> u32;
