@@ -10,18 +10,9 @@ use crate::{
 	ffi::unix::x11,
 };
 
-pub trait Dispatcher {
-	type Event;
-	type Descriptor;
-
-	fn new() -> Self;
-
-	fn register(&mut self, list: &[Self::Event], source: &Self::Descriptor, waker: task::Waker);
-
-	fn unregister(&mut self, list: &[Self::Event], source: &Self::Descriptor);
-
-	fn wait_and_dispatch(&mut self, ms_timeout: u32) -> u32;
-}
+//
+// Windowing system:
+//
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum WindowBackend {
@@ -56,6 +47,23 @@ pub trait Window {
 	fn raw_window_handle(&self) -> WindowBackend;
 
 	fn close(&mut self);
+}
+
+//
+// OS abstractions:
+//
+
+pub trait Dispatcher {
+	type Event;
+	type Descriptor;
+
+	fn new() -> Self;
+
+	fn register(&mut self, list: &[Self::Event], source: &Self::Descriptor, waker: task::Waker);
+
+	fn unregister(&mut self, list: &[Self::Event], source: &Self::Descriptor);
+
+	fn wait_and_dispatch(&mut self, ms_timeout: u32) -> u32;
 }
 
 pub trait Thread<Fn, In, Out>
