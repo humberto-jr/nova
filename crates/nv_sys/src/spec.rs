@@ -50,6 +50,87 @@ pub trait Window {
 }
 
 //
+// Input system:
+//
+
+pub const MAX_PRESSED_KEYCODE_COUNT: usize = 16;
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum LogicalKey {
+	Unknown,
+
+	Character(char),
+
+	// Control keys
+	Backspace,
+	Tab,
+	Enter,
+	Escape,
+	Insert,
+	Delete,
+
+	// System
+	PrintScreen,
+	Pause,
+	Menu,
+
+	// Navigation
+	Home,
+	End,
+	PageUp,
+	PageDown,
+	ArrowLeft,
+	ArrowRight,
+	ArrowUp,
+	ArrowDown,
+
+	// Function keys
+	F1,
+	F2,
+	F3,
+	F4,
+	F5,
+	F6,
+	F7,
+	F8,
+	F9,
+	F10,
+	F11,
+	F12,
+	F13,
+	F14,
+	F15,
+	F16,
+	F17,
+	F18,
+	F19,
+	F20,
+	F21,
+	F22,
+	F23,
+	F24,
+
+	// Modifiers
+	Shift,
+	Control,
+	Alt,
+	AltGraph,
+	Super,
+	CapsLock,
+	NumLock,
+	ScrollLock,
+
+	// Media
+	VolumeUp,
+	VolumeDown,
+	VolumeMute,
+	MediaPlayPause,
+	MediaStop,
+	MediaNext,
+	MediaPrevious,
+}
+
+//
 // OS abstractions:
 //
 
