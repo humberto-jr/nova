@@ -130,6 +130,22 @@ pub enum LogicalKey {
 	MediaPrevious,
 }
 
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum PointerButton {
+	Unknown,
+
+	Left,
+	Middle,
+	Right,
+
+	Wheel,
+
+	Forward,
+	Backward,
+
+	Other,
+}
+
 //
 // OS abstractions:
 //
