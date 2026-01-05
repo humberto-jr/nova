@@ -3487,7 +3487,7 @@ pub type PFN_vkInternalFreeNotification = unsafe extern "C" fn(pUserData: *mut (
 
 pub type PFN_vkReallocationFunction = unsafe extern "C" fn(pUserData: *mut (), pOriginal: *mut (), size: usize, alignment: usize, allocationScope: VkSystemAllocationScope) -> *mut ();
 
-pub type PFN_vkVoidFunction = unsafe extern "C" fn();
+pub type PFN_vkVoidFunction = *const ();
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
