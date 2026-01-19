@@ -8,11 +8,14 @@ use core::{
 use crate::{
 	ffi::unix::wayland::client::protocol as wl, //
 	ffi::unix::x11,
+	time,
 };
 
 //
 // Windowing system:
 //
+
+pub const WINDOW_TEXT_INPUT_CAPACITY: usize = 128;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum WindowBackend {
@@ -47,6 +50,157 @@ pub trait Window {
 	fn raw_window_handle(&self) -> WindowBackend;
 
 	fn close(&mut self);
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum WindowEvent {
+	None,
+
+	WindowResized {
+		x: i32,
+		y: i32,
+		width: u32,
+		height: u32,
+		scale: f32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	WindowMinimized {
+		x: i32,
+		y: i32,
+		width: u32,
+		height: u32,
+		scale: f32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	WindowMaximized {
+		x: i32,
+		y: i32,
+		width: u32,
+		height: u32,
+		scale: f32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	WindowFullScreen {
+		width: u32,
+		height: u32,
+		scale: f32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerMoved {
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerLeftWindow {
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerEnteredWindow {
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerButtonPressed {
+		button: PointerButton,
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerButtonReleased {
+		button: PointerButton,
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerHorizontalScroll {
+		x: i32,
+		y: i32,
+		delta_x: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerVerticalScroll {
+		x: i32,
+		y: i32,
+		delta_y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerDiagonalScroll {
+		x: i32,
+		y: i32,
+		delta_x: i32,
+		delta_y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	PointerButtonRepeated {
+		button: PointerButton,
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	KeyboardKeyPressed {
+		key: LogicalKey,
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	KeyboardKeyReleased {
+		key: LogicalKey,
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	KeyboardKeyRepeated {
+		key: LogicalKey,
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	TextInput {
+		length: u16,
+		buffer: [u8; WINDOW_TEXT_INPUT_CAPACITY],
+		index: u64,
+		timestamp: time::Instant,
+	},
+
+	ShouldClose {
+		x: i32,
+		y: i32,
+		index: u64,
+		timestamp: time::Instant,
+	},
 }
 
 //
