@@ -50,3 +50,28 @@ impl Window {
 		Self(host::Window::new())
 	}
 }
+
+//
+// Thread:
+//
+
+pub struct Thread<Fn, In, Out>(host::Thread<Fn, In, Out>)
+where
+	Fn: ops::FnOnce(In) -> Out;
+
+impl<Fn, In, Out> Thread<Fn, In, Out>
+where
+	Fn: ops::FnOnce(In) -> Out,
+{
+	#[inline]
+	pub fn start(routine: Fn, args: In) -> Self {
+		let inner = <host::Thread<Fn, In, Out> as spec::Thread<Fn, In, Out>>::start(routine, args);
+
+		Self(inner)
+	}
+
+	#[inline]
+	pub fn stop(self) -> Out {
+		spec::Thread::<Fn, In, Out>::stop(self.0)
+	}
+}
