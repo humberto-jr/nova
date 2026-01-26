@@ -1,6 +1,6 @@
 use ::core::ops;
 
-use super::backend;
+use super::host;
 
 //
 // Instant:
@@ -8,12 +8,12 @@ use super::backend;
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct Instant(backend::Time);
+pub struct Instant(host::Time);
 
 impl Instant {
 	#[inline]
 	pub fn now() -> Self {
-		Self(backend::ns_time())
+		Self(host::ns_time())
 	}
 
 	#[inline(always)]
@@ -33,12 +33,12 @@ impl Instant {
 
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct Duration(backend::Time);
+pub struct Duration(host::Time);
 
 impl Duration {
 	#[inline(always)]
 	pub const fn zeroed() -> Self {
-		Self(0 as backend::Time)
+		Self(0 as host::Time)
 	}
 
 	#[inline(always)]
