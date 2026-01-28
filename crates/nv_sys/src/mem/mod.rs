@@ -29,6 +29,12 @@ pub use mem::take;
 
 pub use mem::swap;
 
+pub use mem::forget;
+
+pub use mem::drop;
+
+pub use ptr::drop_in_place;
+
 pub use mem::size_of;
 
 pub use mem::align_of;
@@ -38,6 +44,8 @@ pub use mem::transmute;
 pub use ptr::null_mut as null;
 
 pub use mem::MaybeUninit;
+
+pub use mem::ManuallyDrop;
 
 //
 // AllocatedBlock<T>:
