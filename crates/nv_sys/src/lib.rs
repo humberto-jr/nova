@@ -24,6 +24,7 @@ use os::unix as host;
 //
 
 pub use spec::WindowBackend;
+
 pub use spec::WindowEvent;
 
 pub struct Window(host::Window);
@@ -48,6 +49,43 @@ impl Window {
 	#[inline]
 	pub fn new() -> Self {
 		Self(host::Window::new())
+	}
+}
+
+//
+// File:
+//
+
+pub use host::stdin;
+
+pub use host::stdout;
+
+pub use spec::FileAccess;
+
+pub use spec::SeekFrom;
+
+pub struct File(host::File);
+
+impl ops::Deref for File {
+	type Target = dyn spec::File;
+
+	#[inline(always)]
+	fn deref(&self) -> &Self::Target {
+		&self.0
+	}
+}
+
+impl ops::DerefMut for File {
+	#[inline(always)]
+	fn deref_mut(&mut self) -> &mut Self::Target {
+		&mut self.0
+	}
+}
+
+impl File {
+	#[inline]
+	pub const fn new() -> Self {
+		Self(host::File::new())
 	}
 }
 

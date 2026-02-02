@@ -9,6 +9,7 @@ use core::{
 use crate::{
 	ffi::unix::wayland::client::protocol as wl, //
 	ffi::unix::x11,
+    host,
 	time,
 };
 
@@ -375,22 +376,22 @@ pub enum SeekFrom {
 	Current(isize),
 }
 
-pub trait File: marker::Sized {
-	fn open(filename: &str, access: FileAccess) -> FileAccessResult<Self>;
+pub trait File {
+	fn open(&mut self, filename: &str, access: FileAccess) -> Result<()>;
 
-	fn clone(&self) -> FileAccessResult<Self>;
+	fn is_open(&self) -> bool;
 
-	fn size(&self) -> usize;
+	fn size(&self) -> Result<usize>;
 
-	fn write<T: marker::Sized>(&mut self, buf: &[T]) -> u32;
+	fn write(&mut self, buf: &[host::Byte]) -> Result<usize>;
 
-	fn read<T: marker::Sized>(&mut self, buf: &mut [T]) -> u32;
+	fn read(&mut self, buf: &mut [host::Byte]) -> Result<usize>;
 
-	fn seek(&mut self, from: SeekFrom);
+	fn seek(&mut self, pos: SeekFrom) -> Result<usize>;
 
-	fn flush(&mut self);
+	fn flush(&mut self) -> Result<()>;
 
-	fn close(self);
+	fn close(&mut self) -> Result<()>;
 }
 
 pub trait DynamicLibrary: marker::Sized {
