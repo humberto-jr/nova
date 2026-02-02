@@ -2,6 +2,7 @@ use ::core;
 use core::{
 	marker, //
 	ops,
+	result,
 	task,
 };
 
@@ -10,6 +11,29 @@ use crate::{
 	ffi::unix::x11,
 	time,
 };
+
+//
+// Error handling:
+//
+
+pub type Result<T> = result::Result<T, Error>;
+
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum Error {
+	None,
+	Unknown,
+
+	// NOTE: File access-related errors in a semantic precedence of
+	// failures from top to bottom. Where, a FileAccessLost implies
+	// access revoked after being granted (i.e., errors during IO).
+	FilePathInvalid,
+	FileAccessDenied,
+	FileAlreadyExists,
+	FileNotFound,
+	FileAccessLost,
+	FileUnknown,
+}
 
 //
 // Windowing system:
