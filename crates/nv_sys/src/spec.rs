@@ -27,11 +27,12 @@ pub enum Error {
 
 	// NOTE: File access-related errors in a semantic precedence of
 	// failures from top to bottom. Where, a FileAccessLost implies
-	// access revoked after being granted (i.e., errors during IO).
+	// access revoked after being granted (e.g., errors during IO).
 	FilePathInvalid,
 	FileAccessDenied,
 	FileAlreadyExists,
 	FileNotFound,
+	FileNotReady,
 	FileAccessLost,
 	FileUnknown,
 }
