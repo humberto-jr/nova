@@ -35,6 +35,9 @@ pub enum Error {
 	FileNotReady,
 	FileAccessLost,
 	FileUnknown,
+
+	SymbolNameInvalid,
+	SymbolAddressNotFound,
 }
 
 //
@@ -395,8 +398,12 @@ pub trait File {
 	fn close(&mut self) -> Result<()>;
 }
 
-pub trait DynamicLibrary: marker::Sized {
-	fn load(filename: &str) -> FileAccessResult<Self>;
+pub trait DynamicLibrary {
+	type Address;
 
-	fn symbol(&self, name: &str) -> *const ();
+	fn load(&mut self, filename: &str) -> Result<()>;
+
+	fn is_loaded(&self) -> bool;
+
+	fn find_symbol(&self, name: &str) -> Result<Self::Address>;
 }

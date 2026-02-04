@@ -90,6 +90,35 @@ impl File {
 }
 
 //
+// DynamicLibrary:
+//
+
+pub struct DynamicLibrary(host::DynamicLibrary);
+
+impl ops::Deref for DynamicLibrary {
+	type Target = dyn spec::DynamicLibrary<Address = *const ()>;
+
+	#[inline(always)]
+	fn deref(&self) -> &Self::Target {
+		&self.0
+	}
+}
+
+impl ops::DerefMut for DynamicLibrary {
+	#[inline(always)]
+	fn deref_mut(&mut self) -> &mut Self::Target {
+		&mut self.0
+	}
+}
+
+impl DynamicLibrary {
+	#[inline]
+	pub const fn new() -> Self {
+		Self(host::DynamicLibrary::new())
+	}
+}
+
+//
 // Thread:
 //
 
