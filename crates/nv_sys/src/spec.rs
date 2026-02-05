@@ -25,6 +25,12 @@ pub enum Error {
 	None,
 	Unknown,
 
+	AllocatorNotReady,
+	AllocatorAlignmentInvalid,
+	AllocatorSizeLimitExceeded,
+	AllocatorOutOfMemory,
+	AllocatorBlockUnknown,
+
 	// NOTE: File access-related errors in a semantic precedence of
 	// failures from top to bottom. Where, a FileAccessLost implies
 	// access revoked after being granted (e.g., errors during IO).
@@ -38,6 +44,45 @@ pub enum Error {
 
 	SymbolNameInvalid,
 	SymbolAddressNotFound,
+}
+
+//
+// Memory allocation:
+//
+
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum BlockProtection {
+	None,
+	ReadOnly,
+	ReadAndWrite,
+	ReadAndExecute,
+	All,
+}
+
+pub trait AllocatedBlock<T: ?marker::Sized> {
+	unsafe fn from_raw(raw: *mut T, count: usize) -> Self;
+
+	unsafe fn into_raw(self) -> (*mut T, usize);
+
+	unsafe fn overwrite(&mut self, index: usize, val: T);
+}
+
+pub trait Allocator {
+	fn allocate<T, B>(&mut self, count: usize) -> Result<B>
+	where
+		T: marker::Sized,
+		B: AllocatedBlock<T>;
+
+	fn reallocate<T, B>(&mut self, count: usize, block: B) -> Result<B>
+	where
+		T: marker::Sized,
+		B: AllocatedBlock<T>;
+
+	fn deallocate<T, B>(&mut self, block: B) -> Result<()>
+	where
+		T: marker::Sized,
+		B: AllocatedBlock<T>;
 }
 
 //
