@@ -410,15 +410,6 @@ pub enum FileAccess {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub enum FileAccessResult<T> {
-	None,
-	Open(T),
-	Closed,
-	NotFound,
-	AccessDenied,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum SeekFrom {
 	Start(usize),
 	End(isize),
