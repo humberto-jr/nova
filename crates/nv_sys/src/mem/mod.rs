@@ -47,51 +47,11 @@ pub use mem::MaybeUninit;
 
 pub use mem::ManuallyDrop;
 
-//
-// AllocatedBlock<T>:
-//
+pub use spec::BlockProtection;
 
-pub trait AllocatedBlock<T: ?marker::Sized> {
-	unsafe fn from_raw(raw: *mut T, count: usize) -> Self;
+pub use spec::AllocatedBlock;
 
-	unsafe fn into_raw(self) -> (*mut T, usize);
-
-	unsafe fn overwrite(&mut self, slot: usize, val: T);
-}
-
-//
-// AllocatorResult<T>:
-//
-
-mod impl_allocator_result;
-
-pub enum AllocatorResult<T> {
-	None,
-
-	Allocated(UninitBlock<T>),
-
-	Deallocated,
-
-	OutOfMemory,
-
-	SizeLimitExceeded,
-
-	UnsupportedAlignment,
-
-	AllocatorUnavailable,
-}
-
-//
-// Allocator:
-//
-
-pub trait Allocator: clone::Clone {
-	fn allocate<T: marker::Sized>(&mut self, count: usize) -> AllocatorResult<T>;
-
-	fn reallocate<T: marker::Sized>(&mut self, count: usize, block: impl AllocatedBlock<T>) -> AllocatorResult<T>;
-
-	fn deallocate<T: marker::Sized>(&mut self, block: impl AllocatedBlock<T>) -> AllocatorResult<()>;
-}
+pub use spec::Allocator;
 
 //
 // UninitBlock<T>:
