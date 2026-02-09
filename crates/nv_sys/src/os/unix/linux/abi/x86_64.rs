@@ -11,6 +11,7 @@ pub unsafe fn syscall0(nr: usize) -> isize {
 			lateout("rax") ret,
 			lateout("rcx") _,
 			lateout("r11") _,
+			options(nostack),
 		);
 
 		ret
@@ -29,6 +30,7 @@ pub unsafe fn syscall1(nr: usize, a0: usize) -> isize {
 			lateout("rax") ret,
 			lateout("rcx") _,
 			lateout("r11") _,
+			options(nostack),
 		);
 
 		ret
@@ -48,6 +50,7 @@ pub unsafe fn syscall2(nr: usize, a0: usize, a1: usize) -> isize {
 			lateout("rax") ret,
 			lateout("rcx") _,
 			lateout("r11") _,
+			options(nostack),
 		);
 
 		ret
@@ -68,6 +71,7 @@ pub unsafe fn syscall3(nr: usize, a0: usize, a1: usize, a2: usize) -> isize {
 			lateout("rax") ret,
 			lateout("rcx") _,
 			lateout("r11") _,
+			options(nostack),
 		);
 
 		ret
@@ -89,6 +93,7 @@ pub unsafe fn syscall4(nr: usize, a0: usize, a1: usize, a2: usize, a3: usize) ->
 			lateout("rax") ret,
 			lateout("rcx") _,
 			lateout("r11") _,
+			options(nostack),
 		);
 
 		ret
@@ -111,6 +116,7 @@ pub unsafe fn syscall5(nr: usize, a0: usize, a1: usize, a2: usize, a3: usize, a4
 			lateout("rax") ret,
 			lateout("rcx") _,
 			lateout("r11") _,
+			options(nostack),
 		);
 
 		ret
@@ -134,6 +140,7 @@ pub unsafe fn syscall6(nr: usize, a0: usize, a1: usize, a2: usize, a3: usize, a4
 			lateout("rax") ret,
 			lateout("rcx") _,
 			lateout("r11") _,
+			options(nostack),
 		);
 
 		ret
