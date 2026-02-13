@@ -1,5 +1,8 @@
 pub mod keysym;
+pub mod xkb;
 pub mod xproto;
+
+pub use xproto::*;
 
 pub const X_PROTOCOL: u32 = 11;
 pub const X_PROTOCOL_REVISION: u32 = 0;
