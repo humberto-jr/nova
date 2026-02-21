@@ -12,6 +12,11 @@ pub mod unix;
 pub use ::core::ffi::CStr;
 
 #[inline(always)]
+pub const fn is_nul_terminated(rs_str: &str) -> bool {
+	(rs_str.len() > 0) && (*rs_str.as_bytes().last().unwrap() == b'\0')
+}
+
+#[inline(always)]
 pub const fn c_str(rs_str: &str) -> *const i8 {
 	rs_str.as_ptr() as *const i8
 }
