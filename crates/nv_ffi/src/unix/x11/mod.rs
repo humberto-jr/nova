@@ -1,4 +1,5 @@
 pub mod keysym;
+pub mod xfixes;
 pub mod xkb;
 pub mod xproto;
 
