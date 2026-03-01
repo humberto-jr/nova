@@ -9,7 +9,8 @@ pub mod khronos;
 pub mod stb;
 pub mod unix;
 
-pub use ::core::ffi::CStr;
+pub use ::core;
+pub use core::ffi::CStr;
 
 #[inline(always)]
 pub const fn is_nul_terminated(rs_str: &str) -> bool {
@@ -18,6 +19,8 @@ pub const fn is_nul_terminated(rs_str: &str) -> bool {
 
 #[inline(always)]
 pub const fn c_str(rs_str: &str) -> *const i8 {
+	core::debug_assert!(is_nul_terminated(rs_str));
+
 	rs_str.as_ptr() as *const i8
 }
 
