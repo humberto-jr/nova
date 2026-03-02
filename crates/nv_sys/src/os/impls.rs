@@ -7,6 +7,22 @@ use crate::{
 };
 
 //
+// Error:
+//
+
+impl spec::Error {
+	#[inline]
+	pub const fn take(&mut self) -> Self {
+		mem::replace(self, Self::None)
+	}
+
+	#[inline]
+	pub const fn is_none(self) -> bool {
+		core::matches!(self, Self::None)
+	}
+}
+
+//
 // WindowEvent:
 //
 
@@ -46,61 +62,65 @@ impl spec::WindowEvent {
 				..
 			} => 4,
 
-			Self::PointerMoved {
+			Self::WindowRestored {
 				..
 			} => 5,
 
-			Self::PointerLeftWindow {
+			Self::PointerMoved {
 				..
 			} => 6,
 
-			Self::PointerEnteredWindow {
+			Self::PointerLeftWindow {
 				..
 			} => 7,
 
-			Self::PointerButtonPressed {
+			Self::PointerEnteredWindow {
 				..
 			} => 8,
 
-			Self::PointerButtonReleased {
+			Self::PointerButtonPressed {
 				..
 			} => 9,
 
-			Self::PointerHorizontalScroll {
+			Self::PointerButtonReleased {
 				..
 			} => 10,
 
-			Self::PointerVerticalScroll {
+			Self::PointerHorizontalScroll {
 				..
 			} => 11,
 
-			Self::PointerDiagonalScroll {
+			Self::PointerVerticalScroll {
 				..
 			} => 12,
 
-			Self::PointerButtonRepeated {
+			Self::PointerDiagonalScroll {
 				..
 			} => 13,
 
-			Self::KeyboardKeyPressed {
+			Self::PointerButtonRepeated {
 				..
 			} => 14,
 
-			Self::KeyboardKeyReleased {
+			Self::KeyboardKeyPressed {
 				..
 			} => 15,
 
-			Self::KeyboardKeyRepeated {
+			Self::KeyboardKeyReleased {
 				..
 			} => 16,
 
-			Self::TextInput {
+			Self::KeyboardKeyRepeated {
 				..
 			} => 17,
 
-			Self::ShouldClose {
+			Self::TextInput {
 				..
 			} => 18,
+
+			Self::ShouldClose {
+				..
+			} => 19,
 			// NOTE: If new variants are included, please increment
 			// the count() method below accordingly.
 		}
@@ -108,7 +128,7 @@ impl spec::WindowEvent {
 
 	#[inline]
 	pub const fn count() -> usize {
-		19
+		20
 	}
 
 	pub const fn index(&self) -> u64 {
@@ -131,6 +151,11 @@ impl spec::WindowEvent {
 			} => *index,
 
 			Self::WindowFullScreen {
+				index,
+				..
+			} => *index,
+
+			Self::WindowRestored {
 				index,
 				..
 			} => *index,
@@ -229,6 +254,11 @@ impl spec::WindowEvent {
 			} => *timestamp,
 
 			Self::WindowFullScreen {
+				timestamp,
+				..
+			} => *timestamp,
+
+			Self::WindowRestored {
 				timestamp,
 				..
 			} => *timestamp,
