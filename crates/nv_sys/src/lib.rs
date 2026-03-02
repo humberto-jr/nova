@@ -2,6 +2,7 @@
 
 use ::core::ops;
 
+pub mod bit;
 pub mod gpu;
 pub mod macros;
 pub mod mem;
@@ -112,7 +113,7 @@ impl ops::DerefMut for DynamicLibrary {
 }
 
 impl DynamicLibrary {
-	#[inline]
+	#[inline(always)]
 	pub const fn new() -> Self {
 		Self(host::DynamicLibrary::new())
 	}
@@ -130,14 +131,14 @@ impl<Fn, In, Out> Thread<Fn, In, Out>
 where
 	Fn: ops::FnOnce(In) -> Out,
 {
-	#[inline]
+	#[inline(always)]
 	pub fn start(routine: Fn, args: In) -> Self {
 		let inner = <host::Thread<Fn, In, Out> as spec::Thread<Fn, In, Out>>::start(routine, args);
 
 		Self(inner)
 	}
 
-	#[inline]
+	#[inline(always)]
 	pub fn stop(self) -> Out {
 		spec::Thread::<Fn, In, Out>::stop(self.0)
 	}
