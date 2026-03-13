@@ -218,7 +218,7 @@ pub enum WindowEvent {
 	PointerHorizontalScroll {
 		x: i32,
 		y: i32,
-		delta_x: i32,
+		delta_x: f32,
 		index: u64,
 		timestamp: time::Instant,
 	},
@@ -226,7 +226,7 @@ pub enum WindowEvent {
 	PointerVerticalScroll {
 		x: i32,
 		y: i32,
-		delta_y: i32,
+		delta_y: f32,
 		index: u64,
 		timestamp: time::Instant,
 	},
@@ -234,8 +234,8 @@ pub enum WindowEvent {
 	PointerDiagonalScroll {
 		x: i32,
 		y: i32,
-		delta_x: i32,
-		delta_y: i32,
+		delta_x: f32,
+		delta_y: f32,
 		index: u64,
 		timestamp: time::Instant,
 	},
