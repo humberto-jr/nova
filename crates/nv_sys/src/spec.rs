@@ -168,6 +168,16 @@ pub enum WindowEvent {
 		timestamp: time::Instant,
 	},
 
+	WindowRestored {
+		x: i32,
+		y: i32,
+		width: u32,
+		height: u32,
+		scale: f32,
+		index: u64,
+		timestamp: time::Instant,
+	},
+
 	PointerMoved {
 		x: i32,
 		y: i32,
