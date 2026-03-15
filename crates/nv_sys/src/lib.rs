@@ -21,6 +21,22 @@ mod os;
 use os::unix as host;
 
 //
+// Basic types:
+//
+
+pub use host::Byte;
+
+pub use host::Time;
+
+pub use spec::Error;
+
+pub use spec::Result;
+
+pub use spec::LogicalKey;
+
+pub use spec::PointerButton;
+
+//
 // Windowing system:
 //
 
