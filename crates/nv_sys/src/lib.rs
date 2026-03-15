@@ -47,7 +47,7 @@ impl ops::DerefMut for Window {
 }
 
 impl Window {
-	#[inline]
+	#[inline(always)]
 	pub fn new() -> Self {
 		Self(host::Window::new())
 	}
@@ -84,7 +84,7 @@ impl ops::DerefMut for File {
 }
 
 impl File {
-	#[inline]
+	#[inline(always)]
 	pub const fn new() -> Self {
 		Self(host::File::new())
 	}
@@ -141,5 +141,38 @@ where
 	#[inline(always)]
 	pub fn stop(self) -> Out {
 		spec::Thread::<Fn, In, Out>::stop(self.0)
+	}
+}
+
+//
+// Dispatcher:
+//
+
+pub use spec::DispatchEvent;
+
+pub struct Dispatcher(host::Dispatcher);
+
+pub type ResourceDescriptor = <host::Dispatcher as spec::Dispatcher>::Descriptor;
+
+impl ops::Deref for Dispatcher {
+	type Target = dyn spec::Dispatcher<Event = DispatchEvent, Descriptor = ResourceDescriptor>;
+
+	#[inline(always)]
+	fn deref(&self) -> &Self::Target {
+		&self.0
+	}
+}
+
+impl ops::DerefMut for Dispatcher {
+	#[inline(always)]
+	fn deref_mut(&mut self) -> &mut Self::Target {
+		&mut self.0
+	}
+}
+
+impl Dispatcher {
+	#[inline(always)]
+	pub fn new() -> Self {
+		Self(host::Dispatcher::new())
 	}
 }

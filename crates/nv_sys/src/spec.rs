@@ -388,17 +388,32 @@ pub enum PointerButton {
 // OS abstractions:
 //
 
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum DispatchEvent {
+	None,
+	Error,
+
+	Readable,
+	Writable,
+	Closed,
+
+	TimerExpired,
+
+	WindowInput,
+
+	UnixSignal(i32),
+	WindowsCtrlSignal(u32),
+}
+
 pub trait Dispatcher {
 	type Event;
 	type Descriptor;
 
-	fn new() -> Self;
+	fn register(&mut self, list: &[Self::Event], source: &Self::Descriptor, waker: task::Waker) -> Result<()>;
 
-	fn register(&mut self, list: &[Self::Event], source: &Self::Descriptor, waker: task::Waker);
+	fn unregister(&mut self, list: &[Self::Event], source: &Self::Descriptor) -> Result<()>;
 
-	fn unregister(&mut self, list: &[Self::Event], source: &Self::Descriptor);
-
-	fn wait_and_dispatch(&mut self, ms_timeout: u32) -> u32;
+	fn wait_and_dispatch(&mut self, ms_timeout: host::Time) -> u32;
 }
 
 pub trait Thread<Fn, In, Out>
