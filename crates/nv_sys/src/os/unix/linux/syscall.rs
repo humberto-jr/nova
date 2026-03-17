@@ -1,6 +1,9 @@
+use ::core::cmp;
+
 use crate::{
 	ffi, //
 	ffi::unix::linux::uapi::asm_generic::fcntl,
+	ffi::unix::linux::uapi::eventpoll,
 	mem,
 	os::unix,
 	spec,
@@ -9,6 +12,7 @@ use crate::{
 use super::{
 	abi, //
 	nr,
+	stat,
 };
 
 const NULL: usize = 0;
@@ -120,4 +124,31 @@ pub fn flush(fd: unix::Descriptor) -> spec::Result<()> {
 	let info = unsafe { abi::syscall1(nr::FILE_SYNC, fd as _) };
 
 	kernel_result!(info, spec::Error::from_file_errors)
+}
+
+#[inline]
+pub fn epoll_create() -> spec::Result<unix::Descriptor> {
+	let info = unsafe { abi::syscall1(nr::EPOLL_CREATE, eventpoll::EPOLL_CLOEXEC as _) };
+
+	kernel_result!(info, spec::Error::from_file_errors, info as _)
+}
+
+#[inline]
+pub fn epoll_control(epfd: unix::Descriptor, op: u32, fd: unix::Descriptor, event: &eventpoll::epoll_event) -> spec::Result<()> {
+	let info = unsafe { abi::syscall4(nr::EPOLL_CONTROL, epfd as _, op as _, fd as _, (event as *const _) as _) };
+
+	kernel_result!(info, spec::Error::from_file_errors)
+}
+
+#[inline]
+pub fn epoll_wait(epfd: unix::Descriptor, events: &mut [eventpoll::epoll_event], timeout: unix::Time) -> spec::Result<u32> {
+	let timeout = if timeout == unix::Time::MAX {
+		-1
+	} else {
+		cmp::min(timeout, i32::MAX as _) as i32
+	};
+
+	let info = unsafe { abi::syscall4(nr::EPOLL_WAIT, epfd as _, events.as_mut_ptr() as _, events.len(), timeout as _) };
+
+	kernel_result!(info, spec::Error::from_file_errors, info as _)
 }
