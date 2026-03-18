@@ -44,6 +44,9 @@ pub enum Error {
 
 	SymbolNameInvalid,
 	SymbolAddressNotFound,
+
+	DispatcherNotReady,
+	DispatcherHandleUnknown,
 }
 
 //

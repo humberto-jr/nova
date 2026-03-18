@@ -166,12 +166,14 @@ where
 
 pub use spec::DispatchEvent;
 
+pub use host::DispatchHandle;
+
 pub struct Dispatcher(host::Dispatcher);
 
 pub type ResourceDescriptor = <host::Dispatcher as spec::Dispatcher>::Descriptor;
 
 impl ops::Deref for Dispatcher {
-	type Target = dyn spec::Dispatcher<Event = DispatchEvent, Descriptor = ResourceDescriptor>;
+	type Target = dyn spec::Dispatcher<Event = spec::DispatchEvent, Handle = host::DispatchHandle, Descriptor = ResourceDescriptor>;
 
 	#[inline(always)]
 	fn deref(&self) -> &Self::Target {
