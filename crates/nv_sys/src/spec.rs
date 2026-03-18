@@ -406,12 +406,20 @@ pub enum DispatchEvent {
 }
 
 pub trait Dispatcher {
+	// NOTE: The default dispatcher behavior is for one-shot firings of handlers when events occur, where
+	// the Rust waker mechanism is used as handler here. This reflects modern aspects of async design in
+	// which persistent reaction to events is an emergent behavior driven by tasks and runtime executors.
+	// It greatly reduces complications of handler ownership and lifetime management within the dispatcher.
+	// The consequence is that tasks are now responsible for persistent handling, resubmitting a new waker
+	// for previously registered events, whereas the dispatcher's responsibility is to make the resubmission
+	// procedure as efficient as possible.
 	type Event;
+	type Handle;
 	type Descriptor;
 
-	fn register(&mut self, list: &[Self::Event], source: &Self::Descriptor, waker: task::Waker) -> Result<()>;
+	fn register(&mut self, list: &[Self::Event], source: &Self::Descriptor, waker: task::Waker) -> Result<Self::Handle>;
 
-	fn unregister(&mut self, list: &[Self::Event], source: &Self::Descriptor) -> Result<()>;
+	fn unregister(&mut self, handle: &Self::Handle) -> Result<()>;
 
 	fn wait_and_dispatch(&mut self, ms_timeout: host::Time) -> u32;
 }
