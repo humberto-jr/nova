@@ -422,6 +422,8 @@ pub trait Dispatcher {
 
 	fn register(&mut self, list: &[Self::Event], source: &Self::Descriptor, waker: task::Waker) -> Result<Self::Handle>;
 
+	fn update_waker(&mut self, handle: &Self::Handle, waker: task::Waker) -> Result<()>;
+
 	fn unregister(&mut self, handle: &Self::Handle) -> Result<()>;
 
 	fn wait_and_dispatch(&mut self, ms_timeout: host::Time) -> u32;
