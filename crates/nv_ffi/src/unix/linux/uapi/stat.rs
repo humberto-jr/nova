@@ -62,7 +62,7 @@ pub struct statx_timestamp {
 	pub __reserved: i32,
 }
 
-#[repr(C)]
+#[repr(C, align(8))]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct statx {
 	pub stx_mask: u32,
