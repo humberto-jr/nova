@@ -127,6 +127,25 @@ pub fn flush(fd: unix::Descriptor) -> spec::Result<()> {
 }
 
 #[inline]
+pub fn file_status(fd: unix::Descriptor) -> spec::Result<stat::statx> {
+	let mut status = mem::MaybeUninit::<stat::statx>::uninit();
+
+	let flags = (fcntl::AT_EMPTY_PATH | fcntl::AT_STATX_SYNC_AS_STAT) as usize;
+
+	let mask = stat::STATX_BASIC_STATS as usize;
+
+	// NOTE: Apparently the kernel requires a valid pointer for
+	// the path argument even when the AT_EMPTY_PATH bit is set.
+	const EMPTY_PATH: *const i8 = ffi::c_str("\0");
+
+	unsafe {
+		let info = abi::syscall5(nr::FILE_STATUS, fd as _, EMPTY_PATH as _, flags, mask, status.as_mut_ptr() as _);
+
+		kernel_result!(info, spec::Error::from_file_errors, status.assume_init())
+	}
+}
+
+#[inline]
 pub fn epoll_create() -> spec::Result<unix::Descriptor> {
 	let info = unsafe { abi::syscall1(nr::EPOLL_CREATE, eventpoll::EPOLL_CLOEXEC as _) };
 
