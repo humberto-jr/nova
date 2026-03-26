@@ -11,12 +11,12 @@ use core::{
 use crate::sync;
 
 impl<T: marker::Sized> super::AllocatedBlock<T> for super::Block<T> {
-	#[inline]
+	#[inline(always)]
 	unsafe fn from_raw(raw: *mut T, count: usize) -> Self {
 		unsafe { super::UninitBlock::from_raw(raw, count).assume_init() }
 	}
 
-	#[inline]
+	#[inline(always)]
 	unsafe fn into_raw(self) -> (*mut T, usize) {
 		(self.raw, self.count)
 	}
@@ -35,7 +35,7 @@ macro_rules! impl_index {
 		impl<T: marker::Sized> ops::Index<$index_type> for super::Block<T> {
 			type Output = T;
 
-			#[inline]
+			#[inline(always)]
 			fn index(&self, index: $index_type) -> &Self::Output {
 				core::debug_assert!((index as usize) < self.count);
 
@@ -44,7 +44,7 @@ macro_rules! impl_index {
 		}
 
 		impl<T: marker::Sized> ops::IndexMut<$index_type> for super::Block<T> {
-			#[inline]
+			#[inline(always)]
 			fn index_mut(&mut self, index: $index_type) -> &mut Self::Output {
 				core::debug_assert!((index as usize) < self.count);
 
@@ -55,7 +55,7 @@ macro_rules! impl_index {
 		impl<T: marker::Sized> ops::Index<ops::Range<$index_type>> for super::Block<T> {
 			type Output = [T];
 
-			#[inline]
+			#[inline(always)]
 			fn index(&self, range: ops::Range<$index_type>) -> &Self::Output {
 				let usize_range = (range.start as usize)..(range.end as usize);
 
@@ -64,7 +64,7 @@ macro_rules! impl_index {
 		}
 
 		impl<T: marker::Sized> ops::IndexMut<ops::Range<$index_type>> for super::Block<T> {
-			#[inline]
+			#[inline(always)]
 			fn index_mut(&mut self, range: ops::Range<$index_type>) -> &mut Self::Output {
 				let usize_range = (range.start as usize)..(range.end as usize);
 
@@ -83,21 +83,21 @@ impl_index!(usize);
 impl<T: marker::Sized> ops::Deref for super::Block<T> {
 	type Target = T;
 
-	#[inline]
+	#[inline(always)]
 	fn deref(&self) -> &Self::Target {
 		unsafe { &(*self.raw) }
 	}
 }
 
 impl<T: marker::Sized> ops::DerefMut for super::Block<T> {
-	#[inline]
+	#[inline(always)]
 	fn deref_mut(&mut self) -> &mut Self::Target {
 		unsafe { &mut (*self.raw) }
 	}
 }
 
 impl<T: fmt::Display> fmt::Display for super::Block<T> {
-	#[inline]
+	#[inline(always)]
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 		unsafe { core::write!(f, "{}", *self.raw) }
 	}
@@ -112,22 +112,22 @@ impl<T: default::Default> super::Block<T> {
 }
 
 impl<T: marker::Sized> super::Block<T> {
-	#[inline]
+	#[inline(always)]
 	pub const fn capacity(&self) -> usize {
 		self.count
 	}
 
-	#[inline]
+	#[inline(always)]
 	pub const fn as_slice<'b>(&'b self) -> &'b [T] {
 		unsafe { slice::from_raw_parts::<'b, T>(self.raw, self.count) }
 	}
 
-	#[inline]
+	#[inline(always)]
 	pub const fn as_mut_slice<'b>(&'b self) -> &'b mut [T] {
 		unsafe { slice::from_raw_parts_mut::<'b, T>(self.raw, self.count) }
 	}
 
-	#[inline]
+	#[inline(always)]
 	pub const fn into_shared(self) -> super::SharedBlock<T> {
 		super::SharedBlock {
 			raw: sync::SpinLock::new(self.raw),
@@ -140,7 +140,7 @@ impl<T> super::Block<T>
 where
 	T: marker::Sized + 'static,
 {
-	#[inline]
+	#[inline(always)]
 	pub fn into_opaque(self) -> super::OpaqueBlock {
 		unsafe {
 			super::OpaqueBlock {
