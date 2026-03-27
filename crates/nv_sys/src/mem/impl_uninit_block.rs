@@ -6,7 +6,7 @@ use core::{
 };
 
 impl<T: marker::Sized> super::AllocatedBlock<T> for super::UninitBlock<T> {
-	#[inline]
+	#[inline(always)]
 	unsafe fn from_raw(raw: *mut T, count: usize) -> Self {
 		Self {
 			raw,
@@ -14,7 +14,7 @@ impl<T: marker::Sized> super::AllocatedBlock<T> for super::UninitBlock<T> {
 		}
 	}
 
-	#[inline]
+	#[inline(always)]
 	unsafe fn into_raw(self) -> (*mut T, usize) {
 		(self.raw, self.count)
 	}
@@ -47,12 +47,12 @@ impl<T: default::Default> super::UninitBlock<T> {
 }
 
 impl<T: marker::Sized> super::UninitBlock<T> {
-	#[inline]
+	#[inline(always)]
 	pub const fn capacity(&self) -> usize {
 		self.count
 	}
 
-	#[inline]
+	#[inline(always)]
 	pub const unsafe fn assume_init(self) -> super::Block<T> {
 		super::Block {
 			raw: self.raw,
