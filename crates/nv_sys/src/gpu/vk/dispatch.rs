@@ -260,3 +260,59 @@ impl Loader {
 		}
 	}
 }
+
+//
+// InstanceFnTable:
+//
+
+pub struct InstanceFnTable {
+	pub destroy_instance: core::PFN_vkDestroyInstance,
+
+	pub create_device: core::PFN_vkCreateDevice,
+
+	// NOTE: This is the bootstrap function used to construct DeviceFnTable and
+	// therefore belongs here despite its first argument being of type VkDevice.
+	pub get_device_proc_addr: core::PFN_vkGetDeviceProcAddr,
+
+	pub enumerate_physical_devices: core::PFN_vkEnumeratePhysicalDevices,
+
+	pub enumerate_physical_device_groups: core::PFN_vkEnumeratePhysicalDeviceGroups,
+
+	pub enumerate_device_extension_properties: core::PFN_vkEnumerateDeviceExtensionProperties,
+
+	pub enumerate_device_layer_properties: core::PFN_vkEnumerateDeviceLayerProperties,
+
+	pub get_physical_device_properties: core::PFN_vkGetPhysicalDeviceProperties,
+
+	pub get_physical_device_properties2: core::PFN_vkGetPhysicalDeviceProperties2,
+
+	pub get_physical_device_features: core::PFN_vkGetPhysicalDeviceFeatures,
+
+	pub get_physical_device_features2: core::PFN_vkGetPhysicalDeviceFeatures2,
+
+	pub get_physical_device_memory_properties: core::PFN_vkGetPhysicalDeviceMemoryProperties,
+
+	pub get_physical_device_memory_properties2: core::PFN_vkGetPhysicalDeviceMemoryProperties2,
+
+	pub get_physical_device_queue_family_properties: core::PFN_vkGetPhysicalDeviceQueueFamilyProperties,
+
+	pub get_physical_device_queue_family_properties2: core::PFN_vkGetPhysicalDeviceQueueFamilyProperties2,
+
+	pub get_physical_device_format_properties: core::PFN_vkGetPhysicalDeviceFormatProperties,
+
+	pub get_physical_device_format_properties2: core::PFN_vkGetPhysicalDeviceFormatProperties2,
+
+	pub get_physical_device_image_format_properties: core::PFN_vkGetPhysicalDeviceImageFormatProperties,
+
+	pub get_physical_device_image_format_properties2: core::PFN_vkGetPhysicalDeviceImageFormatProperties2,
+
+	pub get_physical_device_sparse_image_format_properties: core::PFN_vkGetPhysicalDeviceSparseImageFormatProperties,
+
+	pub get_physical_device_sparse_image_format_properties2: core::PFN_vkGetPhysicalDeviceSparseImageFormatProperties2,
+
+	pub get_physical_device_external_buffer_properties: core::PFN_vkGetPhysicalDeviceExternalBufferProperties,
+
+	pub get_physical_device_external_fence_properties: core::PFN_vkGetPhysicalDeviceExternalFenceProperties,
+
+	pub get_physical_device_external_semaphore_properties: core::PFN_vkGetPhysicalDeviceExternalSemaphoreProperties,
+}
