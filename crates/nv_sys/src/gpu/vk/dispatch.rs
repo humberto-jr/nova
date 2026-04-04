@@ -1025,3 +1025,85 @@ impl InstanceFnTable {
 		}
 	}
 }
+
+//
+// Tables for instance-level extensions:
+//
+// SurfaceFnTable:
+//
+
+#[derive(Clone)]
+pub struct SurfaceFnTable {
+	pub extension_name: &'static str,
+
+	pub destroy_surface_khr: core::PFN_vkDestroySurfaceKHR,
+
+	pub get_physical_device_surface_capabilities_khr: core::PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR,
+
+	pub get_physical_device_surface_formats_khr: core::PFN_vkGetPhysicalDeviceSurfaceFormatsKHR,
+
+	pub get_physical_device_surface_present_modes_khr: core::PFN_vkGetPhysicalDeviceSurfacePresentModesKHR,
+
+	pub get_physical_device_surface_support_khr: core::PFN_vkGetPhysicalDeviceSurfaceSupportKHR,
+}
+
+impl SurfaceFnTable {
+	#[inline(always)]
+	pub fn destroy_surface(&self, instance: core::VkInstance, surface: core::VkSurfaceKHR, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_surface_khr)(instance, surface, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn get_physical_device_surface_capabilities(&self, physical_device: core::VkPhysicalDevice, surface: core::VkSurfaceKHR, capabilities: &mut core::VkSurfaceCapabilitiesKHR) -> core::VkResult {
+		unsafe { (self.get_physical_device_surface_capabilities_khr)(physical_device, surface, capabilities) }
+	}
+
+	pub fn get_physical_device_surface_formats(&self, physical_device: core::VkPhysicalDevice, surface: core::VkSurfaceKHR, list: &mut [core::VkSurfaceFormatKHR]) -> (u32, u32) {
+		let mut total = 0u32;
+
+		unsafe {
+			let result = (self.get_physical_device_surface_formats_khr)(physical_device, surface, &mut total, mem::null());
+
+			if (result != core::VK_SUCCESS) || (total == 0) {
+				return (0, 0);
+			}
+
+			let mut count = cmp::min(list.len() as u32, total);
+
+			let result = (self.get_physical_device_surface_formats_khr)(physical_device, surface, &mut count, list.as_mut_ptr());
+
+			if (result == core::VK_SUCCESS) || (result == core::VK_INCOMPLETE) {
+				(count, total)
+			} else {
+				(0, 0)
+			}
+		}
+	}
+
+	pub fn get_physical_device_surface_present_modes(&self, physical_device: core::VkPhysicalDevice, surface: core::VkSurfaceKHR, list: &mut [core::VkPresentModeKHR]) -> (u32, u32) {
+		let mut total = 0u32;
+
+		unsafe {
+			let result = (self.get_physical_device_surface_present_modes_khr)(physical_device, surface, &mut total, mem::null());
+
+			if (result != core::VK_SUCCESS) || (total == 0) {
+				return (0, 0);
+			}
+
+			let mut count = cmp::min(list.len() as u32, total);
+
+			let result = (self.get_physical_device_surface_present_modes_khr)(physical_device, surface, &mut count, list.as_mut_ptr());
+
+			if (result == core::VK_SUCCESS) || (result == core::VK_INCOMPLETE) {
+				(count, total)
+			} else {
+				(0, 0)
+			}
+		}
+	}
+
+	#[inline(always)]
+	pub fn get_physical_device_surface_support(&self, physical_device: core::VkPhysicalDevice, queue_family_index: u32, surface: core::VkSurfaceKHR, support: &mut bool) -> core::VkResult {
+		unsafe { (self.get_physical_device_surface_support_khr)(physical_device, queue_family_index, surface, (support as *mut _) as *mut core::VkBool32) }
+	}
+}
