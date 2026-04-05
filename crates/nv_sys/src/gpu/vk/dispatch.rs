@@ -6,7 +6,8 @@ use ::core::{
 };
 
 use crate::{
-	mem, //
+	ffi::unix::x11, //
+	mem,
 	spec,
 };
 
@@ -1105,5 +1106,35 @@ impl SurfaceFnTable {
 	#[inline(always)]
 	pub fn get_physical_device_surface_support(&self, physical_device: core::VkPhysicalDevice, queue_family_index: u32, surface: core::VkSurfaceKHR, support: &mut bool) -> core::VkResult {
 		unsafe { (self.get_physical_device_surface_support_khr)(physical_device, queue_family_index, surface, (support as *mut _) as *mut core::VkBool32) }
+	}
+}
+
+//
+// XcbSurfaceFnTable:
+//
+
+pub struct XcbSurfaceFnTable {
+	pub extension_name: &'static str,
+
+	pub create_xcb_surface_khr: xcb::PFN_vkCreateXcbSurfaceKHR,
+
+	pub get_physical_device_xcb_presentation_support_khr: xcb::PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR,
+}
+
+impl XcbSurfaceFnTable {
+	#[inline(always)]
+	pub fn create_xcb_surface(&self, instance: core::VkInstance, create_info: &xcb::VkXcbSurfaceCreateInfoKHR, allocator: &AllocationCallbacks, surface: &mut core::VkSurfaceKHR) -> core::VkResult {
+		unsafe { (self.create_xcb_surface_khr)(instance, create_info, allocator.as_ptr(), surface) }
+	}
+
+	#[inline(always)]
+	pub fn get_physical_device_xcb_presentation_support(
+		&self,
+		physical_device: core::VkPhysicalDevice,
+		queue_family_index: u32,
+		connection: *mut x11::xcb_connection_t,
+		visual_id: x11::xproto::xcb_visualid_t,
+	) -> bool {
+		unsafe { (self.get_physical_device_xcb_presentation_support_khr)(physical_device, queue_family_index, connection, visual_id) != 0 }
 	}
 }
