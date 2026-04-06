@@ -1138,3 +1138,33 @@ impl XcbSurfaceFnTable {
 		unsafe { (self.get_physical_device_xcb_presentation_support_khr)(physical_device, queue_family_index, connection, visual_id) != 0 }
 	}
 }
+
+//
+// WaylandSurfaceFnTable:
+//
+
+pub struct WaylandSurfaceFnTable {
+	pub extension_name: &'static str,
+
+	pub create_wayland_surface_khr: wl::PFN_vkCreateWaylandSurfaceKHR,
+
+	pub get_physical_device_wayland_presentation_support_khr: wl::PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR,
+}
+
+impl WaylandSurfaceFnTable {
+	#[inline(always)]
+	pub fn create_wayland_surface(
+		&self,
+		instance: core::VkInstance,
+		create_info: &wl::VkWaylandSurfaceCreateInfoKHR,
+		allocator: &AllocationCallbacks,
+		surface: &mut core::VkSurfaceKHR,
+	) -> core::VkResult {
+		unsafe { (self.create_wayland_surface_khr)(instance, create_info, allocator.as_ptr(), surface) }
+	}
+
+	#[inline(always)]
+	pub fn get_physical_device_wayland_presentation_support(&self, physical_device: core::VkPhysicalDevice, queue_family_index: u32, display: *mut wl::wl_display) -> bool {
+		unsafe { (self.get_physical_device_wayland_presentation_support_khr)(physical_device, queue_family_index, display) != 0 }
+	}
+}
