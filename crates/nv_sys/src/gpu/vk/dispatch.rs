@@ -1168,3 +1168,23 @@ impl WaylandSurfaceFnTable {
 		unsafe { (self.get_physical_device_wayland_presentation_support_khr)(physical_device, queue_family_index, display) != 0 }
 	}
 }
+
+//
+// HeadlessSurfaceFnTable:
+//
+
+pub struct HeadlessSurfaceFnTable {
+	pub extension_name: &'static str,
+
+	pub create_headless_surface_ext: core::PFN_vkCreateHeadlessSurfaceEXT,
+}
+
+//
+// DisplayFnTable:
+//
+
+pub struct DisplayFnTable {
+	pub extension_name: &'static str,
+
+	pub create_display_plane_surface_khr: core::PFN_vkCreateDisplayPlaneSurfaceKHR,
+}
