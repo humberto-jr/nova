@@ -1188,3 +1188,403 @@ pub struct DisplayFnTable {
 
 	pub create_display_plane_surface_khr: core::PFN_vkCreateDisplayPlaneSurfaceKHR,
 }
+
+//
+// DeviceFnTable:
+//
+
+pub struct DeviceFnTable {
+	// Device management:
+	pub destroy_device: core::PFN_vkDestroyDevice,
+
+	pub get_device_queue: core::PFN_vkGetDeviceQueue,
+
+	pub get_device_queue2: core::PFN_vkGetDeviceQueue2,
+
+	pub device_wait_idle: core::PFN_vkDeviceWaitIdle,
+
+	// Memory:
+	pub allocate_memory: core::PFN_vkAllocateMemory,
+
+	pub free_memory: core::PFN_vkFreeMemory,
+
+	pub map_memory: core::PFN_vkMapMemory,
+
+	pub unmap_memory: core::PFN_vkUnmapMemory,
+
+	pub flush_mapped_memory_ranges: core::PFN_vkFlushMappedMemoryRanges,
+
+	pub invalidate_mapped_memory_ranges: core::PFN_vkInvalidateMappedMemoryRanges,
+
+	pub get_device_memory_commitment: core::PFN_vkGetDeviceMemoryCommitment,
+
+	pub get_device_memory_opaque_capture_address: core::PFN_vkGetDeviceMemoryOpaqueCaptureAddress,
+
+	// Buffers:
+	pub create_buffer: core::PFN_vkCreateBuffer,
+
+	pub destroy_buffer: core::PFN_vkDestroyBuffer,
+
+	pub get_buffer_memory_requirements: core::PFN_vkGetBufferMemoryRequirements,
+
+	pub get_buffer_memory_requirements2: core::PFN_vkGetBufferMemoryRequirements2,
+
+	pub bind_buffer_memory: core::PFN_vkBindBufferMemory,
+
+	pub bind_buffer_memory2: core::PFN_vkBindBufferMemory2,
+
+	pub get_buffer_device_address: core::PFN_vkGetBufferDeviceAddress,
+
+	pub get_buffer_opaque_capture_address: core::PFN_vkGetBufferOpaqueCaptureAddress,
+
+	pub create_buffer_view: core::PFN_vkCreateBufferView,
+
+	pub destroy_buffer_view: core::PFN_vkDestroyBufferView,
+
+	// Images:
+	pub create_image: core::PFN_vkCreateImage,
+
+	pub destroy_image: core::PFN_vkDestroyImage,
+
+	pub get_image_memory_requirements: core::PFN_vkGetImageMemoryRequirements,
+
+	pub get_image_memory_requirements2: core::PFN_vkGetImageMemoryRequirements2,
+
+	pub bind_image_memory: core::PFN_vkBindImageMemory,
+
+	pub bind_image_memory2: core::PFN_vkBindImageMemory2,
+
+	pub get_image_subresource_layout: core::PFN_vkGetImageSubresourceLayout,
+
+	pub get_image_sparse_memory_requirements: core::PFN_vkGetImageSparseMemoryRequirements,
+
+	pub get_image_sparse_memory_requirements2: core::PFN_vkGetImageSparseMemoryRequirements2,
+
+	pub create_image_view: core::PFN_vkCreateImageView,
+
+	pub destroy_image_view: core::PFN_vkDestroyImageView,
+
+	// Shaders:
+	pub create_shader_module: core::PFN_vkCreateShaderModule,
+
+	pub destroy_shader_module: core::PFN_vkDestroyShaderModule,
+
+	// Pipelines:
+	pub create_graphics_pipelines: core::PFN_vkCreateGraphicsPipelines,
+
+	pub create_compute_pipelines: core::PFN_vkCreateComputePipelines,
+
+	pub destroy_pipeline: core::PFN_vkDestroyPipeline,
+
+	pub create_pipeline_cache: core::PFN_vkCreatePipelineCache,
+
+	pub destroy_pipeline_cache: core::PFN_vkDestroyPipelineCache,
+
+	pub get_pipeline_cache_data: core::PFN_vkGetPipelineCacheData,
+
+	pub merge_pipeline_caches: core::PFN_vkMergePipelineCaches,
+
+	pub create_pipeline_layout: core::PFN_vkCreatePipelineLayout,
+
+	pub destroy_pipeline_layout: core::PFN_vkDestroyPipelineLayout,
+
+	// Render passes:
+	pub create_render_pass: core::PFN_vkCreateRenderPass,
+
+	pub create_render_pass2: core::PFN_vkCreateRenderPass2,
+
+	pub destroy_render_pass: core::PFN_vkDestroyRenderPass,
+
+	pub get_render_area_granularity: core::PFN_vkGetRenderAreaGranularity,
+
+	// Framebuffers:
+	pub create_framebuffer: core::PFN_vkCreateFramebuffer,
+
+	pub destroy_framebuffer: core::PFN_vkDestroyFramebuffer,
+
+	// Descriptor sets:
+	pub create_descriptor_set_layout: core::PFN_vkCreateDescriptorSetLayout,
+
+	pub destroy_descriptor_set_layout: core::PFN_vkDestroyDescriptorSetLayout,
+
+	pub get_descriptor_set_layout_support: core::PFN_vkGetDescriptorSetLayoutSupport,
+
+	pub create_descriptor_pool: core::PFN_vkCreateDescriptorPool,
+
+	pub destroy_descriptor_pool: core::PFN_vkDestroyDescriptorPool,
+
+	pub reset_descriptor_pool: core::PFN_vkResetDescriptorPool,
+
+	pub allocate_descriptor_sets: core::PFN_vkAllocateDescriptorSets,
+
+	pub free_descriptor_sets: core::PFN_vkFreeDescriptorSets,
+
+	pub update_descriptor_sets: core::PFN_vkUpdateDescriptorSets,
+
+	pub create_descriptor_update_template: core::PFN_vkCreateDescriptorUpdateTemplate,
+
+	pub destroy_descriptor_update_template: core::PFN_vkDestroyDescriptorUpdateTemplate,
+
+	pub update_descriptor_set_with_template: core::PFN_vkUpdateDescriptorSetWithTemplate,
+
+	// Command pools:
+	pub create_command_pool: core::PFN_vkCreateCommandPool,
+
+	pub destroy_command_pool: core::PFN_vkDestroyCommandPool,
+
+	pub reset_command_pool: core::PFN_vkResetCommandPool,
+
+	pub trim_command_pool: core::PFN_vkTrimCommandPool,
+
+	pub allocate_command_buffers: core::PFN_vkAllocateCommandBuffers,
+
+	pub free_command_buffers: core::PFN_vkFreeCommandBuffers,
+
+	// Command buffer recording:
+	pub begin_command_buffer: core::PFN_vkBeginCommandBuffer,
+
+	pub end_command_buffer: core::PFN_vkEndCommandBuffer,
+
+	pub reset_command_buffer: core::PFN_vkResetCommandBuffer,
+
+	// Queue operations:
+	pub queue_submit: core::PFN_vkQueueSubmit,
+
+	pub queue_submit2: core::PFN_vkQueueSubmit2,
+
+	pub queue_wait_idle: core::PFN_vkQueueWaitIdle,
+
+	pub queue_bind_sparse: core::PFN_vkQueueBindSparse,
+
+	// Synchronization:
+	pub create_fence: core::PFN_vkCreateFence,
+
+	pub destroy_fence: core::PFN_vkDestroyFence,
+
+	pub reset_fences: core::PFN_vkResetFences,
+
+	pub get_fence_status: core::PFN_vkGetFenceStatus,
+
+	pub wait_for_fences: core::PFN_vkWaitForFences,
+
+	pub create_semaphore: core::PFN_vkCreateSemaphore,
+
+	pub destroy_semaphore: core::PFN_vkDestroySemaphore,
+
+	pub get_semaphore_counter_value: core::PFN_vkGetSemaphoreCounterValue,
+
+	pub wait_semaphores: core::PFN_vkWaitSemaphores,
+
+	pub signal_semaphore: core::PFN_vkSignalSemaphore,
+
+	pub create_event: core::PFN_vkCreateEvent,
+
+	pub destroy_event: core::PFN_vkDestroyEvent,
+
+	pub get_event_status: core::PFN_vkGetEventStatus,
+
+	pub set_event: core::PFN_vkSetEvent,
+
+	pub reset_event: core::PFN_vkResetEvent,
+
+	// Queries:
+	pub create_query_pool: core::PFN_vkCreateQueryPool,
+
+	pub destroy_query_pool: core::PFN_vkDestroyQueryPool,
+
+	pub get_query_pool_results: core::PFN_vkGetQueryPoolResults,
+
+	pub reset_query_pool: core::PFN_vkResetQueryPool,
+
+	// Samplers:
+	pub create_sampler: core::PFN_vkCreateSampler,
+
+	pub destroy_sampler: core::PFN_vkDestroySampler,
+
+	pub create_sampler_ycbcr_conversion: core::PFN_vkCreateSamplerYcbcrConversion,
+
+	pub destroy_sampler_ycbcr_conversion: core::PFN_vkDestroySamplerYcbcrConversion,
+
+	// Draw commands:
+	pub cmd_draw: core::PFN_vkCmdDraw,
+
+	pub cmd_draw_indexed: core::PFN_vkCmdDrawIndexed,
+
+	pub cmd_draw_indirect: core::PFN_vkCmdDrawIndirect,
+
+	pub cmd_draw_indexed_indirect: core::PFN_vkCmdDrawIndexedIndirect,
+
+	pub cmd_draw_indirect_count: core::PFN_vkCmdDrawIndirectCount,
+
+	pub cmd_draw_indexed_indirect_count: core::PFN_vkCmdDrawIndexedIndirectCount,
+
+	// Dispatch commands:
+	pub cmd_dispatch: core::PFN_vkCmdDispatch,
+
+	pub cmd_dispatch_indirect: core::PFN_vkCmdDispatchIndirect,
+
+	pub cmd_dispatch_base: core::PFN_vkCmdDispatchBase,
+
+	// Transfer commands:
+	pub cmd_copy_buffer: core::PFN_vkCmdCopyBuffer,
+
+	pub cmd_copy_buffer2: core::PFN_vkCmdCopyBuffer2,
+
+	pub cmd_copy_image: core::PFN_vkCmdCopyImage,
+
+	pub cmd_copy_image2: core::PFN_vkCmdCopyImage2,
+
+	pub cmd_copy_buffer_to_image: core::PFN_vkCmdCopyBufferToImage,
+
+	pub cmd_copy_buffer_to_image2: core::PFN_vkCmdCopyBufferToImage2,
+
+	pub cmd_copy_image_to_buffer: core::PFN_vkCmdCopyImageToBuffer,
+
+	pub cmd_copy_image_to_buffer2: core::PFN_vkCmdCopyImageToBuffer2,
+
+	pub cmd_blit_image: core::PFN_vkCmdBlitImage,
+
+	pub cmd_blit_image2: core::PFN_vkCmdBlitImage2,
+
+	pub cmd_resolve_image: core::PFN_vkCmdResolveImage,
+
+	pub cmd_resolve_image2: core::PFN_vkCmdResolveImage2,
+
+	pub cmd_update_buffer: core::PFN_vkCmdUpdateBuffer,
+
+	pub cmd_fill_buffer: core::PFN_vkCmdFillBuffer,
+
+	// Clear commands:
+	pub cmd_clear_color_image: core::PFN_vkCmdClearColorImage,
+
+	pub cmd_clear_depth_stencil_image: core::PFN_vkCmdClearDepthStencilImage,
+
+	pub cmd_clear_attachments: core::PFN_vkCmdClearAttachments,
+
+	// Render pass commands:
+	pub cmd_begin_render_pass: core::PFN_vkCmdBeginRenderPass,
+
+	pub cmd_begin_render_pass2: core::PFN_vkCmdBeginRenderPass2,
+
+	pub cmd_next_subpass: core::PFN_vkCmdNextSubpass,
+
+	pub cmd_next_subpass2: core::PFN_vkCmdNextSubpass2,
+
+	pub cmd_end_render_pass: core::PFN_vkCmdEndRenderPass,
+
+	pub cmd_end_render_pass2: core::PFN_vkCmdEndRenderPass2,
+
+	// Dynamic rendering commands (Vulkan 1.3):
+	pub cmd_begin_rendering: core::PFN_vkCmdBeginRendering,
+
+	pub cmd_end_rendering: core::PFN_vkCmdEndRendering,
+
+	// Pipeline binding commands:
+	pub cmd_bind_pipeline: core::PFN_vkCmdBindPipeline,
+
+	pub cmd_bind_descriptor_sets: core::PFN_vkCmdBindDescriptorSets,
+
+	pub cmd_bind_index_buffer: core::PFN_vkCmdBindIndexBuffer,
+
+	pub cmd_bind_vertex_buffers: core::PFN_vkCmdBindVertexBuffers,
+
+	pub cmd_bind_vertex_buffers2: core::PFN_vkCmdBindVertexBuffers2,
+
+	pub cmd_push_constants: core::PFN_vkCmdPushConstants,
+
+	// Dynamic state commands:
+	pub cmd_set_viewport: core::PFN_vkCmdSetViewport,
+
+	pub cmd_set_viewport_with_count: core::PFN_vkCmdSetViewportWithCount,
+
+	pub cmd_set_scissor: core::PFN_vkCmdSetScissor,
+
+	pub cmd_set_scissor_with_count: core::PFN_vkCmdSetScissorWithCount,
+
+	pub cmd_set_line_width: core::PFN_vkCmdSetLineWidth,
+
+	pub cmd_set_depth_bias: core::PFN_vkCmdSetDepthBias,
+
+	pub cmd_set_depth_bias_enable: core::PFN_vkCmdSetDepthBiasEnable,
+
+	pub cmd_set_depth_bounds: core::PFN_vkCmdSetDepthBounds,
+
+	pub cmd_set_depth_bounds_test_enable: core::PFN_vkCmdSetDepthBoundsTestEnable,
+
+	pub cmd_set_depth_compare_op: core::PFN_vkCmdSetDepthCompareOp,
+
+	pub cmd_set_depth_test_enable: core::PFN_vkCmdSetDepthTestEnable,
+
+	pub cmd_set_depth_write_enable: core::PFN_vkCmdSetDepthWriteEnable,
+
+	pub cmd_set_stencil_compare_mask: core::PFN_vkCmdSetStencilCompareMask,
+
+	pub cmd_set_stencil_write_mask: core::PFN_vkCmdSetStencilWriteMask,
+
+	pub cmd_set_stencil_reference: core::PFN_vkCmdSetStencilReference,
+
+	pub cmd_set_stencil_test_enable: core::PFN_vkCmdSetStencilTestEnable,
+
+	pub cmd_set_stencil_op: core::PFN_vkCmdSetStencilOp,
+
+	pub cmd_set_blend_constants: core::PFN_vkCmdSetBlendConstants,
+
+	pub cmd_set_cull_mode: core::PFN_vkCmdSetCullMode,
+
+	pub cmd_set_front_face: core::PFN_vkCmdSetFrontFace,
+
+	pub cmd_set_primitive_topology: core::PFN_vkCmdSetPrimitiveTopology,
+
+	pub cmd_set_primitive_restart_enable: core::PFN_vkCmdSetPrimitiveRestartEnable,
+
+	pub cmd_set_rasterizer_discard_enable: core::PFN_vkCmdSetRasterizerDiscardEnable,
+
+	// Barriers and synchronization commands:
+	pub cmd_pipeline_barrier: core::PFN_vkCmdPipelineBarrier,
+
+	pub cmd_pipeline_barrier2: core::PFN_vkCmdPipelineBarrier2,
+
+	pub cmd_set_event: core::PFN_vkCmdSetEvent,
+
+	pub cmd_set_event2: core::PFN_vkCmdSetEvent2,
+
+	pub cmd_reset_event: core::PFN_vkCmdResetEvent,
+
+	pub cmd_reset_event2: core::PFN_vkCmdResetEvent2,
+
+	pub cmd_wait_events: core::PFN_vkCmdWaitEvents,
+
+	pub cmd_wait_events2: core::PFN_vkCmdWaitEvents2,
+
+	// Query commands:
+	pub cmd_begin_query: core::PFN_vkCmdBeginQuery,
+
+	pub cmd_end_query: core::PFN_vkCmdEndQuery,
+
+	pub cmd_reset_query_pool: core::PFN_vkCmdResetQueryPool,
+
+	pub cmd_write_timestamp: core::PFN_vkCmdWriteTimestamp,
+
+	pub cmd_write_timestamp2: core::PFN_vkCmdWriteTimestamp2,
+
+	pub cmd_copy_query_pool_results: core::PFN_vkCmdCopyQueryPoolResults,
+
+	// Secondary command buffers:
+	pub cmd_execute_commands: core::PFN_vkCmdExecuteCommands,
+
+	// Private data (Vulkan 1.3):
+	pub create_private_data_slot: core::PFN_vkCreatePrivateDataSlot,
+
+	pub destroy_private_data_slot: core::PFN_vkDestroyPrivateDataSlot,
+
+	pub set_private_data: core::PFN_vkSetPrivateData,
+
+	pub get_private_data: core::PFN_vkGetPrivateData,
+
+	// Maintenance:
+	pub get_device_image_memory_requirements: core::PFN_vkGetDeviceImageMemoryRequirements,
+
+	pub get_device_buffer_memory_requirements: core::PFN_vkGetDeviceBufferMemoryRequirements,
+
+	pub get_device_image_sparse_memory_requirements: core::PFN_vkGetDeviceImageSparseMemoryRequirements,
+}
