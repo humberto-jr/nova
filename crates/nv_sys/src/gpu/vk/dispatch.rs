@@ -1588,3 +1588,75 @@ pub struct DeviceFnTable {
 
 	pub get_device_image_sparse_memory_requirements: core::PFN_vkGetDeviceImageSparseMemoryRequirements,
 }
+
+//
+// Tables for device-level extensions:
+//
+// SwapchainFnTable:
+//
+
+#[derive(Clone)]
+pub struct SwapchainFnTable {
+	pub extension_name: &'static str,
+
+	pub create_swapchain_khr: core::PFN_vkCreateSwapchainKHR,
+
+	pub destroy_swapchain_khr: core::PFN_vkDestroySwapchainKHR,
+
+	pub get_swapchain_images_khr: core::PFN_vkGetSwapchainImagesKHR,
+
+	pub acquire_next_image_khr: core::PFN_vkAcquireNextImageKHR,
+
+	pub acquire_next_image2_khr: core::PFN_vkAcquireNextImage2KHR,
+
+	pub queue_present_khr: core::PFN_vkQueuePresentKHR,
+
+	pub get_swapchain_status_khr: core::PFN_vkGetSwapchainStatusKHR,
+}
+
+impl SwapchainFnTable {
+	#[inline(always)]
+	pub fn create_swapchain(&self, device: core::VkDevice, create_info: &core::VkSwapchainCreateInfoKHR, allocator: &AllocationCallbacks, swapchain: &mut core::VkSwapchainKHR) -> core::VkResult {
+		unsafe { (self.create_swapchain_khr)(device, create_info, allocator.as_ptr(), swapchain) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_swapchain(&self, device: core::VkDevice, swapchain: core::VkSwapchainKHR, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_swapchain_khr)(device, swapchain, allocator.as_ptr()) }
+	}
+
+	pub fn get_swapchain_images(&self, device: core::VkDevice, swapchain: core::VkSwapchainKHR, list: &mut [core::VkImage]) -> (u32, u32) {
+		let mut total = 0u32;
+
+		unsafe {
+			let result = (self.get_swapchain_images_khr)(device, swapchain, &mut total, mem::null());
+
+			if (result != core::VK_SUCCESS) || (total == 0) {
+				return (0, 0);
+			}
+
+			let mut count = cmp::min(list.len() as u32, total);
+
+			let result = (self.get_swapchain_images_khr)(device, swapchain, &mut count, list.as_mut_ptr());
+
+			if (result == core::VK_SUCCESS) || (result == core::VK_INCOMPLETE) {
+				(count, total)
+			} else {
+				(0, 0)
+			}
+		}
+	}
+
+	#[inline(always)]
+	pub fn acquire_next_image(
+		&self,
+		device: core::VkDevice,
+		swapchain: core::VkSwapchainKHR,
+		timeout: u64,
+		semaphore: core::VkSemaphore,
+		fence: core::VkFence,
+		image_index: &mut u32,
+	) -> core::VkResult {
+		unsafe { (self.acquire_next_image_khr)(device, swapchain, timeout, semaphore, fence, image_index) }
+	}
+}
