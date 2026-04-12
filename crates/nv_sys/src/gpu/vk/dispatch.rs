@@ -1660,3 +1660,11 @@ impl SwapchainFnTable {
 		unsafe { (self.acquire_next_image_khr)(device, swapchain, timeout, semaphore, fence, image_index) }
 	}
 }
+
+pub struct PushDescriptorFnTable {
+	pub extension_name: &'static str,
+
+	pub cmd_push_descriptor_set_khr: core::PFN_vkCmdPushDescriptorSetKHR,
+
+	pub cmd_push_descriptor_set_with_template_khr: core::PFN_vkCmdPushDescriptorSetWithTemplateKHR,
+}
