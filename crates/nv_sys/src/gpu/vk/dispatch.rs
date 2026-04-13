@@ -1668,3 +1668,21 @@ pub struct PushDescriptorFnTable {
 
 	pub cmd_push_descriptor_set_with_template_khr: core::PFN_vkCmdPushDescriptorSetWithTemplateKHR,
 }
+
+pub struct RayTracingPipelineFnTable {
+	pub extension_name: &'static str,
+
+	pub create_ray_tracing_pipelines_khr: core::PFN_vkCreateRayTracingPipelinesKHR,
+
+	pub get_ray_tracing_shader_group_handles_khr: core::PFN_vkGetRayTracingShaderGroupHandlesKHR,
+
+	pub get_ray_tracing_capture_replay_shader_group_handles_khr: core::PFN_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR,
+
+	pub get_ray_tracing_shader_group_stack_size_khr: core::PFN_vkGetRayTracingShaderGroupStackSizeKHR,
+
+	pub cmd_trace_rays_khr: core::PFN_vkCmdTraceRaysKHR,
+
+	pub cmd_trace_rays_indirect_khr: core::PFN_vkCmdTraceRaysIndirectKHR,
+
+	pub cmd_set_ray_tracing_pipeline_stack_size_khr: core::PFN_vkCmdSetRayTracingPipelineStackSizeKHR,
+}
