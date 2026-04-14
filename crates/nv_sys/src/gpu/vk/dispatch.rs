@@ -1686,3 +1686,37 @@ pub struct RayTracingPipelineFnTable {
 
 	pub cmd_set_ray_tracing_pipeline_stack_size_khr: core::PFN_vkCmdSetRayTracingPipelineStackSizeKHR,
 }
+
+pub struct AccelerationStructureFnTable {
+	pub extension_name: &'static str,
+
+	pub create_acceleration_structure_khr: core::PFN_vkCreateAccelerationStructureKHR,
+
+	pub destroy_acceleration_structure_khr: core::PFN_vkDestroyAccelerationStructureKHR,
+
+	pub build_acceleration_structures_khr: core::PFN_vkBuildAccelerationStructuresKHR,
+
+	pub cmd_build_acceleration_structures_khr: core::PFN_vkCmdBuildAccelerationStructuresKHR,
+
+	pub cmd_build_acceleration_structures_indirect_khr: core::PFN_vkCmdBuildAccelerationStructuresIndirectKHR,
+
+	pub copy_acceleration_structure_khr: core::PFN_vkCopyAccelerationStructureKHR,
+
+	pub copy_acceleration_structure_to_memory_khr: core::PFN_vkCopyAccelerationStructureToMemoryKHR,
+
+	pub copy_memory_to_acceleration_structure_khr: core::PFN_vkCopyMemoryToAccelerationStructureKHR,
+
+	pub cmd_copy_acceleration_structure_khr: core::PFN_vkCmdCopyAccelerationStructureKHR,
+
+	pub cmd_copy_acceleration_structure_to_memory_khr: core::PFN_vkCmdCopyAccelerationStructureToMemoryKHR,
+
+	pub cmd_copy_memory_to_acceleration_structure_khr: core::PFN_vkCmdCopyMemoryToAccelerationStructureKHR,
+
+	pub write_acceleration_structures_properties_khr: core::PFN_vkWriteAccelerationStructuresPropertiesKHR,
+
+	pub cmd_write_acceleration_structures_properties_khr: core::PFN_vkCmdWriteAccelerationStructuresPropertiesKHR,
+
+	pub get_acceleration_structure_build_sizes_khr: core::PFN_vkGetAccelerationStructureBuildSizesKHR,
+
+	pub get_acceleration_structure_device_address_khr: core::PFN_vkGetAccelerationStructureDeviceAddressKHR,
+}
