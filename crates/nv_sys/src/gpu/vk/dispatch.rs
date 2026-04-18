@@ -12,7 +12,8 @@ use crate::{
 };
 
 use super::{
-	core, //
+	super::spirv, //
+	core,
 	utils,
 	wayland as wl,
 	xcb,
@@ -1587,6 +1588,306 @@ pub struct DeviceFnTable {
 	pub get_device_buffer_memory_requirements: core::PFN_vkGetDeviceBufferMemoryRequirements,
 
 	pub get_device_image_sparse_memory_requirements: core::PFN_vkGetDeviceImageSparseMemoryRequirements,
+}
+
+impl DeviceFnTable {
+	#[inline(always)]
+	pub fn destroy_device(&self, device: core::VkDevice, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_device)(device, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn device_wait_idle(&self, device: core::VkDevice) -> core::VkResult {
+		unsafe { (self.device_wait_idle)(device) }
+	}
+
+	#[inline(always)]
+	pub fn allocate_memory(&self, device: core::VkDevice, allocate_info: &core::VkMemoryAllocateInfo, allocator: &AllocationCallbacks, memory: &mut core::VkDeviceMemory) -> core::VkResult {
+		unsafe { (self.allocate_memory)(device, allocate_info, allocator.as_ptr(), memory) }
+	}
+
+	#[inline(always)]
+	pub fn free_memory(&self, device: core::VkDevice, memory: core::VkDeviceMemory, allocator: &AllocationCallbacks) {
+		unsafe { (self.free_memory)(device, memory, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn map_memory(&self, device: core::VkDevice, memory: core::VkDeviceMemory, offset: core::VkDeviceSize, size: core::VkDeviceSize, data: &mut *mut ()) -> core::VkResult {
+		unsafe { (self.map_memory)(device, memory, offset, size, 0, data) }
+	}
+
+	#[inline(always)]
+	pub fn unmap_memory(&self, device: core::VkDevice, memory: core::VkDeviceMemory) {
+		unsafe { (self.unmap_memory)(device, memory) }
+	}
+
+	#[inline(always)]
+	pub fn get_device_queue(&self, device: core::VkDevice, queue_family_index: u32, queue_index: u32, queue: &mut core::VkQueue) {
+		unsafe { (self.get_device_queue)(device, queue_family_index, queue_index, queue) }
+	}
+
+	#[inline(always)]
+	pub fn get_image_memory_requirements(&self, device: core::VkDevice, image: core::VkImage, requirements: &mut core::VkMemoryRequirements) {
+		unsafe { (self.get_image_memory_requirements)(device, image, requirements) }
+	}
+
+	#[inline(always)]
+	pub fn get_buffer_memory_requirements(&self, device: core::VkDevice, buffer: core::VkBuffer, requirements: &mut core::VkMemoryRequirements) {
+		unsafe { (self.get_buffer_memory_requirements)(device, buffer, requirements) }
+	}
+
+	#[inline(always)]
+	pub fn create_image(&self, device: core::VkDevice, create_info: &core::VkImageCreateInfo, allocator: &AllocationCallbacks, image: &mut core::VkImage) -> core::VkResult {
+		unsafe { (self.create_image)(device, create_info, allocator.as_ptr(), image) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_image(&self, device: core::VkDevice, image: core::VkImage, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_image)(device, image, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn create_image_view(&self, device: core::VkDevice, create_info: &core::VkImageViewCreateInfo, allocator: &AllocationCallbacks, view: &mut core::VkImageView) -> core::VkResult {
+		unsafe { (self.create_image_view)(device, create_info, allocator.as_ptr(), view) }
+	}
+
+	#[inline(always)]
+	pub fn create_shader_module(
+		&self,
+		device: core::VkDevice,
+		create_info: &core::VkShaderModuleCreateInfo,
+		allocator: &AllocationCallbacks,
+		shader_module: &mut core::VkShaderModule,
+	) -> core::VkResult {
+		unsafe { (self.create_shader_module)(device, create_info, allocator.as_ptr(), shader_module) }
+	}
+
+	pub fn create_shader_module_from_spirv(&self, device: core::VkDevice, bytecode: &[spirv::Word], allocator: &AllocationCallbacks, module: &mut core::VkShaderModule) -> core::VkResult {
+		let size = bytecode.len() * mem::size_of::<spirv::Word>();
+
+		let create_info = core::VkShaderModuleCreateInfo {
+			sType: core::VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+			pNext: mem::null(),
+			flags: 0,
+			codeSize: size,
+			pCode: bytecode.as_ptr(),
+		};
+
+		self.create_shader_module(device, &create_info, allocator, module)
+	}
+
+	#[inline(always)]
+	pub fn destroy_shader_module(&self, device: core::VkDevice, shader_module: core::VkShaderModule, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_shader_module)(device, shader_module, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_image_view(&self, device: core::VkDevice, view: core::VkImageView, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_image_view)(device, view, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn allocate_command_buffers(&self, device: core::VkDevice, allocate_info: &core::VkCommandBufferAllocateInfo, command_buffer: &mut core::VkCommandBuffer) -> core::VkResult {
+		unsafe { (self.allocate_command_buffers)(device, allocate_info, command_buffer) }
+	}
+
+	#[inline(always)]
+	pub fn free_command_buffers(&self, device: core::VkDevice, command_pool: core::VkCommandPool, command_buffers: &[core::VkCommandBuffer]) {
+		unsafe { (self.free_command_buffers)(device, command_pool, command_buffers.len() as _, command_buffers.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn allocate_descriptor_sets(&self, device: core::VkDevice, allocate_info: &core::VkDescriptorSetAllocateInfo, descriptor_sets: &mut core::VkDescriptorSet) -> core::VkResult {
+		unsafe { (self.allocate_descriptor_sets)(device, allocate_info, descriptor_sets) }
+	}
+
+	#[inline(always)]
+	pub fn update_descriptor_sets(&self, device: core::VkDevice, descriptor_writes: &[core::VkWriteDescriptorSet], descriptor_copies: &[core::VkCopyDescriptorSet]) {
+		unsafe { (self.update_descriptor_sets)(device, descriptor_writes.len() as _, descriptor_writes.as_ptr(), descriptor_copies.len() as _, descriptor_copies.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn free_descriptor_sets(&self, device: core::VkDevice, descriptor_pool: core::VkDescriptorPool, descriptor_sets: &[core::VkDescriptorSet]) -> core::VkResult {
+		unsafe { (self.free_descriptor_sets)(device, descriptor_pool, descriptor_sets.len() as _, descriptor_sets.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn bind_buffer_memory(&self, device: core::VkDevice, buffer: core::VkBuffer, memory: core::VkDeviceMemory, memory_offset: core::VkDeviceSize) -> core::VkResult {
+		unsafe { (self.bind_buffer_memory)(device, buffer, memory, memory_offset) }
+	}
+
+	#[inline(always)]
+	pub fn bind_image_memory(&self, device: core::VkDevice, image: core::VkImage, memory: core::VkDeviceMemory, memory_offset: core::VkDeviceSize) -> core::VkResult {
+		unsafe { (self.bind_image_memory)(device, image, memory, memory_offset) }
+	}
+
+	#[inline(always)]
+	pub fn wait_for_fences(&self, device: core::VkDevice, fences: &[core::VkFence], wait_all: bool, timeout: u64) -> core::VkResult {
+		unsafe { (self.wait_for_fences)(device, fences.len() as _, fences.as_ptr(), wait_all as _, timeout) }
+	}
+
+	#[inline(always)]
+	pub fn reset_fences(&self, device: core::VkDevice, fences: &[core::VkFence]) -> core::VkResult {
+		unsafe { (self.reset_fences)(device, fences.len() as _, fences.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn get_fence_status(&self, device: core::VkDevice, fence: core::VkFence) -> core::VkResult {
+		unsafe { (self.get_fence_status)(device, fence) }
+	}
+
+	#[inline(always)]
+	pub fn reset_command_buffer(&self, command_buffer: core::VkCommandBuffer) -> core::VkResult {
+		unsafe { (self.reset_command_buffer)(command_buffer, core::VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT) }
+	}
+
+	#[inline(always)]
+	pub fn begin_command_buffer(&self, command_buffer: core::VkCommandBuffer, begin_info: &core::VkCommandBufferBeginInfo) -> core::VkResult {
+		unsafe { (self.begin_command_buffer)(command_buffer, begin_info) }
+	}
+
+	#[inline(always)]
+	pub fn end_command_buffer(&self, command_buffer: core::VkCommandBuffer) -> core::VkResult {
+		unsafe { (self.end_command_buffer)(command_buffer) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_begin_render_pass(&self, command_buffer: core::VkCommandBuffer, begin_info: &core::VkRenderPassBeginInfo) {
+		// NOTE: Apparently, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS is rarely used.
+		unsafe { (self.cmd_begin_render_pass)(command_buffer, begin_info, core::VK_SUBPASS_CONTENTS_INLINE) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_end_render_pass(&self, command_buffer: core::VkCommandBuffer) {
+		unsafe { (self.cmd_end_render_pass)(command_buffer) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_begin_rendering(&self, command_buffer: core::VkCommandBuffer, rendering_info: &core::VkRenderingInfo) {
+		unsafe { (self.cmd_begin_rendering)(command_buffer, rendering_info) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_end_rendering(&self, command_buffer: core::VkCommandBuffer) {
+		unsafe { (self.cmd_end_rendering)(command_buffer) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_clear_color_image(
+		&self,
+		command_buffer: core::VkCommandBuffer,
+		image: core::VkImage,
+		image_layout: core::VkImageLayout,
+		color: &core::VkClearColorValue,
+		ranges: &[core::VkImageSubresourceRange],
+	) {
+		unsafe { (self.cmd_clear_color_image)(command_buffer, image, image_layout, color, ranges.len() as _, ranges.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_set_viewport(&self, command_buffer: core::VkCommandBuffer, first_viewport: u32, viewports: &[core::VkViewport]) {
+		unsafe { (self.cmd_set_viewport)(command_buffer, first_viewport, viewports.len() as _, viewports.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_set_scissor(&self, command_buffer: core::VkCommandBuffer, first_scissor: u32, scissors: &[core::VkRect2D]) {
+		unsafe { (self.cmd_set_scissor)(command_buffer, first_scissor, scissors.len() as _, scissors.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_bind_graphics_pipeline(&self, command_buffer: core::VkCommandBuffer, pipeline: core::VkPipeline) {
+		unsafe { (self.cmd_bind_pipeline)(command_buffer, core::VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_bind_compute_pipeline(&self, command_buffer: core::VkCommandBuffer, pipeline: core::VkPipeline) {
+		unsafe { (self.cmd_bind_pipeline)(command_buffer, core::VK_PIPELINE_BIND_POINT_COMPUTE, pipeline) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_bind_graphics_descriptor_sets(
+		&self,
+		command_buffer: core::VkCommandBuffer,
+		layout: core::VkPipelineLayout,
+		first_set: u32,
+		descriptor_sets: &[core::VkDescriptorSet],
+		dynamic_offsets: &[u32],
+	) {
+		unsafe {
+			(self.cmd_bind_descriptor_sets)(
+				command_buffer,
+				core::VK_PIPELINE_BIND_POINT_GRAPHICS,
+				layout,
+				first_set,
+				descriptor_sets.len() as _,
+				descriptor_sets.as_ptr(),
+				dynamic_offsets.len() as _,
+				dynamic_offsets.as_ptr(),
+			)
+		}
+	}
+
+	#[inline(always)]
+	pub fn cmd_bind_index_buffer_u16(&self, command_buffer: core::VkCommandBuffer, buffer: core::VkBuffer, offset: core::VkDeviceSize) {
+		unsafe { (self.cmd_bind_index_buffer)(command_buffer, buffer, offset, core::VK_INDEX_TYPE_UINT16) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_bind_index_buffer_u32(&self, command_buffer: core::VkCommandBuffer, buffer: core::VkBuffer, offset: core::VkDeviceSize) {
+		unsafe { (self.cmd_bind_index_buffer)(command_buffer, buffer, offset, core::VK_INDEX_TYPE_UINT32) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_bind_vertex_buffers(&self, command_buffer: core::VkCommandBuffer, first_binding: u32, buffers: &[core::VkBuffer], offsets: &[core::VkDeviceSize]) {
+		unsafe { (self.cmd_bind_vertex_buffers)(command_buffer, first_binding, buffers.len() as _, buffers.as_ptr(), offsets.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_copy_buffer(&self, command_buffer: core::VkCommandBuffer, src_buffer: core::VkBuffer, dst_buffer: core::VkBuffer, regions: &[core::VkBufferCopy]) {
+		unsafe { (self.cmd_copy_buffer)(command_buffer, src_buffer, dst_buffer, regions.len() as _, regions.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_draw_indexed(&self, command_buffer: core::VkCommandBuffer, index_count: u32, instance_count: u32, first_index: u32, vertex_offset: i32, first_instance: u32) {
+		unsafe { (self.cmd_draw_indexed)(command_buffer, index_count, instance_count, first_index, vertex_offset, first_instance) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_copy_buffer_to_image(
+		&self,
+		command_buffer: core::VkCommandBuffer,
+		src_buffer: core::VkBuffer,
+		dst_image: core::VkImage,
+		dst_image_layout: core::VkImageLayout,
+		regions: &[core::VkBufferImageCopy],
+	) {
+		unsafe { (self.cmd_copy_buffer_to_image)(command_buffer, src_buffer, dst_image, dst_image_layout as _, regions.len() as _, regions.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn create_descriptor_set_layout(&self, device: core::VkDevice, create_info: &core::VkDescriptorSetLayoutCreateInfo, allocator: &AllocationCallbacks, set_layout: &mut core::VkDescriptorSetLayout) -> core::VkResult {
+		unsafe { (self.create_descriptor_set_layout)(device, create_info, allocator.as_ptr(), set_layout) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_descriptor_set_layout(&self, device: core::VkDevice, set_layout: core::VkDescriptorSetLayout, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_descriptor_set_layout)(device, set_layout, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn create_descriptor_pool(&self, device: core::VkDevice, create_info: &core::VkDescriptorPoolCreateInfo, allocator: &AllocationCallbacks, descriptor_pool: &mut core::VkDescriptorPool) -> core::VkResult {
+		unsafe { (self.create_descriptor_pool)(device, create_info, allocator.as_ptr(), descriptor_pool) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_descriptor_pool(&self, device: core::VkDevice, descriptor_pool: core::VkDescriptorPool, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_descriptor_pool)(device, descriptor_pool, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn reset_descriptor_pool(&self, device: core::VkDevice, descriptor_pool: core::VkDescriptorPool) -> core::VkResult {
+		unsafe { (self.reset_descriptor_pool)(device, descriptor_pool, 0) }
+	}
 }
 
 //
