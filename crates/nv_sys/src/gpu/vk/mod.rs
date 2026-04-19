@@ -1,3 +1,5 @@
+mod dispatch;
+
 //
 // API dynamic loading:
 //
@@ -39,3 +41,8 @@ pub use dispatch::PushDescriptorFnTable;
 pub use dispatch::RayTracingPipelineFnTable;
 
 pub use dispatch::AccelerationStructureFnTable;
+
+#[inline]
+pub fn loader() -> spec::Result<Loader> {
+	Loader::new(VULKAN_LIBRARY_FILENAME)
+}
