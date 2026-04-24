@@ -33,6 +33,8 @@ pub struct File(pub Descriptor);
 
 pub struct DynamicLibrary(pub OpaquePtr);
 
+pub use base::TimeSpec;
+
 pub use base::Dispatcher;
 
 pub use utils::DispatchHandle;
