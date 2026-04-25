@@ -1,9 +1,10 @@
-use ::core::cmp;
+use ::core::{
+	cmp, //
+	marker,
+};
 
 use crate::{
 	ffi, //
-	ffi::unix::linux::uapi::asm_generic::fcntl,
-	ffi::unix::linux::uapi::eventpoll,
 	mem,
 	os::unix,
 	spec,
@@ -12,10 +13,17 @@ use crate::{
 use super::{
 	abi, //
 	nr,
-	stat,
 };
 
-const NULL: usize = 0;
+use super::uapi::{
+	asm_generic::fcntl, //
+	asm_generic::mman,
+	eventpoll,
+	stat,
+	time,
+};
+
+const _NULL: usize = 0;
 
 macro_rules! kernel_result {
 	($info:expr) => {{
