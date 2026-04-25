@@ -154,6 +154,27 @@ pub fn file_status(fd: unix::Descriptor) -> spec::Result<stat::statx> {
 }
 
 #[inline]
+pub fn clock_get_time(clock_id: unix::Clock) -> spec::Result<super::TimeSpec> {
+	let mut time_spec = mem::MaybeUninit::<super::TimeSpec>::uninit();
+
+	let clock_id = match clock_id {
+		unix::Clock::Realtime => time::CLOCK_REALTIME,
+
+		unix::Clock::Monotonic => time::CLOCK_MONOTONIC,
+
+		unix::Clock::ProcessCPUTimeID => time::CLOCK_PROCESS_CPUTIME_ID,
+
+		unix::Clock::ThreadCPUTimeID => time::CLOCK_THREAD_CPUTIME_ID,
+	};
+
+	unsafe {
+		let info = abi::syscall2(nr::GET_TIME, clock_id as _, time_spec.as_mut_ptr() as _);
+
+		kernel_result!(info, time_spec.assume_init())
+	}
+}
+
+#[inline]
 pub fn epoll_create() -> spec::Result<unix::Descriptor> {
 	let info = unsafe { abi::syscall1(nr::EPOLL_CREATE, eventpoll::EPOLL_CLOEXEC as _) };
 
