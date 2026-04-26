@@ -175,6 +175,33 @@ pub fn clock_get_time(clock_id: unix::Clock) -> spec::Result<super::TimeSpec> {
 }
 
 #[inline]
+pub fn memory_map<T: marker::Sized>(addr: usize, count: usize, prot: spec::BlockProtection, fd: unix::Descriptor, offset: usize) -> spec::Result<*mut T> {
+	let len = mem::size_of::<T>() * count;
+
+	let prot = match prot {
+		spec::BlockProtection::None => mman::PROT_NONE,
+
+		spec::BlockProtection::ReadOnly => mman::PROT_READ,
+
+		spec::BlockProtection::ReadAndWrite => mman::PROT_READ | mman::PROT_WRITE,
+
+		spec::BlockProtection::ReadAndExecute => mman::PROT_READ | mman::PROT_EXEC,
+
+		spec::BlockProtection::All => mman::PROT_READ | mman::PROT_WRITE | mman::PROT_EXEC,
+	};
+
+	let flags = if fd == unix::INVALID_DESCRIPTOR {
+		mman::MAP_PRIVATE | mman::MAP_ANONYMOUS
+	} else {
+		mman::MAP_PRIVATE
+	};
+
+	let info = unsafe { abi::syscall6(nr::MEMORY_MAP, addr, len, prot as _, flags as _, fd as _, offset) };
+
+	kernel_result!(info, spec::Error::from_mapping_errors, info as _)
+}
+
+#[inline]
 pub fn epoll_create() -> spec::Result<unix::Descriptor> {
 	let info = unsafe { abi::syscall1(nr::EPOLL_CREATE, eventpoll::EPOLL_CLOEXEC as _) };
 
