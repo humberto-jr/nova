@@ -202,6 +202,15 @@ pub fn memory_map<T: marker::Sized>(addr: usize, count: usize, prot: spec::Block
 }
 
 #[inline]
+pub fn memory_unmap<T: marker::Sized>(raw: *mut T, count: usize) -> spec::Result<()> {
+	let len = mem::size_of::<T>() * count;
+
+	let info = unsafe { abi::syscall2(nr::MEMORY_UNMAP, raw as _, len) };
+
+	kernel_result!(info, spec::Error::from_unmapping_errors)
+}
+
+#[inline]
 pub fn epoll_create() -> spec::Result<unix::Descriptor> {
 	let info = unsafe { abi::syscall1(nr::EPOLL_CREATE, eventpoll::EPOLL_CLOEXEC as _) };
 
