@@ -15,7 +15,7 @@ mod linux;
 #[cfg(target_os = "linux")]
 use linux as base;
 
-pub use base::inputs;
+pub use base::syscall;
 
 //
 // Definitions:
@@ -80,7 +80,7 @@ pub fn stdin() -> crate::File {
 	let result = file.open(STDIN_FILENAME, spec::FileAccess::ReadOnly);
 
 	if let spec::Result::Err(info) = result {
-		crate::panic!("Failed to open the stdin at \"{}\" ({:?})", base::STDIN_FILENAME, info);
+		crate::panic!("Failed to open the stdin at \"{STDIN_FILENAME}\" ({:?})", info);
 	} else {
 		file
 	}
@@ -92,7 +92,7 @@ pub fn stdout() -> crate::File {
 	let result = file.open(STDOUT_FILENAME, spec::FileAccess::WriteOnly);
 
 	if let spec::Result::Err(info) = result {
-		crate::panic!("Failed to open the stdout at \"{}\" ({:?})", base::STDOUT_FILENAME, info);
+		crate::panic!("Failed to open the stdout at \"{STDOUT_FILENAME}\" ({:?})", info);
 	} else {
 		file
 	}
