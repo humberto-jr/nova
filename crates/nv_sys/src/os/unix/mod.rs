@@ -39,6 +39,10 @@ pub use base::Dispatcher;
 
 pub use utils::DispatchHandle;
 
+pub use base::STDIN_FILENAME;
+
+pub use base::STDOUT_FILENAME;
+
 pub const POSIX_FAILURE_FLAG: isize = -1;
 
 pub const INVALID_DESCRIPTOR: Descriptor = POSIX_FAILURE_FLAG as _;
@@ -63,10 +67,17 @@ pub use wayland::Window;
 // Utils:
 //
 
+#[inline]
+pub fn monotonic_time() -> Time {
+	let result = syscall::clock_get_time(Clock::Monotonic).unwrap();
+
+	((result.tv_sec * 1_000_000_000) + result.tv_nsec) as Time
+}
+
 pub fn stdin() -> crate::File {
 	let mut file = crate::File::new();
 
-	let result = file.open(base::STDIN_FILENAME, spec::FileAccess::ReadOnly);
+	let result = file.open(STDIN_FILENAME, spec::FileAccess::ReadOnly);
 
 	if let spec::Result::Err(info) = result {
 		crate::panic!("Failed to open the stdin at \"{}\" ({:?})", base::STDIN_FILENAME, info);
@@ -78,7 +89,7 @@ pub fn stdin() -> crate::File {
 pub fn stdout() -> crate::File {
 	let mut file = crate::File::new();
 
-	let result = file.open(base::STDOUT_FILENAME, spec::FileAccess::WriteOnly);
+	let result = file.open(STDOUT_FILENAME, spec::FileAccess::WriteOnly);
 
 	if let spec::Result::Err(info) = result {
 		crate::panic!("Failed to open the stdout at \"{}\" ({:?})", base::STDOUT_FILENAME, info);

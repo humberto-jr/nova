@@ -13,7 +13,7 @@ pub struct Instant(host::Time);
 impl Instant {
 	#[inline]
 	pub fn now() -> Self {
-		Self(host::ns_time())
+		Self(host::monotonic_time())
 	}
 
 	#[inline(always)]
