@@ -2,7 +2,6 @@ use ::core;
 use core::{
 	alloc, //
 	any,
-	clone,
 	cmp,
 	marker,
 	mem,
@@ -11,7 +10,8 @@ use core::{
 };
 
 use crate::{
-	ffi::libc, //
+	host, //
+	spec,
 	sync,
 };
 
@@ -192,85 +192,6 @@ pub const unsafe fn uninit<T>() -> T {
 #[inline]
 pub const fn uninit_array<T, const MAX_LEN: usize>() -> [mem::MaybeUninit<T>; MAX_LEN] {
 	[const { mem::MaybeUninit::uninit() }; MAX_LEN]
-}
-
-pub fn aligned_malloc<T: marker::Sized>(count: usize) -> AllocatorResult<T> {
-	if count == 0 {
-		return AllocatorResult::None;
-	}
-
-	let mut raw: *mut libc::c_void = null();
-
-	let info = unsafe {
-		let (size, _) = layout::<T>();
-
-		let align = posix_adjusted_alignment::<T>();
-
-		libc::posix_memalign(&mut raw, align, size * count)
-	};
-
-	match info {
-		libc::EINVAL => AllocatorResult::UnsupportedAlignment,
-
-		libc::ENOMEM => AllocatorResult::OutOfMemory,
-
-		_ => {
-			let raw = raw as *mut T;
-
-			AllocatorResult::Allocated(UninitBlock {
-				raw,
-				count,
-			})
-		},
-	}
-}
-
-pub fn aligned_realloc<T, B>(new_count: usize, old_block: B) -> AllocatorResult<T>
-where
-	T: marker::Sized,
-	B: AllocatedBlock<T>,
-{
-	let result = aligned_malloc::<T>(new_count);
-
-	let new_block = if let AllocatorResult::Allocated(block) = result {
-		block
-	} else {
-		let _ = free(old_block);
-
-		return result;
-	};
-
-	unsafe {
-		let (old_block_raw, old_block_count) = old_block.into_raw();
-
-		let max_len = cmp::min(old_block_count, new_block.count);
-
-		let new_buf = new_block.raw as *mut libc::c_void;
-
-		let old_buf = old_block_raw as *mut libc::c_void;
-
-		let (size, _) = layout::<T>();
-
-		let _ = libc::memcpy(new_buf, old_buf, max_len * size);
-
-		libc::free(old_buf);
-	}
-
-	AllocatorResult::Allocated(new_block)
-}
-
-pub fn free<T, B>(block: B) -> AllocatorResult<()>
-where
-	T: ?marker::Sized,
-	B: AllocatedBlock<T>,
-{
-	unsafe {
-		let (raw, _) = block.into_raw();
-
-		libc::free(raw as *mut libc::c_void);
-
-		AllocatorResult::Deallocated
-	}
 }
 
 //
