@@ -272,3 +272,32 @@ where
 		AllocatorResult::Deallocated
 	}
 }
+
+//
+// map() and unmap():
+//
+
+impl spec::BlockProtection {
+	pub const DEFAULT: Self = Self::ReadAndWrite;
+}
+
+#[inline]
+pub fn map<T: marker::Sized>(count: usize, prot: spec::BlockProtection) -> spec::Result<UninitBlock<T>> {
+	let raw: *mut T = host::memory_map(count, prot)?;
+
+	spec::Result::Ok(UninitBlock {
+		raw,
+		count,
+	})
+}
+
+#[inline]
+pub fn unmap<T, B>(block: B) -> spec::Result<()>
+where
+	T: marker::Sized,
+	B: spec::AllocatedBlock<T>,
+{
+	let (raw, count) = unsafe { block.into_raw() };
+
+	host::memory_unmap(raw, count)
+}
