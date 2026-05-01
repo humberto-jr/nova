@@ -122,22 +122,6 @@ pub struct UnsizedBlock<U: ?marker::Sized> {
 	count: usize,
 }
 
-#[macro_export]
-macro_rules! coerce_unsized_block {
-	($unsized_type:ty, $block:expr) => {
-		unsafe {
-			use ::core::alloc::boxed::Box;
-			use nv_sys::mem::AllocatedBlock;
-			use nv_sys::mem::UnsizedBlock;
-
-			let (raw, count) = $block.into_raw();
-			let boxed: Box<$unsized_type> = Box::from_raw(raw);
-
-			UnsizedBlock::<$unsized_type>::from_raw(raw, Box::leak(boxed), count)
-		}
-	};
-}
-
 //
 // Low-level utils:
 //
