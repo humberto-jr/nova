@@ -2,10 +2,16 @@ use ::core::slice;
 
 use crate::{
 	ffi::libc, //
-	ffi::unix::xkbcommon as ffi,
+	ffi::unix::xkbcommon::x11 as ffi,
 	mem,
 	spec,
 };
+
+// NOTE: These are the bindings (prefixed xcb_xkb_) from the XCB extension for XKB (libxcb-xkb) that are
+// required to implement the X11-only code path. Note that the xkbcommon::x11 submodule imported above has
+// additional symbols (prefixed xkb_x11_) for the X11 implementation but also re-exports XKB symbols used
+// to implement the Wayland side, which is why it is renamed as ffi.
+use crate::ffi::unix::x11::xkb as x11;
 
 const INVALID_KEY: Key = Key {
 	keycode: 0,
@@ -26,6 +32,7 @@ pub struct KeyboardMetadata {
 	keymap: *mut ffi::xkb_keymap,
 	state: *mut ffi::xkb_state,
 
+	event_offset: u8,
 	keycode_offset: u8,
 	pressed_key_count: u8,
 	pressed_key_list: [Key; spec::MAX_PRESSED_KEYCODE_COUNT],
@@ -57,11 +64,65 @@ impl KeyboardMetadata {
 				keymap,
 				state,
 
+				event_offset: 0,
 				keycode_offset: 8,
 				pressed_key_count: 0,
 				pressed_key_list: [INVALID_KEY; spec::MAX_PRESSED_KEYCODE_COUNT],
 			}
 		}
+	}
+
+	pub fn for_xcb(connection: *mut x11::xcb_connection_t) -> Self {
+		unsafe {
+			let context = ffi::xkb_context_new(ffi::XKB_CONTEXT_NO_FLAGS);
+
+			crate::panic_if!(context.is_null());
+
+			let mut major: u16 = ffi::XKB_X11_MIN_MAJOR_XKB_VERSION;
+
+			let mut minor: u16 = ffi::XKB_X11_MIN_MINOR_XKB_VERSION;
+
+			let mut event_offset: u8 = 0;
+
+			let mut error_offset: u8 = 0;
+
+			let info =
+				ffi::xkb_x11_setup_xkb_extension(connection, ffi::XKB_X11_MIN_MAJOR_XKB_VERSION, ffi::XKB_X11_MIN_MINOR_XKB_VERSION, 0, &mut major, &mut minor, &mut event_offset, &mut error_offset);
+
+			crate::panic_if!(info == 0);
+
+			let device_id = ffi::xkb_x11_get_core_keyboard_device_id(connection);
+
+			crate::panic_if!(device_id == -1);
+
+			let keymap = ffi::xkb_x11_keymap_new_from_device(context, connection, device_id, ffi::XKB_KEYMAP_COMPILE_NO_FLAGS);
+
+			crate::panic_if!(keymap.is_null());
+
+			let state = ffi::xkb_x11_state_new_from_device(keymap, connection, device_id);
+
+			crate::panic_if!(state.is_null());
+
+			let mask = (x11::XCB_XKB_EVENT_TYPE_STATE_NOTIFY | x11::XCB_XKB_EVENT_TYPE_MAP_NOTIFY) as u16;
+
+			let _ = x11::xcb_xkb_select_events(connection, device_id as _, mask, 0, mask, 0, 0, mem::null());
+
+			Self {
+				context,
+				keymap,
+				state,
+
+				event_offset,
+				keycode_offset: 0,
+				pressed_key_count: 0,
+				pressed_key_list: [INVALID_KEY; spec::MAX_PRESSED_KEYCODE_COUNT],
+			}
+		}
+	}
+
+	#[inline]
+	pub const fn is_xkb_event(&self, x11_poll_response: u8) -> bool {
+		self.event_offset == x11_poll_response
 	}
 
 	#[inline]
