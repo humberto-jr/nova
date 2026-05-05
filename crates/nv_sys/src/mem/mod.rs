@@ -49,6 +49,8 @@ pub use mem::ManuallyDrop;
 
 pub use spec::BlockProtection;
 
+pub use spec::BlockSharing;
+
 pub use spec::AllocatedBlock;
 
 pub use spec::Allocator;
