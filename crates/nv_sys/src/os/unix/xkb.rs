@@ -1,8 +1,7 @@
 use ::core::slice;
 
 use crate::{
-	ffi::libc, //
-	ffi::unix::xkbcommon::x11 as ffi,
+	ffi::unix::xkbcommon::x11 as ffi, //
 	mem,
 	spec,
 };
@@ -12,6 +11,8 @@ use crate::{
 // additional symbols (prefixed xkb_x11_) for the X11 implementation but also re-exports XKB symbols used
 // to implement the Wayland side, which is why it is renamed as ffi.
 use crate::ffi::unix::x11::xkb as x11;
+
+use super::syscall;
 
 const INVALID_KEY: Key = Key {
 	keycode: 0,
@@ -41,7 +42,7 @@ pub struct KeyboardMetadata {
 impl KeyboardMetadata {
 	pub fn for_wayland(fd: i32, format: u32, size: u32) -> Self {
 		unsafe {
-			let c_str = libc::mmap(mem::null(), size as usize, libc::PROT_READ, libc::MAP_SHARED, fd, 0) as *const i8;
+			let c_str = syscall::memory_map(0, size as _, spec::BlockProtection::ReadOnly, spec::BlockSharing::Public, fd, 0).unwrap() as *const i8;
 
 			let context = ffi::xkb_context_new(ffi::XKB_CONTEXT_NO_FLAGS);
 
@@ -55,9 +56,9 @@ impl KeyboardMetadata {
 
 			crate::panic_if!(state.is_null());
 
-			libc::munmap(c_str as *mut _, size as usize);
+			syscall::memory_unmap(c_str, size as _);
 
-			libc::close(fd);
+			syscall::close(fd);
 
 			Self {
 				context,
