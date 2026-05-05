@@ -186,9 +186,13 @@ impl spec::BlockProtection {
 	pub const DEFAULT: Self = Self::ReadAndWrite;
 }
 
+impl spec::BlockSharing {
+	pub const DEFAULT: Self = Self::Public;
+}
+
 #[inline]
-pub fn map<T: marker::Sized>(count: usize, prot: spec::BlockProtection) -> spec::Result<UninitBlock<T>> {
-	let raw: *mut T = host::memory_map(count, prot)?;
+pub fn map<T: marker::Sized>(count: usize, prot: spec::BlockProtection, vis: spec::BlockSharing) -> spec::Result<UninitBlock<T>> {
+	let raw: *mut T = host::memory_map(count, prot, vis)?;
 
 	spec::Result::Ok(UninitBlock {
 		raw,

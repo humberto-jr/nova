@@ -175,7 +175,7 @@ pub fn clock_get_time(clock_id: unix::Clock) -> spec::Result<super::TimeSpec> {
 }
 
 #[inline]
-pub fn memory_map<T: marker::Sized>(addr: usize, count: usize, prot: spec::BlockProtection, fd: unix::Descriptor, offset: usize) -> spec::Result<*mut T> {
+pub fn memory_map<T: marker::Sized>(addr: usize, count: usize, prot: spec::BlockProtection, vis: spec::BlockSharing, fd: unix::Descriptor, offset: usize) -> spec::Result<*mut T> {
 	let len = mem::size_of::<T>() * count;
 
 	let prot = match prot {
@@ -190,10 +190,22 @@ pub fn memory_map<T: marker::Sized>(addr: usize, count: usize, prot: spec::Block
 		spec::BlockProtection::All => mman::PROT_READ | mman::PROT_WRITE | mman::PROT_EXEC,
 	};
 
-	let flags = if fd == unix::INVALID_DESCRIPTOR {
-		mman::MAP_PRIVATE | mman::MAP_ANONYMOUS
-	} else {
-		mman::MAP_PRIVATE
+	let flags = match vis {
+		spec::BlockSharing::Public => {
+			if fd == unix::INVALID_DESCRIPTOR {
+				mman::MAP_SHARED | mman::MAP_ANONYMOUS
+			} else {
+				mman::MAP_SHARED
+			}
+		},
+
+		spec::BlockSharing::Private => {
+			if fd == unix::INVALID_DESCRIPTOR {
+				mman::MAP_PRIVATE | mman::MAP_ANONYMOUS
+			} else {
+				mman::MAP_PRIVATE
+			}
+		},
 	};
 
 	let info = unsafe { abi::syscall6(nr::MEMORY_MAP, addr, len, prot as _, flags as _, fd as _, offset) };

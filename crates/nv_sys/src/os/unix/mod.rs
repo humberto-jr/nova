@@ -99,8 +99,8 @@ pub fn stdout() -> crate::File {
 }
 
 #[inline]
-pub fn memory_map<T: marker::Sized>(count: usize, prot: spec::BlockProtection) -> spec::Result<*mut T> {
-	syscall::memory_map(0, count, prot, INVALID_DESCRIPTOR, 0)
+pub fn memory_map<T: marker::Sized>(count: usize, prot: spec::BlockProtection, vis: spec::BlockSharing) -> spec::Result<*mut T> {
+	syscall::memory_map(0, count, prot, vis, INVALID_DESCRIPTOR, 0)
 }
 
 pub use syscall::memory_unmap;

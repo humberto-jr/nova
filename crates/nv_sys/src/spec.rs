@@ -63,6 +63,13 @@ pub enum BlockProtection {
 	All,
 }
 
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum BlockSharing {
+	Public,
+	Private,
+}
+
 pub trait AllocatedBlock<T: ?marker::Sized> {
 	unsafe fn from_raw(raw: *mut T, count: usize) -> Self;
 
