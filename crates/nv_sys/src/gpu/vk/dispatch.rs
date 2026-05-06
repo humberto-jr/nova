@@ -151,7 +151,7 @@ impl Loader {
 
 	#[inline(always)]
 	pub fn get_instance_proc_addr<Fn: 'static>(&self, instance: core::VkInstance) -> core::PFN_vkVoidFunction {
-		unsafe { (self.get_instance_proc_addr)(instance, utils::fn_typename::<Fn>()) }
+		unsafe { (self.get_instance_proc_addr)(instance, super::fn_typename::<Fn>()) }
 	}
 
 	#[inline(always)]
@@ -332,7 +332,7 @@ impl InstanceFnTable {
 
 	#[inline(always)]
 	pub fn get_device_proc_addr<Fn: 'static>(&self, device: core::VkDevice) -> core::PFN_vkVoidFunction {
-		unsafe { (self.get_device_proc_addr)(device, utils::fn_typename::<Fn>()) }
+		unsafe { (self.get_device_proc_addr)(device, super::fn_typename::<Fn>()) }
 	}
 
 	pub fn enumerate_physical_devices(&self, instance: core::VkInstance, list: &mut [core::VkPhysicalDevice]) -> (u32, u32) {
