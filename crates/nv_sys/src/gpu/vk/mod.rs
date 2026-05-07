@@ -48,6 +48,510 @@ pub fn loader() -> spec::Result<Loader> {
 }
 
 //
+// Enums, masks and bitflags:
+//
+
+pub type SampleMask = core::VkSampleMask;
+
+pub type StructureType = core::VkStructureType;
+
+pub type ImageLayout = core::VkImageLayout;
+
+pub type ObjectType = core::VkObjectType;
+
+pub type PipelineCacheHeaderVersion = core::VkPipelineCacheHeaderVersion;
+
+pub type VendorId = core::VkVendorId;
+
+pub type SystemAllocationScope = core::VkSystemAllocationScope;
+
+pub type InternalAllocationType = core::VkInternalAllocationType;
+
+pub type Format = core::VkFormat;
+
+pub type ImageTiling = core::VkImageTiling;
+
+pub type ImageType = core::VkImageType;
+
+pub type PhysicalDeviceType = core::VkPhysicalDeviceType;
+
+pub type QueryType = core::VkQueryType;
+
+pub type SharingMode = core::VkSharingMode;
+
+pub type ComponentSwizzle = core::VkComponentSwizzle;
+
+pub type ImageViewType = core::VkImageViewType;
+
+pub type BlendFactor = core::VkBlendFactor;
+
+pub type BlendOp = core::VkBlendOp;
+
+pub type CompareOp = core::VkCompareOp;
+
+pub type DynamicState = core::VkDynamicState;
+
+pub type FrontFace = core::VkFrontFace;
+
+pub type VertexInputRate = core::VkVertexInputRate;
+
+pub type PrimitiveTopology = core::VkPrimitiveTopology;
+
+pub type PolygonMode = core::VkPolygonMode;
+
+pub type StencilOp = core::VkStencilOp;
+
+pub type LogicOp = core::VkLogicOp;
+
+pub type BorderColor = core::VkBorderColor;
+
+pub type Filter = core::VkFilter;
+
+pub type SamplerAddressMode = core::VkSamplerAddressMode;
+
+pub type SamplerMipmapMode = core::VkSamplerMipmapMode;
+
+pub type DescriptorType = core::VkDescriptorType;
+
+pub type AttachmentLoadOp = core::VkAttachmentLoadOp;
+
+pub type AttachmentStoreOp = core::VkAttachmentStoreOp;
+
+pub type PipelineBindPoint = core::VkPipelineBindPoint;
+
+pub type CommandBufferLevel = core::VkCommandBufferLevel;
+
+pub type IndexType = core::VkIndexType;
+
+pub type SubpassContents = core::VkSubpassContents;
+
+pub type PointClippingBehavior = core::VkPointClippingBehavior;
+
+pub type TessellationDomainOrigin = core::VkTessellationDomainOrigin;
+
+pub type SamplerYcbcrModelConversion = core::VkSamplerYcbcrModelConversion;
+
+pub type SamplerYcbcrRange = core::VkSamplerYcbcrRange;
+
+pub type ChromaLocation = core::VkChromaLocation;
+
+pub type DescriptorUpdateTemplateType = core::VkDescriptorUpdateTemplateType;
+
+pub type DriverId = core::VkDriverId;
+
+pub type ShaderFloatControlsIndependence = core::VkShaderFloatControlsIndependence;
+
+pub type SamplerReductionMode = core::VkSamplerReductionMode;
+
+pub type SemaphoreType = core::VkSemaphoreType;
+
+pub type PresentModeKHR = core::VkPresentModeKHR;
+
+pub type ColorSpaceKHR = core::VkColorSpaceKHR;
+
+pub type DisplayPlaneAlphaFlagBitsKHR = core::VkDisplayPlaneAlphaFlagBitsKHR;
+
+pub type PerformanceCounterUnitKHR = core::VkPerformanceCounterUnitKHR;
+
+pub type PerformanceCounterScopeKHR = core::VkPerformanceCounterScopeKHR;
+
+pub type PerformanceCounterStorageKHR = core::VkPerformanceCounterStorageKHR;
+
+pub type PerformanceCounterDescriptionFlagBitsKHR = core::VkPerformanceCounterDescriptionFlagBitsKHR;
+
+pub type AcquireProfilingLockFlagBitsKHR = core::VkAcquireProfilingLockFlagBitsKHR;
+
+pub type QueueGlobalPriorityKHR = core::VkQueueGlobalPriorityKHR;
+
+pub type FragmentShadingRateCombinerOpKHR = core::VkFragmentShadingRateCombinerOpKHR;
+
+pub type PipelineExecutableStatisticFormatKHR = core::VkPipelineExecutableStatisticFormatKHR;
+
+pub type DebugReportObjectTypeEXT = core::VkDebugReportObjectTypeEXT;
+
+pub type DebugReportFlagBitsEXT = core::VkDebugReportFlagBitsEXT;
+
+pub type RasterizationOrderAMD = core::VkRasterizationOrderAMD;
+
+pub type ShaderInfoTypeAMD = core::VkShaderInfoTypeAMD;
+
+pub type ExternalMemoryHandleTypeFlagBitsNV = core::VkExternalMemoryHandleTypeFlagBitsNV;
+
+pub type ExternalMemoryFeatureFlagBitsNV = core::VkExternalMemoryFeatureFlagBitsNV;
+
+pub type ValidationCheckEXT = core::VkValidationCheckEXT;
+
+pub type ConditionalRenderingFlagBitsEXT = core::VkConditionalRenderingFlagBitsEXT;
+
+pub type SurfaceCounterFlagBitsEXT = core::VkSurfaceCounterFlagBitsEXT;
+
+pub type DisplayPowerStateEXT = core::VkDisplayPowerStateEXT;
+
+pub type DeviceEventTypeEXT = core::VkDeviceEventTypeEXT;
+
+pub type DisplayEventTypeEXT = core::VkDisplayEventTypeEXT;
+
+pub type ViewportCoordinateSwizzleNV = core::VkViewportCoordinateSwizzleNV;
+
+pub type DiscardRectangleModeEXT = core::VkDiscardRectangleModeEXT;
+
+pub type ConservativeRasterizationModeEXT = core::VkConservativeRasterizationModeEXT;
+
+pub type DebugUtilsMessageSeverityFlagBitsEXT = core::VkDebugUtilsMessageSeverityFlagBitsEXT;
+
+pub type DebugUtilsMessageTypeFlagBitsEXT = core::VkDebugUtilsMessageTypeFlagBitsEXT;
+
+pub type BlendOverlapEXT = core::VkBlendOverlapEXT;
+
+pub type CoverageModulationModeNV = core::VkCoverageModulationModeNV;
+
+pub type ValidationCacheHeaderVersionEXT = core::VkValidationCacheHeaderVersionEXT;
+
+pub type ShadingRatePaletteEntryNV = core::VkShadingRatePaletteEntryNV;
+
+pub type CoarseSampleOrderTypeNV = core::VkCoarseSampleOrderTypeNV;
+
+pub type RayTracingShaderGroupTypeKHR = core::VkRayTracingShaderGroupTypeKHR;
+
+pub type GeometryTypeKHR = core::VkGeometryTypeKHR;
+
+pub type AccelerationStructureTypeKHR = core::VkAccelerationStructureTypeKHR;
+
+pub type CopyAccelerationStructureModeKHR = core::VkCopyAccelerationStructureModeKHR;
+
+pub type AccelerationStructureMemoryRequirementsTypeNV = core::VkAccelerationStructureMemoryRequirementsTypeNV;
+
+pub type PipelineCompilerControlFlagBitsAMD = core::VkPipelineCompilerControlFlagBitsAMD;
+
+pub type TimeDomainEXT = core::VkTimeDomainEXT;
+
+pub type MemoryOverallocationBehaviorAMD = core::VkMemoryOverallocationBehaviorAMD;
+
+pub type PerformanceConfigurationTypeINTEL = core::VkPerformanceConfigurationTypeINTEL;
+
+pub type QueryPoolSamplingModeINTEL = core::VkQueryPoolSamplingModeINTEL;
+
+pub type PerformanceOverrideTypeINTEL = core::VkPerformanceOverrideTypeINTEL;
+
+pub type PerformanceParameterTypeINTEL = core::VkPerformanceParameterTypeINTEL;
+
+pub type PerformanceValueTypeINTEL = core::VkPerformanceValueTypeINTEL;
+
+pub type ValidationFeatureEnableEXT = core::VkValidationFeatureEnableEXT;
+
+pub type ValidationFeatureDisableEXT = core::VkValidationFeatureDisableEXT;
+
+pub type ComponentTypeNV = core::VkComponentTypeNV;
+
+pub type ScopeNV = core::VkScopeNV;
+
+pub type CoverageReductionModeNV = core::VkCoverageReductionModeNV;
+
+pub type ProvokingVertexModeEXT = core::VkProvokingVertexModeEXT;
+
+pub type LineRasterizationModeEXT = core::VkLineRasterizationModeEXT;
+
+pub type IndirectCommandsTokenTypeNV = core::VkIndirectCommandsTokenTypeNV;
+
+pub type DeviceMemoryReportEventTypeEXT = core::VkDeviceMemoryReportEventTypeEXT;
+
+pub type FragmentShadingRateTypeNV = core::VkFragmentShadingRateTypeNV;
+
+pub type FragmentShadingRateNV = core::VkFragmentShadingRateNV;
+
+pub type AccelerationStructureMotionInstanceTypeNV = core::VkAccelerationStructureMotionInstanceTypeNV;
+
+pub type BuildAccelerationStructureModeKHR = core::VkBuildAccelerationStructureModeKHR;
+
+pub type AccelerationStructureBuildTypeKHR = core::VkAccelerationStructureBuildTypeKHR;
+
+pub type AccelerationStructureCompatibilityKHR = core::VkAccelerationStructureCompatibilityKHR;
+
+pub type ShaderGroupShaderKHR = core::VkShaderGroupShaderKHR;
+
+pub type AccessFlags = core::VkAccessFlags;
+
+pub type ImageAspectFlags = core::VkImageAspectFlags;
+
+pub type FormatFeatureFlags = core::VkFormatFeatureFlags;
+
+pub type ImageCreateFlags = core::VkImageCreateFlags;
+
+pub type SampleCountFlags = core::VkSampleCountFlags;
+
+pub type ImageUsageFlags = core::VkImageUsageFlags;
+
+pub type InstanceCreateFlags = core::VkInstanceCreateFlags;
+
+pub type MemoryHeapFlags = core::VkMemoryHeapFlags;
+
+pub type MemoryPropertyFlags = core::VkMemoryPropertyFlags;
+
+pub type QueueFlags = core::VkQueueFlags;
+
+pub type DeviceCreateFlags = core::VkDeviceCreateFlags;
+
+pub type DeviceQueueCreateFlags = core::VkDeviceQueueCreateFlags;
+
+pub type PipelineStageFlags = core::VkPipelineStageFlags;
+
+pub type MemoryMapFlags = core::VkMemoryMapFlags;
+
+pub type SparseMemoryBindFlags = core::VkSparseMemoryBindFlags;
+
+pub type SparseImageFormatFlags = core::VkSparseImageFormatFlags;
+
+pub type FenceCreateFlags = core::VkFenceCreateFlags;
+
+pub type SemaphoreCreateFlags = core::VkSemaphoreCreateFlags;
+
+pub type EventCreateFlags = core::VkEventCreateFlags;
+
+pub type QueryPipelineStatisticFlags = core::VkQueryPipelineStatisticFlags;
+
+pub type QueryPoolCreateFlags = core::VkQueryPoolCreateFlags;
+
+pub type QueryResultFlags = core::VkQueryResultFlags;
+
+pub type BufferCreateFlags = core::VkBufferCreateFlags;
+
+pub type BufferUsageFlags = core::VkBufferUsageFlags;
+
+pub type BufferViewCreateFlags = core::VkBufferViewCreateFlags;
+
+pub type ImageViewCreateFlags = core::VkImageViewCreateFlags;
+
+pub type ShaderModuleCreateFlags = core::VkShaderModuleCreateFlags;
+
+pub type PipelineCacheCreateFlags = core::VkPipelineCacheCreateFlags;
+
+pub type ColorComponentFlags = core::VkColorComponentFlags;
+
+pub type PipelineCreateFlags = core::VkPipelineCreateFlags;
+
+pub type PipelineShaderStageCreateFlags = core::VkPipelineShaderStageCreateFlags;
+
+pub type ShaderStageFlags = core::VkShaderStageFlags;
+
+pub type CullModeFlags = core::VkCullModeFlags;
+
+pub type PipelineVertexInputStateCreateFlags = core::VkPipelineVertexInputStateCreateFlags;
+
+pub type PipelineInputAssemblyStateCreateFlags = core::VkPipelineInputAssemblyStateCreateFlags;
+
+pub type PipelineTessellationStateCreateFlags = core::VkPipelineTessellationStateCreateFlags;
+
+pub type PipelineViewportStateCreateFlags = core::VkPipelineViewportStateCreateFlags;
+
+pub type PipelineRasterizationStateCreateFlags = core::VkPipelineRasterizationStateCreateFlags;
+
+pub type PipelineMultisampleStateCreateFlags = core::VkPipelineMultisampleStateCreateFlags;
+
+pub type PipelineDepthStencilStateCreateFlags = core::VkPipelineDepthStencilStateCreateFlags;
+
+pub type PipelineColorBlendStateCreateFlags = core::VkPipelineColorBlendStateCreateFlags;
+
+pub type PipelineDynamicStateCreateFlags = core::VkPipelineDynamicStateCreateFlags;
+
+pub type PipelineLayoutCreateFlags = core::VkPipelineLayoutCreateFlags;
+
+pub type SamplerCreateFlags = core::VkSamplerCreateFlags;
+
+pub type DescriptorPoolCreateFlags = core::VkDescriptorPoolCreateFlags;
+
+pub type DescriptorPoolResetFlags = core::VkDescriptorPoolResetFlags;
+
+pub type DescriptorSetLayoutCreateFlags = core::VkDescriptorSetLayoutCreateFlags;
+
+pub type AttachmentDescriptionFlags = core::VkAttachmentDescriptionFlags;
+
+pub type DependencyFlags = core::VkDependencyFlags;
+
+pub type FramebufferCreateFlags = core::VkFramebufferCreateFlags;
+
+pub type RenderPassCreateFlags = core::VkRenderPassCreateFlags;
+
+pub type SubpassDescriptionFlags = core::VkSubpassDescriptionFlags;
+
+pub type CommandPoolCreateFlags = core::VkCommandPoolCreateFlags;
+
+pub type CommandPoolResetFlags = core::VkCommandPoolResetFlags;
+
+pub type CommandBufferUsageFlags = core::VkCommandBufferUsageFlags;
+
+pub type QueryControlFlags = core::VkQueryControlFlags;
+
+pub type CommandBufferResetFlags = core::VkCommandBufferResetFlags;
+
+pub type StencilFaceFlags = core::VkStencilFaceFlags;
+
+pub type SubgroupFeatureFlags = core::VkSubgroupFeatureFlags;
+
+pub type PeerMemoryFeatureFlags = core::VkPeerMemoryFeatureFlags;
+
+pub type MemoryAllocateFlags = core::VkMemoryAllocateFlags;
+
+pub type CommandPoolTrimFlags = core::VkCommandPoolTrimFlags;
+
+pub type DescriptorUpdateTemplateCreateFlags = core::VkDescriptorUpdateTemplateCreateFlags;
+
+pub type ExternalMemoryHandleTypeFlags = core::VkExternalMemoryHandleTypeFlags;
+
+pub type ExternalMemoryFeatureFlags = core::VkExternalMemoryFeatureFlags;
+
+pub type ExternalFenceHandleTypeFlags = core::VkExternalFenceHandleTypeFlags;
+
+pub type ExternalFenceFeatureFlags = core::VkExternalFenceFeatureFlags;
+
+pub type FenceImportFlags = core::VkFenceImportFlags;
+
+pub type SemaphoreImportFlags = core::VkSemaphoreImportFlags;
+
+pub type ExternalSemaphoreHandleTypeFlags = core::VkExternalSemaphoreHandleTypeFlags;
+
+pub type ExternalSemaphoreFeatureFlags = core::VkExternalSemaphoreFeatureFlags;
+
+pub type ResolveModeFlags = core::VkResolveModeFlags;
+
+pub type DescriptorBindingFlags = core::VkDescriptorBindingFlags;
+
+pub type SemaphoreWaitFlags = core::VkSemaphoreWaitFlags;
+
+pub type PipelineCreationFeedbackFlags = core::VkPipelineCreationFeedbackFlags;
+
+pub type ToolPurposeFlags = core::VkToolPurposeFlags;
+
+pub type PrivateDataSlotCreateFlags = core::VkPrivateDataSlotCreateFlags;
+
+pub type SubmitFlags = core::VkSubmitFlags;
+
+pub type RenderingFlags = core::VkRenderingFlags;
+
+pub type AccessFlagBits = core::VkAccessFlagBits;
+
+pub type ImageAspectFlagBits = core::VkImageAspectFlagBits;
+
+pub type FormatFeatureFlagBits = core::VkFormatFeatureFlagBits;
+
+pub type ImageCreateFlagBits = core::VkImageCreateFlagBits;
+
+pub type SampleCountFlagBits = core::VkSampleCountFlagBits;
+
+pub type ImageUsageFlagBits = core::VkImageUsageFlagBits;
+
+pub type InstanceCreateFlagBits = core::VkInstanceCreateFlagBits;
+
+pub type MemoryHeapFlagBits = core::VkMemoryHeapFlagBits;
+
+pub type MemoryPropertyFlagBits = core::VkMemoryPropertyFlagBits;
+
+pub type QueueFlagBits = core::VkQueueFlagBits;
+
+pub type DeviceQueueCreateFlagBits = core::VkDeviceQueueCreateFlagBits;
+
+pub type PipelineStageFlagBits = core::VkPipelineStageFlagBits;
+
+pub type SparseMemoryBindFlagBits = core::VkSparseMemoryBindFlagBits;
+
+pub type SparseImageFormatFlagBits = core::VkSparseImageFormatFlagBits;
+
+pub type FenceCreateFlagBits = core::VkFenceCreateFlagBits;
+
+pub type EventCreateFlagBits = core::VkEventCreateFlagBits;
+
+pub type QueryPipelineStatisticFlagBits = core::VkQueryPipelineStatisticFlagBits;
+
+pub type QueryResultFlagBits = core::VkQueryResultFlagBits;
+
+pub type BufferCreateFlagBits = core::VkBufferCreateFlagBits;
+
+pub type BufferUsageFlagBits = core::VkBufferUsageFlagBits;
+
+pub type ImageViewCreateFlagBits = core::VkImageViewCreateFlagBits;
+
+pub type PipelineCacheCreateFlagBits = core::VkPipelineCacheCreateFlagBits;
+
+pub type ColorComponentFlagBits = core::VkColorComponentFlagBits;
+
+pub type PipelineCreateFlagBits = core::VkPipelineCreateFlagBits;
+
+pub type PipelineShaderStageCreateFlagBits = core::VkPipelineShaderStageCreateFlagBits;
+
+pub type ShaderStageFlagBits = core::VkShaderStageFlagBits;
+
+pub type CullModeFlagBits = core::VkCullModeFlagBits;
+
+pub type PipelineDepthStencilStateCreateFlagBits = core::VkPipelineDepthStencilStateCreateFlagBits;
+
+pub type PipelineColorBlendStateCreateFlagBits = core::VkPipelineColorBlendStateCreateFlagBits;
+
+pub type PipelineLayoutCreateFlagBits = core::VkPipelineLayoutCreateFlagBits;
+
+pub type SamplerCreateFlagBits = core::VkSamplerCreateFlagBits;
+
+pub type DescriptorPoolCreateFlagBits = core::VkDescriptorPoolCreateFlagBits;
+
+pub type DescriptorSetLayoutCreateFlagBits = core::VkDescriptorSetLayoutCreateFlagBits;
+
+pub type AttachmentDescriptionFlagBits = core::VkAttachmentDescriptionFlagBits;
+
+pub type DependencyFlagBits = core::VkDependencyFlagBits;
+
+pub type FramebufferCreateFlagBits = core::VkFramebufferCreateFlagBits;
+
+pub type RenderPassCreateFlagBits = core::VkRenderPassCreateFlagBits;
+
+pub type SubpassDescriptionFlagBits = core::VkSubpassDescriptionFlagBits;
+
+pub type CommandPoolCreateFlagBits = core::VkCommandPoolCreateFlagBits;
+
+pub type CommandPoolResetFlagBits = core::VkCommandPoolResetFlagBits;
+
+pub type CommandBufferUsageFlagBits = core::VkCommandBufferUsageFlagBits;
+
+pub type QueryControlFlagBits = core::VkQueryControlFlagBits;
+
+pub type CommandBufferResetFlagBits = core::VkCommandBufferResetFlagBits;
+
+pub type StencilFaceFlagBits = core::VkStencilFaceFlagBits;
+
+pub type SubgroupFeatureFlagBits = core::VkSubgroupFeatureFlagBits;
+
+pub type PeerMemoryFeatureFlagBits = core::VkPeerMemoryFeatureFlagBits;
+
+pub type MemoryAllocateFlagBits = core::VkMemoryAllocateFlagBits;
+
+pub type ExternalMemoryHandleTypeFlagBits = core::VkExternalMemoryHandleTypeFlagBits;
+
+pub type ExternalMemoryFeatureFlagBits = core::VkExternalMemoryFeatureFlagBits;
+
+pub type ExternalFenceHandleTypeFlagBits = core::VkExternalFenceHandleTypeFlagBits;
+
+pub type ExternalFenceFeatureFlagBits = core::VkExternalFenceFeatureFlagBits;
+
+pub type FenceImportFlagBits = core::VkFenceImportFlagBits;
+
+pub type SemaphoreImportFlagBits = core::VkSemaphoreImportFlagBits;
+
+pub type ExternalSemaphoreHandleTypeFlagBits = core::VkExternalSemaphoreHandleTypeFlagBits;
+
+pub type ExternalSemaphoreFeatureFlagBits = core::VkExternalSemaphoreFeatureFlagBits;
+
+pub type ResolveModeFlagBits = core::VkResolveModeFlagBits;
+
+pub type DescriptorBindingFlagBits = core::VkDescriptorBindingFlagBits;
+
+pub type SemaphoreWaitFlagBits = core::VkSemaphoreWaitFlagBits;
+
+pub type PipelineCreationFeedbackFlagBits = core::VkPipelineCreationFeedbackFlagBits;
+
+pub type ToolPurposeFlagBits = core::VkToolPurposeFlagBits;
+
+pub type SubmitFlagBits = core::VkSubmitFlagBits;
+
+pub type RenderingFlagBits = core::VkRenderingFlagBits;
+
+//
 // Utils:
 //
 
