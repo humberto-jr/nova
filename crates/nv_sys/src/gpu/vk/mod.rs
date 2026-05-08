@@ -48,6 +48,96 @@ pub fn loader() -> spec::Result<Loader> {
 }
 
 //
+// POD wrappers and handles:
+//
+
+pub use pod::*;
+
+pub type Buffer = core::VkBuffer;
+
+pub type Image = core::VkImage;
+
+pub type Instance = core::VkInstance;
+
+pub type PhysicalDevice = core::VkPhysicalDevice;
+
+pub type Device = core::VkDevice;
+
+pub type Queue = core::VkQueue;
+
+pub type Semaphore = core::VkSemaphore;
+
+pub type CommandBuffer = core::VkCommandBuffer;
+
+pub type Fence = core::VkFence;
+
+pub type DeviceMemory = core::VkDeviceMemory;
+
+pub type Event = core::VkEvent;
+
+pub type QueryPool = core::VkQueryPool;
+
+pub type BufferView = core::VkBufferView;
+
+pub type ImageView = core::VkImageView;
+
+pub type ShaderModule = core::VkShaderModule;
+
+pub type PipelineCache = core::VkPipelineCache;
+
+pub type PipelineLayout = core::VkPipelineLayout;
+
+pub type Pipeline = core::VkPipeline;
+
+pub type RenderPass = core::VkRenderPass;
+
+pub type DescriptorSetLayout = core::VkDescriptorSetLayout;
+
+pub type Sampler = core::VkSampler;
+
+pub type DescriptorSet = core::VkDescriptorSet;
+
+pub type DescriptorPool = core::VkDescriptorPool;
+
+pub type Framebuffer = core::VkFramebuffer;
+
+pub type CommandPool = core::VkCommandPool;
+
+pub type SamplerYcbcrConversion = core::VkSamplerYcbcrConversion;
+
+pub type DescriptorUpdateTemplate = core::VkDescriptorUpdateTemplate;
+
+pub type PrivateDataSlot = core::VkPrivateDataSlot;
+
+pub type SurfaceKHR = core::VkSurfaceKHR;
+
+pub type SwapchainKHR = core::VkSwapchainKHR;
+
+pub type DisplayKHR = core::VkDisplayKHR;
+
+pub type DisplayModeKHR = core::VkDisplayModeKHR;
+
+pub type DeferredOperationKHR = core::VkDeferredOperationKHR;
+
+pub type DebugReportCallbackEXT = core::VkDebugReportCallbackEXT;
+
+pub type CuModuleNVX = core::VkCuModuleNVX;
+
+pub type CuFunctionNVX = core::VkCuFunctionNVX;
+
+pub type DebugUtilsMessengerEXT = core::VkDebugUtilsMessengerEXT;
+
+pub type ValidationCacheEXT = core::VkValidationCacheEXT;
+
+pub type AccelerationStructureNV = core::VkAccelerationStructureNV;
+
+pub type PerformanceConfigurationINTEL = core::VkPerformanceConfigurationINTEL;
+
+pub type IndirectCommandsLayoutNV = core::VkIndirectCommandsLayoutNV;
+
+pub type AccelerationStructureKHR = core::VkAccelerationStructureKHR;
+
+//
 // Enums, masks and bitflags:
 //
 
