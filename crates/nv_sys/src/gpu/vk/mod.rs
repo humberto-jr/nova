@@ -48,6 +48,22 @@ pub fn loader() -> spec::Result<Loader> {
 }
 
 //
+// Base types:
+//
+
+pub type Result = core::VkResult;
+
+pub type Bool32 = core::VkBool32;
+
+pub type Flags = core::VkFlags;
+
+pub type Flags64 = core::VkFlags64;
+
+pub type DeviceAddress = core::VkDeviceAddress;
+
+pub type DeviceSize = core::VkDeviceSize;
+
+//
 // POD wrappers and handles:
 //
 
