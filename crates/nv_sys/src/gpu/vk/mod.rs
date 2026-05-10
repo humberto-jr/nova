@@ -673,6 +673,100 @@ pub const fn cast_pod_slice_mut<T: pod::Wrapper>(outer: &mut [T]) -> &mut [Inner
 	unsafe { slice::from_raw_parts_mut(outer.as_mut_ptr() as *mut Inner<T>, outer.len()) }
 }
 
+pub fn select_dedicated_queue_family_indices(family_list: &[pod::QueueFamilyProperties], exclude_mask: u32) -> (u32, u32, u32) {
+	let mut family_index = [usize::MAX; 3];
+
+	let not_excluded = |n: usize| -> bool { ((exclude_mask as usize) & (1 << n)) == 0 };
+
+	//
+	// 1st pass to find a dedicated queue family for graphics:
+	//
+
+	for (n, family) in family_list.iter().enumerate() {
+		if not_excluded(n) && family.has_dedicated_graphics_queues() {
+			family_index[0] = n;
+			break;
+		}
+	}
+
+	//
+	// 2nd pass to find a general queue family for graphics as fallback:
+	//
+
+	if family_index[0] == usize::MAX {
+		for (n, family) in family_list.iter().enumerate() {
+			if not_excluded(n) && family.has_graphics_queues() {
+				family_index[0] = n;
+				break;
+			}
+		}
+	}
+
+	if (exclude_mask == 0) && (family_index[0] == usize::MAX) {
+		crate::panic!("Unable to find a queue family for graphics in the device");
+	}
+
+	//
+	// 3rd pass to find a dedicated queue family for compute:
+	//
+
+	for (n, family) in family_list.iter().enumerate() {
+		if not_excluded(n) && family.has_dedicated_compute_queues() {
+			family_index[1] = n;
+			break;
+		}
+	}
+
+	//
+	// 4th pass to find a general and unused queue family for compute as fallback:
+	//
+
+	if family_index[1] == usize::MAX {
+		for (n, family) in family_list.iter().enumerate() {
+			if not_excluded(n) && family.has_compute_queues() && (n != family_index[0]) {
+				family_index[1] = n;
+				break;
+			}
+		}
+	}
+
+	if family_index[1] == usize::MAX {
+		// NOTE: The last compute family fallback is the graphics one.
+		family_index[1] = family_index[0];
+	}
+
+	//
+	// 5th pass to find a dedicated queue family for transfer (DMA-like):
+	//
+
+	for (n, family) in family_list.iter().enumerate() {
+		if not_excluded(n) && family.has_dedicated_transfer_queues() {
+			family_index[2] = n;
+			break;
+		}
+	}
+
+	//
+	// 6th pass to find a general and unused queue family for transfer as fallback:
+	//
+
+	if family_index[2] == usize::MAX {
+		for (n, family) in family_list.iter().enumerate() {
+			if not_excluded(n) && family.has_transfer_queues() && (n != family_index[0]) && (n != family_index[1]) {
+				family_index[2] = n;
+				break;
+			}
+		}
+	}
+
+	if family_index[2] == usize::MAX {
+		// NOTE: The last transfer family fallback is the compute one.
+		family_index[2] = family_index[1];
+	}
+
+	(family_index[0] as _, family_index[1] as _, family_index[2] as _)
+}
+
 pub fn fn_typename<Fn: 'static>() -> *const i8 {
 	let type_id = any::TypeId::of::<Fn>();
 
