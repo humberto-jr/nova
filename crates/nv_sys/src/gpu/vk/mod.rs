@@ -1,4 +1,20 @@
+use ::core::{
+	any, //
+	iter::Iterator,
+	slice,
+};
+
+use crate::spec;
+
+pub use crate::ffi::khronos::vulkan::{
+	core, //
+	wayland,
+	xcb,
+};
+
 mod dispatch;
+mod pod;
+mod shader;
 
 //
 // API dynamic loading:
@@ -767,2011 +783,2016 @@ pub fn select_dedicated_queue_family_indices(family_list: &[pod::QueueFamilyProp
 	(family_index[0] as _, family_index[1] as _, family_index[2] as _)
 }
 
-pub fn fn_typename<Fn: 'static>() -> *const i8 {
+#[inline]
+pub fn fn_cstr_typename<Fn: 'static>() -> *const i8 {
+	fn_typename::<Fn>().as_bytes().as_ptr() as *const i8
+}
+
+pub fn fn_typename<Fn: 'static>() -> &'static str {
 	let type_id = any::TypeId::of::<Fn>();
 
 	if type_id == any::TypeId::of::<core::PFN_vkAllocationFunction>() {
-		c_str("vkAllocationFunction\0")
+		"vkAllocationFunction\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkFreeFunction>() {
-		c_str("vkFreeFunction\0")
+		"vkFreeFunction\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkInternalAllocationNotification>() {
-		c_str("vkInternalAllocationNotification\0")
+		"vkInternalAllocationNotification\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkInternalFreeNotification>() {
-		c_str("vkInternalFreeNotification\0")
+		"vkInternalFreeNotification\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkReallocationFunction>() {
-		c_str("vkReallocationFunction\0")
+		"vkReallocationFunction\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkVoidFunction>() {
-		c_str("vkVoidFunction\0")
+		"vkVoidFunction\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateInstance>() {
-		c_str("vkCreateInstance\0")
+		"vkCreateInstance\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyInstance>() {
-		c_str("vkDestroyInstance\0")
+		"vkDestroyInstance\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumeratePhysicalDevices>() {
-		c_str("vkEnumeratePhysicalDevices\0")
+		"vkEnumeratePhysicalDevices\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceFeatures>() {
-		c_str("vkGetPhysicalDeviceFeatures\0")
+		"vkGetPhysicalDeviceFeatures\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceFormatProperties>() {
-		c_str("vkGetPhysicalDeviceFormatProperties\0")
+		"vkGetPhysicalDeviceFormatProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceImageFormatProperties>() {
-		c_str("vkGetPhysicalDeviceImageFormatProperties\0")
+		"vkGetPhysicalDeviceImageFormatProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceProperties>() {
-		c_str("vkGetPhysicalDeviceProperties\0")
+		"vkGetPhysicalDeviceProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceQueueFamilyProperties>() {
-		c_str("vkGetPhysicalDeviceQueueFamilyProperties\0")
+		"vkGetPhysicalDeviceQueueFamilyProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceMemoryProperties>() {
-		c_str("vkGetPhysicalDeviceMemoryProperties\0")
+		"vkGetPhysicalDeviceMemoryProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetInstanceProcAddr>() {
-		c_str("vkGetInstanceProcAddr\0")
+		"vkGetInstanceProcAddr\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceProcAddr>() {
-		c_str("vkGetDeviceProcAddr\0")
+		"vkGetDeviceProcAddr\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDevice>() {
-		c_str("vkCreateDevice\0")
+		"vkCreateDevice\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyDevice>() {
-		c_str("vkDestroyDevice\0")
+		"vkDestroyDevice\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumerateInstanceExtensionProperties>() {
-		c_str("vkEnumerateInstanceExtensionProperties\0")
+		"vkEnumerateInstanceExtensionProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumerateDeviceExtensionProperties>() {
-		c_str("vkEnumerateDeviceExtensionProperties\0")
+		"vkEnumerateDeviceExtensionProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumerateInstanceLayerProperties>() {
-		c_str("vkEnumerateInstanceLayerProperties\0")
+		"vkEnumerateInstanceLayerProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumerateDeviceLayerProperties>() {
-		c_str("vkEnumerateDeviceLayerProperties\0")
+		"vkEnumerateDeviceLayerProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceQueue>() {
-		c_str("vkGetDeviceQueue\0")
+		"vkGetDeviceQueue\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueSubmit>() {
-		c_str("vkQueueSubmit\0")
+		"vkQueueSubmit\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueWaitIdle>() {
-		c_str("vkQueueWaitIdle\0")
+		"vkQueueWaitIdle\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDeviceWaitIdle>() {
-		c_str("vkDeviceWaitIdle\0")
+		"vkDeviceWaitIdle\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAllocateMemory>() {
-		c_str("vkAllocateMemory\0")
+		"vkAllocateMemory\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkFreeMemory>() {
-		c_str("vkFreeMemory\0")
+		"vkFreeMemory\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkMapMemory>() {
-		c_str("vkMapMemory\0")
+		"vkMapMemory\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkUnmapMemory>() {
-		c_str("vkUnmapMemory\0")
+		"vkUnmapMemory\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkFlushMappedMemoryRanges>() {
-		c_str("vkFlushMappedMemoryRanges\0")
+		"vkFlushMappedMemoryRanges\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkInvalidateMappedMemoryRanges>() {
-		c_str("vkInvalidateMappedMemoryRanges\0")
+		"vkInvalidateMappedMemoryRanges\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceMemoryCommitment>() {
-		c_str("vkGetDeviceMemoryCommitment\0")
+		"vkGetDeviceMemoryCommitment\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBindBufferMemory>() {
-		c_str("vkBindBufferMemory\0")
+		"vkBindBufferMemory\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBindImageMemory>() {
-		c_str("vkBindImageMemory\0")
+		"vkBindImageMemory\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetBufferMemoryRequirements>() {
-		c_str("vkGetBufferMemoryRequirements\0")
+		"vkGetBufferMemoryRequirements\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageMemoryRequirements>() {
-		c_str("vkGetImageMemoryRequirements\0")
+		"vkGetImageMemoryRequirements\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageSparseMemoryRequirements>() {
-		c_str("vkGetImageSparseMemoryRequirements\0")
+		"vkGetImageSparseMemoryRequirements\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSparseImageFormatProperties>() {
-		c_str("vkGetPhysicalDeviceSparseImageFormatProperties\0")
+		"vkGetPhysicalDeviceSparseImageFormatProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueBindSparse>() {
-		c_str("vkQueueBindSparse\0")
+		"vkQueueBindSparse\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateFence>() {
-		c_str("vkCreateFence\0")
+		"vkCreateFence\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyFence>() {
-		c_str("vkDestroyFence\0")
+		"vkDestroyFence\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkResetFences>() {
-		c_str("vkResetFences\0")
+		"vkResetFences\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetFenceStatus>() {
-		c_str("vkGetFenceStatus\0")
+		"vkGetFenceStatus\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkWaitForFences>() {
-		c_str("vkWaitForFences\0")
+		"vkWaitForFences\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateSemaphore>() {
-		c_str("vkCreateSemaphore\0")
+		"vkCreateSemaphore\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroySemaphore>() {
-		c_str("vkDestroySemaphore\0")
+		"vkDestroySemaphore\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateEvent>() {
-		c_str("vkCreateEvent\0")
+		"vkCreateEvent\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyEvent>() {
-		c_str("vkDestroyEvent\0")
+		"vkDestroyEvent\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetEventStatus>() {
-		c_str("vkGetEventStatus\0")
+		"vkGetEventStatus\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSetEvent>() {
-		c_str("vkSetEvent\0")
+		"vkSetEvent\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkResetEvent>() {
-		c_str("vkResetEvent\0")
+		"vkResetEvent\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateQueryPool>() {
-		c_str("vkCreateQueryPool\0")
+		"vkCreateQueryPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyQueryPool>() {
-		c_str("vkDestroyQueryPool\0")
+		"vkDestroyQueryPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetQueryPoolResults>() {
-		c_str("vkGetQueryPoolResults\0")
+		"vkGetQueryPoolResults\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateBuffer>() {
-		c_str("vkCreateBuffer\0")
+		"vkCreateBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyBuffer>() {
-		c_str("vkDestroyBuffer\0")
+		"vkDestroyBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateBufferView>() {
-		c_str("vkCreateBufferView\0")
+		"vkCreateBufferView\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyBufferView>() {
-		c_str("vkDestroyBufferView\0")
+		"vkDestroyBufferView\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateImage>() {
-		c_str("vkCreateImage\0")
+		"vkCreateImage\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyImage>() {
-		c_str("vkDestroyImage\0")
+		"vkDestroyImage\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageSubresourceLayout>() {
-		c_str("vkGetImageSubresourceLayout\0")
+		"vkGetImageSubresourceLayout\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateImageView>() {
-		c_str("vkCreateImageView\0")
+		"vkCreateImageView\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyImageView>() {
-		c_str("vkDestroyImageView\0")
+		"vkDestroyImageView\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateShaderModule>() {
-		c_str("vkCreateShaderModule\0")
+		"vkCreateShaderModule\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyShaderModule>() {
-		c_str("vkDestroyShaderModule\0")
+		"vkDestroyShaderModule\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreatePipelineCache>() {
-		c_str("vkCreatePipelineCache\0")
+		"vkCreatePipelineCache\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyPipelineCache>() {
-		c_str("vkDestroyPipelineCache\0")
+		"vkDestroyPipelineCache\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPipelineCacheData>() {
-		c_str("vkGetPipelineCacheData\0")
+		"vkGetPipelineCacheData\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkMergePipelineCaches>() {
-		c_str("vkMergePipelineCaches\0")
+		"vkMergePipelineCaches\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateGraphicsPipelines>() {
-		c_str("vkCreateGraphicsPipelines\0")
+		"vkCreateGraphicsPipelines\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateComputePipelines>() {
-		c_str("vkCreateComputePipelines\0")
+		"vkCreateComputePipelines\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyPipeline>() {
-		c_str("vkDestroyPipeline\0")
+		"vkDestroyPipeline\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreatePipelineLayout>() {
-		c_str("vkCreatePipelineLayout\0")
+		"vkCreatePipelineLayout\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyPipelineLayout>() {
-		c_str("vkDestroyPipelineLayout\0")
+		"vkDestroyPipelineLayout\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateSampler>() {
-		c_str("vkCreateSampler\0")
+		"vkCreateSampler\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroySampler>() {
-		c_str("vkDestroySampler\0")
+		"vkDestroySampler\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDescriptorSetLayout>() {
-		c_str("vkCreateDescriptorSetLayout\0")
+		"vkCreateDescriptorSetLayout\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyDescriptorSetLayout>() {
-		c_str("vkDestroyDescriptorSetLayout\0")
+		"vkDestroyDescriptorSetLayout\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDescriptorPool>() {
-		c_str("vkCreateDescriptorPool\0")
+		"vkCreateDescriptorPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyDescriptorPool>() {
-		c_str("vkDestroyDescriptorPool\0")
+		"vkDestroyDescriptorPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkResetDescriptorPool>() {
-		c_str("vkResetDescriptorPool\0")
+		"vkResetDescriptorPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAllocateDescriptorSets>() {
-		c_str("vkAllocateDescriptorSets\0")
+		"vkAllocateDescriptorSets\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkFreeDescriptorSets>() {
-		c_str("vkFreeDescriptorSets\0")
+		"vkFreeDescriptorSets\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkUpdateDescriptorSets>() {
-		c_str("vkUpdateDescriptorSets\0")
+		"vkUpdateDescriptorSets\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateFramebuffer>() {
-		c_str("vkCreateFramebuffer\0")
+		"vkCreateFramebuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyFramebuffer>() {
-		c_str("vkDestroyFramebuffer\0")
+		"vkDestroyFramebuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateRenderPass>() {
-		c_str("vkCreateRenderPass\0")
+		"vkCreateRenderPass\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyRenderPass>() {
-		c_str("vkDestroyRenderPass\0")
+		"vkDestroyRenderPass\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetRenderAreaGranularity>() {
-		c_str("vkGetRenderAreaGranularity\0")
+		"vkGetRenderAreaGranularity\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateCommandPool>() {
-		c_str("vkCreateCommandPool\0")
+		"vkCreateCommandPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyCommandPool>() {
-		c_str("vkDestroyCommandPool\0")
+		"vkDestroyCommandPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkResetCommandPool>() {
-		c_str("vkResetCommandPool\0")
+		"vkResetCommandPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAllocateCommandBuffers>() {
-		c_str("vkAllocateCommandBuffers\0")
+		"vkAllocateCommandBuffers\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkFreeCommandBuffers>() {
-		c_str("vkFreeCommandBuffers\0")
+		"vkFreeCommandBuffers\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBeginCommandBuffer>() {
-		c_str("vkBeginCommandBuffer\0")
+		"vkBeginCommandBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEndCommandBuffer>() {
-		c_str("vkEndCommandBuffer\0")
+		"vkEndCommandBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkResetCommandBuffer>() {
-		c_str("vkResetCommandBuffer\0")
+		"vkResetCommandBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindPipeline>() {
-		c_str("vkCmdBindPipeline\0")
+		"vkCmdBindPipeline\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetViewport>() {
-		c_str("vkCmdSetViewport\0")
+		"vkCmdSetViewport\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetScissor>() {
-		c_str("vkCmdSetScissor\0")
+		"vkCmdSetScissor\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetLineWidth>() {
-		c_str("vkCmdSetLineWidth\0")
+		"vkCmdSetLineWidth\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthBias>() {
-		c_str("vkCmdSetDepthBias\0")
+		"vkCmdSetDepthBias\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetBlendConstants>() {
-		c_str("vkCmdSetBlendConstants\0")
+		"vkCmdSetBlendConstants\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthBounds>() {
-		c_str("vkCmdSetDepthBounds\0")
+		"vkCmdSetDepthBounds\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetStencilCompareMask>() {
-		c_str("vkCmdSetStencilCompareMask\0")
+		"vkCmdSetStencilCompareMask\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetStencilWriteMask>() {
-		c_str("vkCmdSetStencilWriteMask\0")
+		"vkCmdSetStencilWriteMask\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetStencilReference>() {
-		c_str("vkCmdSetStencilReference\0")
+		"vkCmdSetStencilReference\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindDescriptorSets>() {
-		c_str("vkCmdBindDescriptorSets\0")
+		"vkCmdBindDescriptorSets\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindIndexBuffer>() {
-		c_str("vkCmdBindIndexBuffer\0")
+		"vkCmdBindIndexBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindVertexBuffers>() {
-		c_str("vkCmdBindVertexBuffers\0")
+		"vkCmdBindVertexBuffers\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDraw>() {
-		c_str("vkCmdDraw\0")
+		"vkCmdDraw\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndexed>() {
-		c_str("vkCmdDrawIndexed\0")
+		"vkCmdDrawIndexed\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndirect>() {
-		c_str("vkCmdDrawIndirect\0")
+		"vkCmdDrawIndirect\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndexedIndirect>() {
-		c_str("vkCmdDrawIndexedIndirect\0")
+		"vkCmdDrawIndexedIndirect\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDispatch>() {
-		c_str("vkCmdDispatch\0")
+		"vkCmdDispatch\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDispatchIndirect>() {
-		c_str("vkCmdDispatchIndirect\0")
+		"vkCmdDispatchIndirect\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyBuffer>() {
-		c_str("vkCmdCopyBuffer\0")
+		"vkCmdCopyBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyImage>() {
-		c_str("vkCmdCopyImage\0")
+		"vkCmdCopyImage\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBlitImage>() {
-		c_str("vkCmdBlitImage\0")
+		"vkCmdBlitImage\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyBufferToImage>() {
-		c_str("vkCmdCopyBufferToImage\0")
+		"vkCmdCopyBufferToImage\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyImageToBuffer>() {
-		c_str("vkCmdCopyImageToBuffer\0")
+		"vkCmdCopyImageToBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdUpdateBuffer>() {
-		c_str("vkCmdUpdateBuffer\0")
+		"vkCmdUpdateBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdFillBuffer>() {
-		c_str("vkCmdFillBuffer\0")
+		"vkCmdFillBuffer\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdClearColorImage>() {
-		c_str("vkCmdClearColorImage\0")
+		"vkCmdClearColorImage\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdClearDepthStencilImage>() {
-		c_str("vkCmdClearDepthStencilImage\0")
+		"vkCmdClearDepthStencilImage\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdClearAttachments>() {
-		c_str("vkCmdClearAttachments\0")
+		"vkCmdClearAttachments\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdResolveImage>() {
-		c_str("vkCmdResolveImage\0")
+		"vkCmdResolveImage\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetEvent>() {
-		c_str("vkCmdSetEvent\0")
+		"vkCmdSetEvent\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdResetEvent>() {
-		c_str("vkCmdResetEvent\0")
+		"vkCmdResetEvent\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWaitEvents>() {
-		c_str("vkCmdWaitEvents\0")
+		"vkCmdWaitEvents\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdPipelineBarrier>() {
-		c_str("vkCmdPipelineBarrier\0")
+		"vkCmdPipelineBarrier\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginQuery>() {
-		c_str("vkCmdBeginQuery\0")
+		"vkCmdBeginQuery\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndQuery>() {
-		c_str("vkCmdEndQuery\0")
+		"vkCmdEndQuery\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdResetQueryPool>() {
-		c_str("vkCmdResetQueryPool\0")
+		"vkCmdResetQueryPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWriteTimestamp>() {
-		c_str("vkCmdWriteTimestamp\0")
+		"vkCmdWriteTimestamp\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyQueryPoolResults>() {
-		c_str("vkCmdCopyQueryPoolResults\0")
+		"vkCmdCopyQueryPoolResults\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdPushConstants>() {
-		c_str("vkCmdPushConstants\0")
+		"vkCmdPushConstants\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginRenderPass>() {
-		c_str("vkCmdBeginRenderPass\0")
+		"vkCmdBeginRenderPass\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdNextSubpass>() {
-		c_str("vkCmdNextSubpass\0")
+		"vkCmdNextSubpass\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndRenderPass>() {
-		c_str("vkCmdEndRenderPass\0")
+		"vkCmdEndRenderPass\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdExecuteCommands>() {
-		c_str("vkCmdExecuteCommands\0")
+		"vkCmdExecuteCommands\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumerateInstanceVersion>() {
-		c_str("vkEnumerateInstanceVersion\0")
+		"vkEnumerateInstanceVersion\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBindBufferMemory2>() {
-		c_str("vkBindBufferMemory2\0")
+		"vkBindBufferMemory2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBindImageMemory2>() {
-		c_str("vkBindImageMemory2\0")
+		"vkBindImageMemory2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceGroupPeerMemoryFeatures>() {
-		c_str("vkGetDeviceGroupPeerMemoryFeatures\0")
+		"vkGetDeviceGroupPeerMemoryFeatures\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDeviceMask>() {
-		c_str("vkCmdSetDeviceMask\0")
+		"vkCmdSetDeviceMask\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDispatchBase>() {
-		c_str("vkCmdDispatchBase\0")
+		"vkCmdDispatchBase\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumeratePhysicalDeviceGroups>() {
-		c_str("vkEnumeratePhysicalDeviceGroups\0")
+		"vkEnumeratePhysicalDeviceGroups\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageMemoryRequirements2>() {
-		c_str("vkGetImageMemoryRequirements2\0")
+		"vkGetImageMemoryRequirements2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetBufferMemoryRequirements2>() {
-		c_str("vkGetBufferMemoryRequirements2\0")
+		"vkGetBufferMemoryRequirements2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageSparseMemoryRequirements2>() {
-		c_str("vkGetImageSparseMemoryRequirements2\0")
+		"vkGetImageSparseMemoryRequirements2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceFeatures2>() {
-		c_str("vkGetPhysicalDeviceFeatures2\0")
+		"vkGetPhysicalDeviceFeatures2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceProperties2>() {
-		c_str("vkGetPhysicalDeviceProperties2\0")
+		"vkGetPhysicalDeviceProperties2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceFormatProperties2>() {
-		c_str("vkGetPhysicalDeviceFormatProperties2\0")
+		"vkGetPhysicalDeviceFormatProperties2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceImageFormatProperties2>() {
-		c_str("vkGetPhysicalDeviceImageFormatProperties2\0")
+		"vkGetPhysicalDeviceImageFormatProperties2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceQueueFamilyProperties2>() {
-		c_str("vkGetPhysicalDeviceQueueFamilyProperties2\0")
+		"vkGetPhysicalDeviceQueueFamilyProperties2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceMemoryProperties2>() {
-		c_str("vkGetPhysicalDeviceMemoryProperties2\0")
+		"vkGetPhysicalDeviceMemoryProperties2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSparseImageFormatProperties2>() {
-		c_str("vkGetPhysicalDeviceSparseImageFormatProperties2\0")
+		"vkGetPhysicalDeviceSparseImageFormatProperties2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkTrimCommandPool>() {
-		c_str("vkTrimCommandPool\0")
+		"vkTrimCommandPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceQueue2>() {
-		c_str("vkGetDeviceQueue2\0")
+		"vkGetDeviceQueue2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateSamplerYcbcrConversion>() {
-		c_str("vkCreateSamplerYcbcrConversion\0")
+		"vkCreateSamplerYcbcrConversion\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroySamplerYcbcrConversion>() {
-		c_str("vkDestroySamplerYcbcrConversion\0")
+		"vkDestroySamplerYcbcrConversion\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDescriptorUpdateTemplate>() {
-		c_str("vkCreateDescriptorUpdateTemplate\0")
+		"vkCreateDescriptorUpdateTemplate\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyDescriptorUpdateTemplate>() {
-		c_str("vkDestroyDescriptorUpdateTemplate\0")
+		"vkDestroyDescriptorUpdateTemplate\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkUpdateDescriptorSetWithTemplate>() {
-		c_str("vkUpdateDescriptorSetWithTemplate\0")
+		"vkUpdateDescriptorSetWithTemplate\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceExternalBufferProperties>() {
-		c_str("vkGetPhysicalDeviceExternalBufferProperties\0")
+		"vkGetPhysicalDeviceExternalBufferProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceExternalFenceProperties>() {
-		c_str("vkGetPhysicalDeviceExternalFenceProperties\0")
+		"vkGetPhysicalDeviceExternalFenceProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceExternalSemaphoreProperties>() {
-		c_str("vkGetPhysicalDeviceExternalSemaphoreProperties\0")
+		"vkGetPhysicalDeviceExternalSemaphoreProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDescriptorSetLayoutSupport>() {
-		c_str("vkGetDescriptorSetLayoutSupport\0")
+		"vkGetDescriptorSetLayoutSupport\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndirectCount>() {
-		c_str("vkCmdDrawIndirectCount\0")
+		"vkCmdDrawIndirectCount\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndexedIndirectCount>() {
-		c_str("vkCmdDrawIndexedIndirectCount\0")
+		"vkCmdDrawIndexedIndirectCount\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateRenderPass2>() {
-		c_str("vkCreateRenderPass2\0")
+		"vkCreateRenderPass2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginRenderPass2>() {
-		c_str("vkCmdBeginRenderPass2\0")
+		"vkCmdBeginRenderPass2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdNextSubpass2>() {
-		c_str("vkCmdNextSubpass2\0")
+		"vkCmdNextSubpass2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndRenderPass2>() {
-		c_str("vkCmdEndRenderPass2\0")
+		"vkCmdEndRenderPass2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkResetQueryPool>() {
-		c_str("vkResetQueryPool\0")
+		"vkResetQueryPool\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetSemaphoreCounterValue>() {
-		c_str("vkGetSemaphoreCounterValue\0")
+		"vkGetSemaphoreCounterValue\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkWaitSemaphores>() {
-		c_str("vkWaitSemaphores\0")
+		"vkWaitSemaphores\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSignalSemaphore>() {
-		c_str("vkSignalSemaphore\0")
+		"vkSignalSemaphore\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetBufferDeviceAddress>() {
-		c_str("vkGetBufferDeviceAddress\0")
+		"vkGetBufferDeviceAddress\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetBufferOpaqueCaptureAddress>() {
-		c_str("vkGetBufferOpaqueCaptureAddress\0")
+		"vkGetBufferOpaqueCaptureAddress\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceMemoryOpaqueCaptureAddress>() {
-		c_str("vkGetDeviceMemoryOpaqueCaptureAddress\0")
+		"vkGetDeviceMemoryOpaqueCaptureAddress\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceToolProperties>() {
-		c_str("vkGetPhysicalDeviceToolProperties\0")
+		"vkGetPhysicalDeviceToolProperties\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreatePrivateDataSlot>() {
-		c_str("vkCreatePrivateDataSlot\0")
+		"vkCreatePrivateDataSlot\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyPrivateDataSlot>() {
-		c_str("vkDestroyPrivateDataSlot\0")
+		"vkDestroyPrivateDataSlot\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSetPrivateData>() {
-		c_str("vkSetPrivateData\0")
+		"vkSetPrivateData\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPrivateData>() {
-		c_str("vkGetPrivateData\0")
+		"vkGetPrivateData\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetEvent2>() {
-		c_str("vkCmdSetEvent2\0")
+		"vkCmdSetEvent2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdResetEvent2>() {
-		c_str("vkCmdResetEvent2\0")
+		"vkCmdResetEvent2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWaitEvents2>() {
-		c_str("vkCmdWaitEvents2\0")
+		"vkCmdWaitEvents2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdPipelineBarrier2>() {
-		c_str("vkCmdPipelineBarrier2\0")
+		"vkCmdPipelineBarrier2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWriteTimestamp2>() {
-		c_str("vkCmdWriteTimestamp2\0")
+		"vkCmdWriteTimestamp2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueSubmit2>() {
-		c_str("vkQueueSubmit2\0")
+		"vkQueueSubmit2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyBuffer2>() {
-		c_str("vkCmdCopyBuffer2\0")
+		"vkCmdCopyBuffer2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyImage2>() {
-		c_str("vkCmdCopyImage2\0")
+		"vkCmdCopyImage2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyBufferToImage2>() {
-		c_str("vkCmdCopyBufferToImage2\0")
+		"vkCmdCopyBufferToImage2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyImageToBuffer2>() {
-		c_str("vkCmdCopyImageToBuffer2\0")
+		"vkCmdCopyImageToBuffer2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBlitImage2>() {
-		c_str("vkCmdBlitImage2\0")
+		"vkCmdBlitImage2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdResolveImage2>() {
-		c_str("vkCmdResolveImage2\0")
+		"vkCmdResolveImage2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginRendering>() {
-		c_str("vkCmdBeginRendering\0")
+		"vkCmdBeginRendering\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndRendering>() {
-		c_str("vkCmdEndRendering\0")
+		"vkCmdEndRendering\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetCullMode>() {
-		c_str("vkCmdSetCullMode\0")
+		"vkCmdSetCullMode\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetFrontFace>() {
-		c_str("vkCmdSetFrontFace\0")
+		"vkCmdSetFrontFace\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetPrimitiveTopology>() {
-		c_str("vkCmdSetPrimitiveTopology\0")
+		"vkCmdSetPrimitiveTopology\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetViewportWithCount>() {
-		c_str("vkCmdSetViewportWithCount\0")
+		"vkCmdSetViewportWithCount\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetScissorWithCount>() {
-		c_str("vkCmdSetScissorWithCount\0")
+		"vkCmdSetScissorWithCount\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindVertexBuffers2>() {
-		c_str("vkCmdBindVertexBuffers2\0")
+		"vkCmdBindVertexBuffers2\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthTestEnable>() {
-		c_str("vkCmdSetDepthTestEnable\0")
+		"vkCmdSetDepthTestEnable\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthWriteEnable>() {
-		c_str("vkCmdSetDepthWriteEnable\0")
+		"vkCmdSetDepthWriteEnable\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthCompareOp>() {
-		c_str("vkCmdSetDepthCompareOp\0")
+		"vkCmdSetDepthCompareOp\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthBoundsTestEnable>() {
-		c_str("vkCmdSetDepthBoundsTestEnable\0")
+		"vkCmdSetDepthBoundsTestEnable\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetStencilTestEnable>() {
-		c_str("vkCmdSetStencilTestEnable\0")
+		"vkCmdSetStencilTestEnable\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetStencilOp>() {
-		c_str("vkCmdSetStencilOp\0")
+		"vkCmdSetStencilOp\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetRasterizerDiscardEnable>() {
-		c_str("vkCmdSetRasterizerDiscardEnable\0")
+		"vkCmdSetRasterizerDiscardEnable\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthBiasEnable>() {
-		c_str("vkCmdSetDepthBiasEnable\0")
+		"vkCmdSetDepthBiasEnable\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetPrimitiveRestartEnable>() {
-		c_str("vkCmdSetPrimitiveRestartEnable\0")
+		"vkCmdSetPrimitiveRestartEnable\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceBufferMemoryRequirements>() {
-		c_str("vkGetDeviceBufferMemoryRequirements\0")
+		"vkGetDeviceBufferMemoryRequirements\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceImageMemoryRequirements>() {
-		c_str("vkGetDeviceImageMemoryRequirements\0")
+		"vkGetDeviceImageMemoryRequirements\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceImageSparseMemoryRequirements>() {
-		c_str("vkGetDeviceImageSparseMemoryRequirements\0")
+		"vkGetDeviceImageSparseMemoryRequirements\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroySurfaceKHR>() {
-		c_str("vkDestroySurfaceKHR\0")
+		"vkDestroySurfaceKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSurfaceSupportKHR>() {
-		c_str("vkGetPhysicalDeviceSurfaceSupportKHR\0")
+		"vkGetPhysicalDeviceSurfaceSupportKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR>() {
-		c_str("vkGetPhysicalDeviceSurfaceCapabilitiesKHR\0")
+		"vkGetPhysicalDeviceSurfaceCapabilitiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSurfaceFormatsKHR>() {
-		c_str("vkGetPhysicalDeviceSurfaceFormatsKHR\0")
+		"vkGetPhysicalDeviceSurfaceFormatsKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSurfacePresentModesKHR>() {
-		c_str("vkGetPhysicalDeviceSurfacePresentModesKHR\0")
+		"vkGetPhysicalDeviceSurfacePresentModesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateSwapchainKHR>() {
-		c_str("vkCreateSwapchainKHR\0")
+		"vkCreateSwapchainKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroySwapchainKHR>() {
-		c_str("vkDestroySwapchainKHR\0")
+		"vkDestroySwapchainKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetSwapchainImagesKHR>() {
-		c_str("vkGetSwapchainImagesKHR\0")
+		"vkGetSwapchainImagesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAcquireNextImageKHR>() {
-		c_str("vkAcquireNextImageKHR\0")
+		"vkAcquireNextImageKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueuePresentKHR>() {
-		c_str("vkQueuePresentKHR\0")
+		"vkQueuePresentKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceGroupPresentCapabilitiesKHR>() {
-		c_str("vkGetDeviceGroupPresentCapabilitiesKHR\0")
+		"vkGetDeviceGroupPresentCapabilitiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceGroupSurfacePresentModesKHR>() {
-		c_str("vkGetDeviceGroupSurfacePresentModesKHR\0")
+		"vkGetDeviceGroupSurfacePresentModesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDevicePresentRectanglesKHR>() {
-		c_str("vkGetPhysicalDevicePresentRectanglesKHR\0")
+		"vkGetPhysicalDevicePresentRectanglesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAcquireNextImage2KHR>() {
-		c_str("vkAcquireNextImage2KHR\0")
+		"vkAcquireNextImage2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceDisplayPropertiesKHR>() {
-		c_str("vkGetPhysicalDeviceDisplayPropertiesKHR\0")
+		"vkGetPhysicalDeviceDisplayPropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR>() {
-		c_str("vkGetPhysicalDeviceDisplayPlanePropertiesKHR\0")
+		"vkGetPhysicalDeviceDisplayPlanePropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDisplayPlaneSupportedDisplaysKHR>() {
-		c_str("vkGetDisplayPlaneSupportedDisplaysKHR\0")
+		"vkGetDisplayPlaneSupportedDisplaysKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDisplayModePropertiesKHR>() {
-		c_str("vkGetDisplayModePropertiesKHR\0")
+		"vkGetDisplayModePropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDisplayModeKHR>() {
-		c_str("vkCreateDisplayModeKHR\0")
+		"vkCreateDisplayModeKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDisplayPlaneCapabilitiesKHR>() {
-		c_str("vkGetDisplayPlaneCapabilitiesKHR\0")
+		"vkGetDisplayPlaneCapabilitiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDisplayPlaneSurfaceKHR>() {
-		c_str("vkCreateDisplayPlaneSurfaceKHR\0")
+		"vkCreateDisplayPlaneSurfaceKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateSharedSwapchainsKHR>() {
-		c_str("vkCreateSharedSwapchainsKHR\0")
+		"vkCreateSharedSwapchainsKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginRenderingKHR>() {
-		c_str("vkCmdBeginRenderingKHR\0")
+		"vkCmdBeginRenderingKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndRenderingKHR>() {
-		c_str("vkCmdEndRenderingKHR\0")
+		"vkCmdEndRenderingKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceFeatures2KHR>() {
-		c_str("vkGetPhysicalDeviceFeatures2KHR\0")
+		"vkGetPhysicalDeviceFeatures2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceProperties2KHR>() {
-		c_str("vkGetPhysicalDeviceProperties2KHR\0")
+		"vkGetPhysicalDeviceProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceFormatProperties2KHR>() {
-		c_str("vkGetPhysicalDeviceFormatProperties2KHR\0")
+		"vkGetPhysicalDeviceFormatProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceImageFormatProperties2KHR>() {
-		c_str("vkGetPhysicalDeviceImageFormatProperties2KHR\0")
+		"vkGetPhysicalDeviceImageFormatProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR>() {
-		c_str("vkGetPhysicalDeviceQueueFamilyProperties2KHR\0")
+		"vkGetPhysicalDeviceQueueFamilyProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceMemoryProperties2KHR>() {
-		c_str("vkGetPhysicalDeviceMemoryProperties2KHR\0")
+		"vkGetPhysicalDeviceMemoryProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR>() {
-		c_str("vkGetPhysicalDeviceSparseImageFormatProperties2KHR\0")
+		"vkGetPhysicalDeviceSparseImageFormatProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceGroupPeerMemoryFeaturesKHR>() {
-		c_str("vkGetDeviceGroupPeerMemoryFeaturesKHR\0")
+		"vkGetDeviceGroupPeerMemoryFeaturesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDeviceMaskKHR>() {
-		c_str("vkCmdSetDeviceMaskKHR\0")
+		"vkCmdSetDeviceMaskKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDispatchBaseKHR>() {
-		c_str("vkCmdDispatchBaseKHR\0")
+		"vkCmdDispatchBaseKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkTrimCommandPoolKHR>() {
-		c_str("vkTrimCommandPoolKHR\0")
+		"vkTrimCommandPoolKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumeratePhysicalDeviceGroupsKHR>() {
-		c_str("vkEnumeratePhysicalDeviceGroupsKHR\0")
+		"vkEnumeratePhysicalDeviceGroupsKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR>() {
-		c_str("vkGetPhysicalDeviceExternalBufferPropertiesKHR\0")
+		"vkGetPhysicalDeviceExternalBufferPropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetMemoryFdKHR>() {
-		c_str("vkGetMemoryFdKHR\0")
+		"vkGetMemoryFdKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetMemoryFdPropertiesKHR>() {
-		c_str("vkGetMemoryFdPropertiesKHR\0")
+		"vkGetMemoryFdPropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR>() {
-		c_str("vkGetPhysicalDeviceExternalSemaphorePropertiesKHR\0")
+		"vkGetPhysicalDeviceExternalSemaphorePropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkImportSemaphoreFdKHR>() {
-		c_str("vkImportSemaphoreFdKHR\0")
+		"vkImportSemaphoreFdKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetSemaphoreFdKHR>() {
-		c_str("vkGetSemaphoreFdKHR\0")
+		"vkGetSemaphoreFdKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdPushDescriptorSetKHR>() {
-		c_str("vkCmdPushDescriptorSetKHR\0")
+		"vkCmdPushDescriptorSetKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdPushDescriptorSetWithTemplateKHR>() {
-		c_str("vkCmdPushDescriptorSetWithTemplateKHR\0")
+		"vkCmdPushDescriptorSetWithTemplateKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDescriptorUpdateTemplateKHR>() {
-		c_str("vkCreateDescriptorUpdateTemplateKHR\0")
+		"vkCreateDescriptorUpdateTemplateKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyDescriptorUpdateTemplateKHR>() {
-		c_str("vkDestroyDescriptorUpdateTemplateKHR\0")
+		"vkDestroyDescriptorUpdateTemplateKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkUpdateDescriptorSetWithTemplateKHR>() {
-		c_str("vkUpdateDescriptorSetWithTemplateKHR\0")
+		"vkUpdateDescriptorSetWithTemplateKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateRenderPass2KHR>() {
-		c_str("vkCreateRenderPass2KHR\0")
+		"vkCreateRenderPass2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginRenderPass2KHR>() {
-		c_str("vkCmdBeginRenderPass2KHR\0")
+		"vkCmdBeginRenderPass2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdNextSubpass2KHR>() {
-		c_str("vkCmdNextSubpass2KHR\0")
+		"vkCmdNextSubpass2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndRenderPass2KHR>() {
-		c_str("vkCmdEndRenderPass2KHR\0")
+		"vkCmdEndRenderPass2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetSwapchainStatusKHR>() {
-		c_str("vkGetSwapchainStatusKHR\0")
+		"vkGetSwapchainStatusKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR>() {
-		c_str("vkGetPhysicalDeviceExternalFencePropertiesKHR\0")
+		"vkGetPhysicalDeviceExternalFencePropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkImportFenceFdKHR>() {
-		c_str("vkImportFenceFdKHR\0")
+		"vkImportFenceFdKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetFenceFdKHR>() {
-		c_str("vkGetFenceFdKHR\0")
+		"vkGetFenceFdKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR>() {
-		c_str("vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR\0")
+		"vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR>() {
-		c_str("vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR\0")
+		"vkGetPhysicalDeviceQueueFamilyPerformanceQueryPassesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAcquireProfilingLockKHR>() {
-		c_str("vkAcquireProfilingLockKHR\0")
+		"vkAcquireProfilingLockKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkReleaseProfilingLockKHR>() {
-		c_str("vkReleaseProfilingLockKHR\0")
+		"vkReleaseProfilingLockKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR>() {
-		c_str("vkGetPhysicalDeviceSurfaceCapabilities2KHR\0")
+		"vkGetPhysicalDeviceSurfaceCapabilities2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSurfaceFormats2KHR>() {
-		c_str("vkGetPhysicalDeviceSurfaceFormats2KHR\0")
+		"vkGetPhysicalDeviceSurfaceFormats2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceDisplayProperties2KHR>() {
-		c_str("vkGetPhysicalDeviceDisplayProperties2KHR\0")
+		"vkGetPhysicalDeviceDisplayProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR>() {
-		c_str("vkGetPhysicalDeviceDisplayPlaneProperties2KHR\0")
+		"vkGetPhysicalDeviceDisplayPlaneProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDisplayModeProperties2KHR>() {
-		c_str("vkGetDisplayModeProperties2KHR\0")
+		"vkGetDisplayModeProperties2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDisplayPlaneCapabilities2KHR>() {
-		c_str("vkGetDisplayPlaneCapabilities2KHR\0")
+		"vkGetDisplayPlaneCapabilities2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageMemoryRequirements2KHR>() {
-		c_str("vkGetImageMemoryRequirements2KHR\0")
+		"vkGetImageMemoryRequirements2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetBufferMemoryRequirements2KHR>() {
-		c_str("vkGetBufferMemoryRequirements2KHR\0")
+		"vkGetBufferMemoryRequirements2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageSparseMemoryRequirements2KHR>() {
-		c_str("vkGetImageSparseMemoryRequirements2KHR\0")
+		"vkGetImageSparseMemoryRequirements2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateSamplerYcbcrConversionKHR>() {
-		c_str("vkCreateSamplerYcbcrConversionKHR\0")
+		"vkCreateSamplerYcbcrConversionKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroySamplerYcbcrConversionKHR>() {
-		c_str("vkDestroySamplerYcbcrConversionKHR\0")
+		"vkDestroySamplerYcbcrConversionKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBindBufferMemory2KHR>() {
-		c_str("vkBindBufferMemory2KHR\0")
+		"vkBindBufferMemory2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBindImageMemory2KHR>() {
-		c_str("vkBindImageMemory2KHR\0")
+		"vkBindImageMemory2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDescriptorSetLayoutSupportKHR>() {
-		c_str("vkGetDescriptorSetLayoutSupportKHR\0")
+		"vkGetDescriptorSetLayoutSupportKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndirectCountKHR>() {
-		c_str("vkCmdDrawIndirectCountKHR\0")
+		"vkCmdDrawIndirectCountKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndexedIndirectCountKHR>() {
-		c_str("vkCmdDrawIndexedIndirectCountKHR\0")
+		"vkCmdDrawIndexedIndirectCountKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetSemaphoreCounterValueKHR>() {
-		c_str("vkGetSemaphoreCounterValueKHR\0")
+		"vkGetSemaphoreCounterValueKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkWaitSemaphoresKHR>() {
-		c_str("vkWaitSemaphoresKHR\0")
+		"vkWaitSemaphoresKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSignalSemaphoreKHR>() {
-		c_str("vkSignalSemaphoreKHR\0")
+		"vkSignalSemaphoreKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceFragmentShadingRatesKHR>() {
-		c_str("vkGetPhysicalDeviceFragmentShadingRatesKHR\0")
+		"vkGetPhysicalDeviceFragmentShadingRatesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetFragmentShadingRateKHR>() {
-		c_str("vkCmdSetFragmentShadingRateKHR\0")
+		"vkCmdSetFragmentShadingRateKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkWaitForPresentKHR>() {
-		c_str("vkWaitForPresentKHR\0")
+		"vkWaitForPresentKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetBufferDeviceAddressKHR>() {
-		c_str("vkGetBufferDeviceAddressKHR\0")
+		"vkGetBufferDeviceAddressKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetBufferOpaqueCaptureAddressKHR>() {
-		c_str("vkGetBufferOpaqueCaptureAddressKHR\0")
+		"vkGetBufferOpaqueCaptureAddressKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceMemoryOpaqueCaptureAddressKHR>() {
-		c_str("vkGetDeviceMemoryOpaqueCaptureAddressKHR\0")
+		"vkGetDeviceMemoryOpaqueCaptureAddressKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDeferredOperationKHR>() {
-		c_str("vkCreateDeferredOperationKHR\0")
+		"vkCreateDeferredOperationKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyDeferredOperationKHR>() {
-		c_str("vkDestroyDeferredOperationKHR\0")
+		"vkDestroyDeferredOperationKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeferredOperationMaxConcurrencyKHR>() {
-		c_str("vkGetDeferredOperationMaxConcurrencyKHR\0")
+		"vkGetDeferredOperationMaxConcurrencyKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeferredOperationResultKHR>() {
-		c_str("vkGetDeferredOperationResultKHR\0")
+		"vkGetDeferredOperationResultKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDeferredOperationJoinKHR>() {
-		c_str("vkDeferredOperationJoinKHR\0")
+		"vkDeferredOperationJoinKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPipelineExecutablePropertiesKHR>() {
-		c_str("vkGetPipelineExecutablePropertiesKHR\0")
+		"vkGetPipelineExecutablePropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPipelineExecutableStatisticsKHR>() {
-		c_str("vkGetPipelineExecutableStatisticsKHR\0")
+		"vkGetPipelineExecutableStatisticsKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPipelineExecutableInternalRepresentationsKHR>() {
-		c_str("vkGetPipelineExecutableInternalRepresentationsKHR\0")
+		"vkGetPipelineExecutableInternalRepresentationsKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetEvent2KHR>() {
-		c_str("vkCmdSetEvent2KHR\0")
+		"vkCmdSetEvent2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdResetEvent2KHR>() {
-		c_str("vkCmdResetEvent2KHR\0")
+		"vkCmdResetEvent2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWaitEvents2KHR>() {
-		c_str("vkCmdWaitEvents2KHR\0")
+		"vkCmdWaitEvents2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdPipelineBarrier2KHR>() {
-		c_str("vkCmdPipelineBarrier2KHR\0")
+		"vkCmdPipelineBarrier2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWriteTimestamp2KHR>() {
-		c_str("vkCmdWriteTimestamp2KHR\0")
+		"vkCmdWriteTimestamp2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueSubmit2KHR>() {
-		c_str("vkQueueSubmit2KHR\0")
+		"vkQueueSubmit2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWriteBufferMarker2AMD>() {
-		c_str("vkCmdWriteBufferMarker2AMD\0")
+		"vkCmdWriteBufferMarker2AMD\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetQueueCheckpointData2NV>() {
-		c_str("vkGetQueueCheckpointData2NV\0")
+		"vkGetQueueCheckpointData2NV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyBuffer2KHR>() {
-		c_str("vkCmdCopyBuffer2KHR\0")
+		"vkCmdCopyBuffer2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyImage2KHR>() {
-		c_str("vkCmdCopyImage2KHR\0")
+		"vkCmdCopyImage2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyBufferToImage2KHR>() {
-		c_str("vkCmdCopyBufferToImage2KHR\0")
+		"vkCmdCopyBufferToImage2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyImageToBuffer2KHR>() {
-		c_str("vkCmdCopyImageToBuffer2KHR\0")
+		"vkCmdCopyImageToBuffer2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBlitImage2KHR>() {
-		c_str("vkCmdBlitImage2KHR\0")
+		"vkCmdBlitImage2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdResolveImage2KHR>() {
-		c_str("vkCmdResolveImage2KHR\0")
+		"vkCmdResolveImage2KHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceBufferMemoryRequirementsKHR>() {
-		c_str("vkGetDeviceBufferMemoryRequirementsKHR\0")
+		"vkGetDeviceBufferMemoryRequirementsKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceImageMemoryRequirementsKHR>() {
-		c_str("vkGetDeviceImageMemoryRequirementsKHR\0")
+		"vkGetDeviceImageMemoryRequirementsKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceImageSparseMemoryRequirementsKHR>() {
-		c_str("vkGetDeviceImageSparseMemoryRequirementsKHR\0")
+		"vkGetDeviceImageSparseMemoryRequirementsKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDebugReportCallbackEXT>() {
-		c_str("vkDebugReportCallbackEXT\0")
+		"vkDebugReportCallbackEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDebugReportCallbackEXT>() {
-		c_str("vkCreateDebugReportCallbackEXT\0")
+		"vkCreateDebugReportCallbackEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyDebugReportCallbackEXT>() {
-		c_str("vkDestroyDebugReportCallbackEXT\0")
+		"vkDestroyDebugReportCallbackEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDebugReportMessageEXT>() {
-		c_str("vkDebugReportMessageEXT\0")
+		"vkDebugReportMessageEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDebugMarkerSetObjectTagEXT>() {
-		c_str("vkDebugMarkerSetObjectTagEXT\0")
+		"vkDebugMarkerSetObjectTagEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDebugMarkerSetObjectNameEXT>() {
-		c_str("vkDebugMarkerSetObjectNameEXT\0")
+		"vkDebugMarkerSetObjectNameEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDebugMarkerBeginEXT>() {
-		c_str("vkCmdDebugMarkerBeginEXT\0")
+		"vkCmdDebugMarkerBeginEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDebugMarkerEndEXT>() {
-		c_str("vkCmdDebugMarkerEndEXT\0")
+		"vkCmdDebugMarkerEndEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDebugMarkerInsertEXT>() {
-		c_str("vkCmdDebugMarkerInsertEXT\0")
+		"vkCmdDebugMarkerInsertEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindTransformFeedbackBuffersEXT>() {
-		c_str("vkCmdBindTransformFeedbackBuffersEXT\0")
+		"vkCmdBindTransformFeedbackBuffersEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginTransformFeedbackEXT>() {
-		c_str("vkCmdBeginTransformFeedbackEXT\0")
+		"vkCmdBeginTransformFeedbackEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndTransformFeedbackEXT>() {
-		c_str("vkCmdEndTransformFeedbackEXT\0")
+		"vkCmdEndTransformFeedbackEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginQueryIndexedEXT>() {
-		c_str("vkCmdBeginQueryIndexedEXT\0")
+		"vkCmdBeginQueryIndexedEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndQueryIndexedEXT>() {
-		c_str("vkCmdEndQueryIndexedEXT\0")
+		"vkCmdEndQueryIndexedEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndirectByteCountEXT>() {
-		c_str("vkCmdDrawIndirectByteCountEXT\0")
+		"vkCmdDrawIndirectByteCountEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateCuModuleNVX>() {
-		c_str("vkCreateCuModuleNVX\0")
+		"vkCreateCuModuleNVX\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateCuFunctionNVX>() {
-		c_str("vkCreateCuFunctionNVX\0")
+		"vkCreateCuFunctionNVX\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyCuModuleNVX>() {
-		c_str("vkDestroyCuModuleNVX\0")
+		"vkDestroyCuModuleNVX\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyCuFunctionNVX>() {
-		c_str("vkDestroyCuFunctionNVX\0")
+		"vkDestroyCuFunctionNVX\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCuLaunchKernelNVX>() {
-		c_str("vkCmdCuLaunchKernelNVX\0")
+		"vkCmdCuLaunchKernelNVX\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageViewHandleNVX>() {
-		c_str("vkGetImageViewHandleNVX\0")
+		"vkGetImageViewHandleNVX\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageViewAddressNVX>() {
-		c_str("vkGetImageViewAddressNVX\0")
+		"vkGetImageViewAddressNVX\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndirectCountAMD>() {
-		c_str("vkCmdDrawIndirectCountAMD\0")
+		"vkCmdDrawIndirectCountAMD\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawIndexedIndirectCountAMD>() {
-		c_str("vkCmdDrawIndexedIndirectCountAMD\0")
+		"vkCmdDrawIndexedIndirectCountAMD\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetShaderInfoAMD>() {
-		c_str("vkGetShaderInfoAMD\0")
+		"vkGetShaderInfoAMD\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV>() {
-		c_str("vkGetPhysicalDeviceExternalImageFormatPropertiesNV\0")
+		"vkGetPhysicalDeviceExternalImageFormatPropertiesNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginConditionalRenderingEXT>() {
-		c_str("vkCmdBeginConditionalRenderingEXT\0")
+		"vkCmdBeginConditionalRenderingEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndConditionalRenderingEXT>() {
-		c_str("vkCmdEndConditionalRenderingEXT\0")
+		"vkCmdEndConditionalRenderingEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetViewportWScalingNV>() {
-		c_str("vkCmdSetViewportWScalingNV\0")
+		"vkCmdSetViewportWScalingNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkReleaseDisplayEXT>() {
-		c_str("vkReleaseDisplayEXT\0")
+		"vkReleaseDisplayEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT>() {
-		c_str("vkGetPhysicalDeviceSurfaceCapabilities2EXT\0")
+		"vkGetPhysicalDeviceSurfaceCapabilities2EXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDisplayPowerControlEXT>() {
-		c_str("vkDisplayPowerControlEXT\0")
+		"vkDisplayPowerControlEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkRegisterDeviceEventEXT>() {
-		c_str("vkRegisterDeviceEventEXT\0")
+		"vkRegisterDeviceEventEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkRegisterDisplayEventEXT>() {
-		c_str("vkRegisterDisplayEventEXT\0")
+		"vkRegisterDisplayEventEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetSwapchainCounterEXT>() {
-		c_str("vkGetSwapchainCounterEXT\0")
+		"vkGetSwapchainCounterEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetRefreshCycleDurationGOOGLE>() {
-		c_str("vkGetRefreshCycleDurationGOOGLE\0")
+		"vkGetRefreshCycleDurationGOOGLE\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPastPresentationTimingGOOGLE>() {
-		c_str("vkGetPastPresentationTimingGOOGLE\0")
+		"vkGetPastPresentationTimingGOOGLE\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDiscardRectangleEXT>() {
-		c_str("vkCmdSetDiscardRectangleEXT\0")
+		"vkCmdSetDiscardRectangleEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSetHdrMetadataEXT>() {
-		c_str("vkSetHdrMetadataEXT\0")
+		"vkSetHdrMetadataEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDebugUtilsMessengerCallbackEXT>() {
-		c_str("vkDebugUtilsMessengerCallbackEXT\0")
+		"vkDebugUtilsMessengerCallbackEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSetDebugUtilsObjectNameEXT>() {
-		c_str("vkSetDebugUtilsObjectNameEXT\0")
+		"vkSetDebugUtilsObjectNameEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSetDebugUtilsObjectTagEXT>() {
-		c_str("vkSetDebugUtilsObjectTagEXT\0")
+		"vkSetDebugUtilsObjectTagEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueBeginDebugUtilsLabelEXT>() {
-		c_str("vkQueueBeginDebugUtilsLabelEXT\0")
+		"vkQueueBeginDebugUtilsLabelEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueEndDebugUtilsLabelEXT>() {
-		c_str("vkQueueEndDebugUtilsLabelEXT\0")
+		"vkQueueEndDebugUtilsLabelEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueInsertDebugUtilsLabelEXT>() {
-		c_str("vkQueueInsertDebugUtilsLabelEXT\0")
+		"vkQueueInsertDebugUtilsLabelEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBeginDebugUtilsLabelEXT>() {
-		c_str("vkCmdBeginDebugUtilsLabelEXT\0")
+		"vkCmdBeginDebugUtilsLabelEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdEndDebugUtilsLabelEXT>() {
-		c_str("vkCmdEndDebugUtilsLabelEXT\0")
+		"vkCmdEndDebugUtilsLabelEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdInsertDebugUtilsLabelEXT>() {
-		c_str("vkCmdInsertDebugUtilsLabelEXT\0")
+		"vkCmdInsertDebugUtilsLabelEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateDebugUtilsMessengerEXT>() {
-		c_str("vkCreateDebugUtilsMessengerEXT\0")
+		"vkCreateDebugUtilsMessengerEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyDebugUtilsMessengerEXT>() {
-		c_str("vkDestroyDebugUtilsMessengerEXT\0")
+		"vkDestroyDebugUtilsMessengerEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSubmitDebugUtilsMessageEXT>() {
-		c_str("vkSubmitDebugUtilsMessageEXT\0")
+		"vkSubmitDebugUtilsMessageEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetSampleLocationsEXT>() {
-		c_str("vkCmdSetSampleLocationsEXT\0")
+		"vkCmdSetSampleLocationsEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT>() {
-		c_str("vkGetPhysicalDeviceMultisamplePropertiesEXT\0")
+		"vkGetPhysicalDeviceMultisamplePropertiesEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetImageDrmFormatModifierPropertiesEXT>() {
-		c_str("vkGetImageDrmFormatModifierPropertiesEXT\0")
+		"vkGetImageDrmFormatModifierPropertiesEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateValidationCacheEXT>() {
-		c_str("vkCreateValidationCacheEXT\0")
+		"vkCreateValidationCacheEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyValidationCacheEXT>() {
-		c_str("vkDestroyValidationCacheEXT\0")
+		"vkDestroyValidationCacheEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkMergeValidationCachesEXT>() {
-		c_str("vkMergeValidationCachesEXT\0")
+		"vkMergeValidationCachesEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetValidationCacheDataEXT>() {
-		c_str("vkGetValidationCacheDataEXT\0")
+		"vkGetValidationCacheDataEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindShadingRateImageNV>() {
-		c_str("vkCmdBindShadingRateImageNV\0")
+		"vkCmdBindShadingRateImageNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetViewportShadingRatePaletteNV>() {
-		c_str("vkCmdSetViewportShadingRatePaletteNV\0")
+		"vkCmdSetViewportShadingRatePaletteNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetCoarseSampleOrderNV>() {
-		c_str("vkCmdSetCoarseSampleOrderNV\0")
+		"vkCmdSetCoarseSampleOrderNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateAccelerationStructureNV>() {
-		c_str("vkCreateAccelerationStructureNV\0")
+		"vkCreateAccelerationStructureNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyAccelerationStructureNV>() {
-		c_str("vkDestroyAccelerationStructureNV\0")
+		"vkDestroyAccelerationStructureNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetAccelerationStructureMemoryRequirementsNV>() {
-		c_str("vkGetAccelerationStructureMemoryRequirementsNV\0")
+		"vkGetAccelerationStructureMemoryRequirementsNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBindAccelerationStructureMemoryNV>() {
-		c_str("vkBindAccelerationStructureMemoryNV\0")
+		"vkBindAccelerationStructureMemoryNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBuildAccelerationStructureNV>() {
-		c_str("vkCmdBuildAccelerationStructureNV\0")
+		"vkCmdBuildAccelerationStructureNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyAccelerationStructureNV>() {
-		c_str("vkCmdCopyAccelerationStructureNV\0")
+		"vkCmdCopyAccelerationStructureNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdTraceRaysNV>() {
-		c_str("vkCmdTraceRaysNV\0")
+		"vkCmdTraceRaysNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateRayTracingPipelinesNV>() {
-		c_str("vkCreateRayTracingPipelinesNV\0")
+		"vkCreateRayTracingPipelinesNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetRayTracingShaderGroupHandlesKHR>() {
-		c_str("vkGetRayTracingShaderGroupHandlesKHR\0")
+		"vkGetRayTracingShaderGroupHandlesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetRayTracingShaderGroupHandlesNV>() {
-		c_str("vkGetRayTracingShaderGroupHandlesNV\0")
+		"vkGetRayTracingShaderGroupHandlesNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetAccelerationStructureHandleNV>() {
-		c_str("vkGetAccelerationStructureHandleNV\0")
+		"vkGetAccelerationStructureHandleNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWriteAccelerationStructuresPropertiesNV>() {
-		c_str("vkCmdWriteAccelerationStructuresPropertiesNV\0")
+		"vkCmdWriteAccelerationStructuresPropertiesNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCompileDeferredNV>() {
-		c_str("vkCompileDeferredNV\0")
+		"vkCompileDeferredNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetMemoryHostPointerPropertiesEXT>() {
-		c_str("vkGetMemoryHostPointerPropertiesEXT\0")
+		"vkGetMemoryHostPointerPropertiesEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWriteBufferMarkerAMD>() {
-		c_str("vkCmdWriteBufferMarkerAMD\0")
+		"vkCmdWriteBufferMarkerAMD\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT>() {
-		c_str("vkGetPhysicalDeviceCalibrateableTimeDomainsEXT\0")
+		"vkGetPhysicalDeviceCalibrateableTimeDomainsEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetCalibratedTimestampsEXT>() {
-		c_str("vkGetCalibratedTimestampsEXT\0")
+		"vkGetCalibratedTimestampsEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawMeshTasksNV>() {
-		c_str("vkCmdDrawMeshTasksNV\0")
+		"vkCmdDrawMeshTasksNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawMeshTasksIndirectNV>() {
-		c_str("vkCmdDrawMeshTasksIndirectNV\0")
+		"vkCmdDrawMeshTasksIndirectNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawMeshTasksIndirectCountNV>() {
-		c_str("vkCmdDrawMeshTasksIndirectCountNV\0")
+		"vkCmdDrawMeshTasksIndirectCountNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetExclusiveScissorNV>() {
-		c_str("vkCmdSetExclusiveScissorNV\0")
+		"vkCmdSetExclusiveScissorNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetCheckpointNV>() {
-		c_str("vkCmdSetCheckpointNV\0")
+		"vkCmdSetCheckpointNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetQueueCheckpointDataNV>() {
-		c_str("vkGetQueueCheckpointDataNV\0")
+		"vkGetQueueCheckpointDataNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkInitializePerformanceApiINTEL>() {
-		c_str("vkInitializePerformanceApiINTEL\0")
+		"vkInitializePerformanceApiINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkUninitializePerformanceApiINTEL>() {
-		c_str("vkUninitializePerformanceApiINTEL\0")
+		"vkUninitializePerformanceApiINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetPerformanceMarkerINTEL>() {
-		c_str("vkCmdSetPerformanceMarkerINTEL\0")
+		"vkCmdSetPerformanceMarkerINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetPerformanceStreamMarkerINTEL>() {
-		c_str("vkCmdSetPerformanceStreamMarkerINTEL\0")
+		"vkCmdSetPerformanceStreamMarkerINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetPerformanceOverrideINTEL>() {
-		c_str("vkCmdSetPerformanceOverrideINTEL\0")
+		"vkCmdSetPerformanceOverrideINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAcquirePerformanceConfigurationINTEL>() {
-		c_str("vkAcquirePerformanceConfigurationINTEL\0")
+		"vkAcquirePerformanceConfigurationINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkReleasePerformanceConfigurationINTEL>() {
-		c_str("vkReleasePerformanceConfigurationINTEL\0")
+		"vkReleasePerformanceConfigurationINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkQueueSetPerformanceConfigurationINTEL>() {
-		c_str("vkQueueSetPerformanceConfigurationINTEL\0")
+		"vkQueueSetPerformanceConfigurationINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPerformanceParameterINTEL>() {
-		c_str("vkGetPerformanceParameterINTEL\0")
+		"vkGetPerformanceParameterINTEL\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSetLocalDimmingAMD>() {
-		c_str("vkSetLocalDimmingAMD\0")
+		"vkSetLocalDimmingAMD\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetBufferDeviceAddressEXT>() {
-		c_str("vkGetBufferDeviceAddressEXT\0")
+		"vkGetBufferDeviceAddressEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceToolPropertiesEXT>() {
-		c_str("vkGetPhysicalDeviceToolPropertiesEXT\0")
+		"vkGetPhysicalDeviceToolPropertiesEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV>() {
-		c_str("vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0")
+		"vkGetPhysicalDeviceCooperativeMatrixPropertiesNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV>() {
-		c_str("vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV\0")
+		"vkGetPhysicalDeviceSupportedFramebufferMixedSamplesCombinationsNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateHeadlessSurfaceEXT>() {
-		c_str("vkCreateHeadlessSurfaceEXT\0")
+		"vkCreateHeadlessSurfaceEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetLineStippleEXT>() {
-		c_str("vkCmdSetLineStippleEXT\0")
+		"vkCmdSetLineStippleEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkResetQueryPoolEXT>() {
-		c_str("vkResetQueryPoolEXT\0")
+		"vkResetQueryPoolEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetCullModeEXT>() {
-		c_str("vkCmdSetCullModeEXT\0")
+		"vkCmdSetCullModeEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetFrontFaceEXT>() {
-		c_str("vkCmdSetFrontFaceEXT\0")
+		"vkCmdSetFrontFaceEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetPrimitiveTopologyEXT>() {
-		c_str("vkCmdSetPrimitiveTopologyEXT\0")
+		"vkCmdSetPrimitiveTopologyEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetViewportWithCountEXT>() {
-		c_str("vkCmdSetViewportWithCountEXT\0")
+		"vkCmdSetViewportWithCountEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetScissorWithCountEXT>() {
-		c_str("vkCmdSetScissorWithCountEXT\0")
+		"vkCmdSetScissorWithCountEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindVertexBuffers2EXT>() {
-		c_str("vkCmdBindVertexBuffers2EXT\0")
+		"vkCmdBindVertexBuffers2EXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthTestEnableEXT>() {
-		c_str("vkCmdSetDepthTestEnableEXT\0")
+		"vkCmdSetDepthTestEnableEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthWriteEnableEXT>() {
-		c_str("vkCmdSetDepthWriteEnableEXT\0")
+		"vkCmdSetDepthWriteEnableEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthCompareOpEXT>() {
-		c_str("vkCmdSetDepthCompareOpEXT\0")
+		"vkCmdSetDepthCompareOpEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthBoundsTestEnableEXT>() {
-		c_str("vkCmdSetDepthBoundsTestEnableEXT\0")
+		"vkCmdSetDepthBoundsTestEnableEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetStencilTestEnableEXT>() {
-		c_str("vkCmdSetStencilTestEnableEXT\0")
+		"vkCmdSetStencilTestEnableEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetStencilOpEXT>() {
-		c_str("vkCmdSetStencilOpEXT\0")
+		"vkCmdSetStencilOpEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetGeneratedCommandsMemoryRequirementsNV>() {
-		c_str("vkGetGeneratedCommandsMemoryRequirementsNV\0")
+		"vkGetGeneratedCommandsMemoryRequirementsNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdPreprocessGeneratedCommandsNV>() {
-		c_str("vkCmdPreprocessGeneratedCommandsNV\0")
+		"vkCmdPreprocessGeneratedCommandsNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdExecuteGeneratedCommandsNV>() {
-		c_str("vkCmdExecuteGeneratedCommandsNV\0")
+		"vkCmdExecuteGeneratedCommandsNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindPipelineShaderGroupNV>() {
-		c_str("vkCmdBindPipelineShaderGroupNV\0")
+		"vkCmdBindPipelineShaderGroupNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateIndirectCommandsLayoutNV>() {
-		c_str("vkCreateIndirectCommandsLayoutNV\0")
+		"vkCreateIndirectCommandsLayoutNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyIndirectCommandsLayoutNV>() {
-		c_str("vkDestroyIndirectCommandsLayoutNV\0")
+		"vkDestroyIndirectCommandsLayoutNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDeviceMemoryReportCallbackEXT>() {
-		c_str("vkDeviceMemoryReportCallbackEXT\0")
+		"vkDeviceMemoryReportCallbackEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAcquireDrmDisplayEXT>() {
-		c_str("vkAcquireDrmDisplayEXT\0")
+		"vkAcquireDrmDisplayEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDrmDisplayEXT>() {
-		c_str("vkGetDrmDisplayEXT\0")
+		"vkGetDrmDisplayEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreatePrivateDataSlotEXT>() {
-		c_str("vkCreatePrivateDataSlotEXT\0")
+		"vkCreatePrivateDataSlotEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyPrivateDataSlotEXT>() {
-		c_str("vkDestroyPrivateDataSlotEXT\0")
+		"vkDestroyPrivateDataSlotEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSetPrivateDataEXT>() {
-		c_str("vkSetPrivateDataEXT\0")
+		"vkSetPrivateDataEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetPrivateDataEXT>() {
-		c_str("vkGetPrivateDataEXT\0")
+		"vkGetPrivateDataEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetFragmentShadingRateEnumNV>() {
-		c_str("vkCmdSetFragmentShadingRateEnumNV\0")
+		"vkCmdSetFragmentShadingRateEnumNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkAcquireWinrtDisplayNV>() {
-		c_str("vkAcquireWinrtDisplayNV\0")
+		"vkAcquireWinrtDisplayNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetWinrtDisplayNV>() {
-		c_str("vkGetWinrtDisplayNV\0")
+		"vkGetWinrtDisplayNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetVertexInputEXT>() {
-		c_str("vkCmdSetVertexInputEXT\0")
+		"vkCmdSetVertexInputEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI>() {
-		c_str("vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI\0")
+		"vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSubpassShadingHUAWEI>() {
-		c_str("vkCmdSubpassShadingHUAWEI\0")
+		"vkCmdSubpassShadingHUAWEI\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBindInvocationMaskHUAWEI>() {
-		c_str("vkCmdBindInvocationMaskHUAWEI\0")
+		"vkCmdBindInvocationMaskHUAWEI\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetMemoryRemoteAddressNV>() {
-		c_str("vkGetMemoryRemoteAddressNV\0")
+		"vkGetMemoryRemoteAddressNV\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetPatchControlPointsEXT>() {
-		c_str("vkCmdSetPatchControlPointsEXT\0")
+		"vkCmdSetPatchControlPointsEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetRasterizerDiscardEnableEXT>() {
-		c_str("vkCmdSetRasterizerDiscardEnableEXT\0")
+		"vkCmdSetRasterizerDiscardEnableEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetDepthBiasEnableEXT>() {
-		c_str("vkCmdSetDepthBiasEnableEXT\0")
+		"vkCmdSetDepthBiasEnableEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetLogicOpEXT>() {
-		c_str("vkCmdSetLogicOpEXT\0")
+		"vkCmdSetLogicOpEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetPrimitiveRestartEnableEXT>() {
-		c_str("vkCmdSetPrimitiveRestartEnableEXT\0")
+		"vkCmdSetPrimitiveRestartEnableEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetColorWriteEnableEXT>() {
-		c_str("vkCmdSetColorWriteEnableEXT\0")
+		"vkCmdSetColorWriteEnableEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawMultiEXT>() {
-		c_str("vkCmdDrawMultiEXT\0")
+		"vkCmdDrawMultiEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdDrawMultiIndexedEXT>() {
-		c_str("vkCmdDrawMultiIndexedEXT\0")
+		"vkCmdDrawMultiIndexedEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkSetDeviceMemoryPriorityEXT>() {
-		c_str("vkSetDeviceMemoryPriorityEXT\0")
+		"vkSetDeviceMemoryPriorityEXT\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE>() {
-		c_str("vkGetDescriptorSetLayoutHostMappingInfoVALVE\0")
+		"vkGetDescriptorSetLayoutHostMappingInfoVALVE\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDescriptorSetHostMappingVALVE>() {
-		c_str("vkGetDescriptorSetHostMappingVALVE\0")
+		"vkGetDescriptorSetHostMappingVALVE\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateAccelerationStructureKHR>() {
-		c_str("vkCreateAccelerationStructureKHR\0")
+		"vkCreateAccelerationStructureKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkDestroyAccelerationStructureKHR>() {
-		c_str("vkDestroyAccelerationStructureKHR\0")
+		"vkDestroyAccelerationStructureKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBuildAccelerationStructuresKHR>() {
-		c_str("vkCmdBuildAccelerationStructuresKHR\0")
+		"vkCmdBuildAccelerationStructuresKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdBuildAccelerationStructuresIndirectKHR>() {
-		c_str("vkCmdBuildAccelerationStructuresIndirectKHR\0")
+		"vkCmdBuildAccelerationStructuresIndirectKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkBuildAccelerationStructuresKHR>() {
-		c_str("vkBuildAccelerationStructuresKHR\0")
+		"vkBuildAccelerationStructuresKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCopyAccelerationStructureKHR>() {
-		c_str("vkCopyAccelerationStructureKHR\0")
+		"vkCopyAccelerationStructureKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCopyAccelerationStructureToMemoryKHR>() {
-		c_str("vkCopyAccelerationStructureToMemoryKHR\0")
+		"vkCopyAccelerationStructureToMemoryKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCopyMemoryToAccelerationStructureKHR>() {
-		c_str("vkCopyMemoryToAccelerationStructureKHR\0")
+		"vkCopyMemoryToAccelerationStructureKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkWriteAccelerationStructuresPropertiesKHR>() {
-		c_str("vkWriteAccelerationStructuresPropertiesKHR\0")
+		"vkWriteAccelerationStructuresPropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyAccelerationStructureKHR>() {
-		c_str("vkCmdCopyAccelerationStructureKHR\0")
+		"vkCmdCopyAccelerationStructureKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyAccelerationStructureToMemoryKHR>() {
-		c_str("vkCmdCopyAccelerationStructureToMemoryKHR\0")
+		"vkCmdCopyAccelerationStructureToMemoryKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdCopyMemoryToAccelerationStructureKHR>() {
-		c_str("vkCmdCopyMemoryToAccelerationStructureKHR\0")
+		"vkCmdCopyMemoryToAccelerationStructureKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetAccelerationStructureDeviceAddressKHR>() {
-		c_str("vkGetAccelerationStructureDeviceAddressKHR\0")
+		"vkGetAccelerationStructureDeviceAddressKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdWriteAccelerationStructuresPropertiesKHR>() {
-		c_str("vkCmdWriteAccelerationStructuresPropertiesKHR\0")
+		"vkCmdWriteAccelerationStructuresPropertiesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetDeviceAccelerationStructureCompatibilityKHR>() {
-		c_str("vkGetDeviceAccelerationStructureCompatibilityKHR\0")
+		"vkGetDeviceAccelerationStructureCompatibilityKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetAccelerationStructureBuildSizesKHR>() {
-		c_str("vkGetAccelerationStructureBuildSizesKHR\0")
+		"vkGetAccelerationStructureBuildSizesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdTraceRaysKHR>() {
-		c_str("vkCmdTraceRaysKHR\0")
+		"vkCmdTraceRaysKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCreateRayTracingPipelinesKHR>() {
-		c_str("vkCreateRayTracingPipelinesKHR\0")
+		"vkCreateRayTracingPipelinesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR>() {
-		c_str("vkGetRayTracingCaptureReplayShaderGroupHandlesKHR\0")
+		"vkGetRayTracingCaptureReplayShaderGroupHandlesKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdTraceRaysIndirectKHR>() {
-		c_str("vkCmdTraceRaysIndirectKHR\0")
+		"vkCmdTraceRaysIndirectKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkGetRayTracingShaderGroupStackSizeKHR>() {
-		c_str("vkGetRayTracingShaderGroupStackSizeKHR\0")
+		"vkGetRayTracingShaderGroupStackSizeKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<core::PFN_vkCmdSetRayTracingPipelineStackSizeKHR>() {
-		c_str("vkCmdSetRayTracingPipelineStackSizeKHR\0")
+		"vkCmdSetRayTracingPipelineStackSizeKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<xcb::PFN_vkCreateXcbSurfaceKHR>() {
-		c_str("vkCreateXcbSurfaceKHR\0")
+		"vkCreateXcbSurfaceKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<xcb::PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR>() {
-		c_str("vkGetPhysicalDeviceXcbPresentationSupportKHR\0")
+		"vkGetPhysicalDeviceXcbPresentationSupportKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<wayland::PFN_vkCreateWaylandSurfaceKHR>() {
-		c_str("vkCreateWaylandSurfaceKHR\0")
+		"vkCreateWaylandSurfaceKHR\0"
 	}
 	//
 	else if type_id == any::TypeId::of::<wayland::PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR>() {
-		c_str("vkGetPhysicalDeviceWaylandPresentationSupportKHR\0")
+		"vkGetPhysicalDeviceWaylandPresentationSupportKHR\0"
 	}
 	//
 	else {
