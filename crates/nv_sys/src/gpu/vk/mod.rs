@@ -783,6 +783,48 @@ pub fn select_dedicated_queue_family_indices(family_list: &[pod::QueueFamilyProp
 	(family_index[0] as _, family_index[1] as _, family_index[2] as _)
 }
 
+pub fn sort_dedicated_queue_family_indices(family_list: &[pod::QueueFamilyProperties], graphics_list: &mut [u32], compute_list: &mut [u32], transfer_list: &mut [u32]) -> (u32, u32, u32) {
+	let mut graphics_count = 0;
+
+	let mut compute_count = 0;
+
+	let mut transfer_count = 0;
+
+	let mut exclude_mask = 0;
+
+	loop {
+		let (graphics_index, compute_index, transfer_index) = select_dedicated_queue_family_indices(family_list, exclude_mask);
+
+		if (graphics_index == u32::MAX) && (compute_index == u32::MAX) && (transfer_index == u32::MAX) {
+			break;
+		}
+
+		if (graphics_index != u32::MAX) && (graphics_count < graphics_list.len()) {
+			graphics_list[graphics_count] = graphics_index;
+			exclude_mask |= (1 << graphics_index);
+			graphics_count += 1;
+		}
+
+		if (compute_index != u32::MAX) && (compute_index != graphics_index) && (compute_count < compute_list.len()) {
+			compute_list[compute_count] = compute_index;
+			exclude_mask |= (1 << compute_index);
+			compute_count += 1;
+		}
+
+		if (transfer_index != u32::MAX) && (transfer_index != compute_index) && (transfer_index != graphics_index) && (transfer_count < transfer_list.len()) {
+			transfer_list[transfer_count] = transfer_index;
+			exclude_mask |= (1 << transfer_index);
+			transfer_count += 1;
+		}
+
+		if (graphics_count >= graphics_list.len()) && (compute_count >= compute_list.len()) && (transfer_count >= transfer_list.len()) {
+			break;
+		}
+	}
+
+	(graphics_count as _, compute_count as _, transfer_count as _)
+}
+
 #[inline]
 pub fn fn_cstr_typename<Fn: 'static>() -> *const i8 {
 	fn_typename::<Fn>().as_bytes().as_ptr() as *const i8
