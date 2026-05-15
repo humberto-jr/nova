@@ -14,7 +14,7 @@ use crate::{
 use super::{
 	super::spirv, //
 	core,
-	utils,
+	shader,
 	wayland as wl,
 	xcb,
 };
@@ -1529,6 +1529,26 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
+	pub fn create_buffer(&self, device: core::VkDevice, create_info: &core::VkBufferCreateInfo, allocator: &AllocationCallbacks, buffer: &mut core::VkBuffer) -> core::VkResult {
+		unsafe { (self.create_buffer)(device, create_info, allocator.as_ptr(), buffer) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_buffer(&self, device: core::VkDevice, buffer: core::VkBuffer, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_buffer)(device, buffer, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn create_buffer_view(&self, device: core::VkDevice, create_info: &core::VkBufferViewCreateInfo, allocator: &AllocationCallbacks, view: &mut core::VkBufferView) -> core::VkResult {
+		unsafe { (self.create_buffer_view)(device, create_info, allocator.as_ptr(), view) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_buffer_view(&self, device: core::VkDevice, buffer_view: core::VkBufferView, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_buffer_view)(device, buffer_view, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
 	pub fn create_image(&self, device: core::VkDevice, create_info: &core::VkImageCreateInfo, allocator: &AllocationCallbacks, image: &mut core::VkImage) -> core::VkResult {
 		unsafe { (self.create_image)(device, create_info, allocator.as_ptr(), image) }
 	}
@@ -1541,6 +1561,21 @@ impl DeviceFnTable {
 	#[inline(always)]
 	pub fn create_image_view(&self, device: core::VkDevice, create_info: &core::VkImageViewCreateInfo, allocator: &AllocationCallbacks, view: &mut core::VkImageView) -> core::VkResult {
 		unsafe { (self.create_image_view)(device, create_info, allocator.as_ptr(), view) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_image_view(&self, device: core::VkDevice, view: core::VkImageView, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_image_view)(device, view, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn create_sampler(&self, device: core::VkDevice, create_info: &core::VkSamplerCreateInfo, allocator: &AllocationCallbacks, sampler: &mut core::VkSampler) -> core::VkResult {
+		unsafe { (self.create_sampler)(device, create_info, allocator.as_ptr(), sampler) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_sampler(self, device: core::VkDevice, sampler: core::VkSampler, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_sampler)(device, sampler, allocator.as_ptr()) }
 	}
 
 	#[inline(always)]
@@ -1574,8 +1609,63 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
-	pub fn destroy_image_view(&self, device: core::VkDevice, view: core::VkImageView, allocator: &AllocationCallbacks) {
-		unsafe { (self.destroy_image_view)(device, view, allocator.as_ptr()) }
+	pub fn create_graphics_pipelines(
+		&self,
+		device: core::VkDevice,
+		pipeline_cache: core::VkPipelineCache,
+		create_infos: &[core::VkGraphicsPipelineCreateInfo],
+		allocator: &AllocationCallbacks,
+		pipelines: &mut [core::VkPipeline],
+	) -> core::VkResult {
+		unsafe { (self.create_graphics_pipelines)(device, pipeline_cache, create_infos.len() as _, create_infos.as_ptr(), allocator.as_ptr(), pipelines.as_mut_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn create_compute_pipelines(
+		&self,
+		device: core::VkDevice,
+		pipeline_cache: core::VkPipelineCache,
+		create_infos: &[core::VkComputePipelineCreateInfo],
+		allocator: &AllocationCallbacks,
+		pipelines: &mut [core::VkPipeline],
+	) -> core::VkResult {
+		unsafe { (self.create_compute_pipelines)(device, pipeline_cache, create_infos.len() as _, create_infos.as_ptr(), allocator.as_ptr(), pipelines.as_mut_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_pipeline(&self, device: core::VkDevice, pipeline: core::VkPipeline, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_pipeline)(device, pipeline, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn create_pipeline_layout(
+		&self,
+		device: core::VkDevice,
+		create_info: &core::VkPipelineLayoutCreateInfo,
+		allocator: &AllocationCallbacks,
+		pipeline_layout: &mut core::VkPipelineLayout,
+	) -> core::VkResult {
+		unsafe { (self.create_pipeline_layout)(device, create_info, allocator.as_ptr(), pipeline_layout) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_pipeline_layout(&self, device: core::VkDevice, pipeline_layout: core::VkPipelineLayout, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_pipeline_layout)(device, pipeline_layout, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn create_command_pool(&self, device: core::VkDevice, create_info: &core::VkCommandPoolCreateInfo, allocator: &AllocationCallbacks, command_pool: &mut core::VkCommandPool) -> core::VkResult {
+		unsafe { (self.create_command_pool)(device, create_info, allocator.as_ptr(), command_pool) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_command_pool(&self, device: core::VkDevice, command_pool: core::VkCommandPool, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_command_pool)(device, command_pool, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn reset_command_pool(&self, device: core::VkDevice, command_pool: core::VkCommandPool, flags: core::VkCommandPoolResetFlags) -> core::VkResult {
+		unsafe { (self.reset_command_pool)(device, command_pool, flags) }
 	}
 
 	#[inline(always)]
@@ -1584,8 +1674,33 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
+	pub fn begin_command_buffer(&self, command_buffer: core::VkCommandBuffer, begin_info: &core::VkCommandBufferBeginInfo) -> core::VkResult {
+		unsafe { (self.begin_command_buffer)(command_buffer, begin_info) }
+	}
+
+	#[inline(always)]
+	pub fn end_command_buffer(&self, command_buffer: core::VkCommandBuffer) -> core::VkResult {
+		unsafe { (self.end_command_buffer)(command_buffer) }
+	}
+
+	#[inline(always)]
+	pub fn reset_command_buffer(&self, command_buffer: core::VkCommandBuffer) -> core::VkResult {
+		unsafe { (self.reset_command_buffer)(command_buffer, core::VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT) }
+	}
+
+	#[inline(always)]
 	pub fn free_command_buffers(&self, device: core::VkDevice, command_pool: core::VkCommandPool, command_buffers: &[core::VkCommandBuffer]) {
 		unsafe { (self.free_command_buffers)(device, command_pool, command_buffers.len() as _, command_buffers.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn queue_submit(&self, queue: core::VkQueue, submits: &[core::VkSubmitInfo], fence: core::VkFence) -> core::VkResult {
+		unsafe { (self.queue_submit)(queue, submits.len() as _, submits.as_ptr(), fence) }
+	}
+
+	#[inline(always)]
+	pub fn queue_wait_idle(&self, queue: core::VkQueue) -> core::VkResult {
+		unsafe { (self.queue_wait_idle)(queue) }
 	}
 
 	#[inline(always)]
@@ -1614,6 +1729,16 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
+	pub fn create_fence(&self, device: core::VkDevice, create_info: &core::VkFenceCreateInfo, allocator: &AllocationCallbacks, fence: &mut core::VkFence) -> core::VkResult {
+		unsafe { (self.create_fence)(device, create_info, allocator.as_ptr(), fence) }
+	}
+
+	#[inline(always)]
+	pub fn destroy_fence(&self, device: core::VkDevice, fence: core::VkFence, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_fence)(device, fence, allocator.as_ptr()) }
+	}
+
+	#[inline(always)]
 	pub fn wait_for_fences(&self, device: core::VkDevice, fences: &[core::VkFence], wait_all: bool, timeout: u64) -> core::VkResult {
 		unsafe { (self.wait_for_fences)(device, fences.len() as _, fences.as_ptr(), wait_all as _, timeout) }
 	}
@@ -1629,18 +1754,13 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
-	pub fn reset_command_buffer(&self, command_buffer: core::VkCommandBuffer) -> core::VkResult {
-		unsafe { (self.reset_command_buffer)(command_buffer, core::VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT) }
+	pub fn create_semaphore(&self, device: core::VkDevice, create_info: &core::VkSemaphoreCreateInfo, allocator: &AllocationCallbacks, semaphore: &mut core::VkSemaphore) -> core::VkResult {
+		unsafe { (self.create_semaphore)(device, create_info, allocator.as_ptr(), semaphore) }
 	}
 
 	#[inline(always)]
-	pub fn begin_command_buffer(&self, command_buffer: core::VkCommandBuffer, begin_info: &core::VkCommandBufferBeginInfo) -> core::VkResult {
-		unsafe { (self.begin_command_buffer)(command_buffer, begin_info) }
-	}
-
-	#[inline(always)]
-	pub fn end_command_buffer(&self, command_buffer: core::VkCommandBuffer) -> core::VkResult {
-		unsafe { (self.end_command_buffer)(command_buffer) }
+	pub fn destroy_semaphore(&self, device: core::VkDevice, semaphore: core::VkSemaphore, allocator: &AllocationCallbacks) {
+		unsafe { (self.destroy_semaphore)(device, semaphore, allocator.as_ptr()) }
 	}
 
 	#[inline(always)]
@@ -1739,6 +1859,45 @@ impl DeviceFnTable {
 		unsafe { (self.cmd_copy_buffer)(command_buffer, src_buffer, dst_buffer, regions.len() as _, regions.as_ptr()) }
 	}
 
+	pub fn cmd_push_constants<T: marker::Sized>(&self, command_buffer: core::VkCommandBuffer, layout: core::VkPipelineLayout, stage_flags: core::VkShaderStageFlags, offset: u32, values: &[T]) {
+		let byte_size = (values.len() * mem::size_of::<T>()) as u32;
+
+		// NOTE: Unlike the original API, the offset is in units of T, which are
+		// converted into units of bytes here.
+		let byte_offset = offset * (mem::size_of::<T>() as u32);
+
+		// NOTE: Despite 128 bytes being guaranteed by Vulkan, we could check the
+		// maxPushConstantsSize field from the PhysicalDeviceLimits struct for a
+		// custom value.
+		crate::panic_if!((byte_offset + byte_size) > 128);
+
+		unsafe { (self.cmd_push_constants)(command_buffer, layout, stage_flags, byte_offset, byte_size, values.as_ptr() as *mut ()) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_push_constants_for_vertex_stages<T: marker::Sized>(&self, command_buffer: core::VkCommandBuffer, layout: core::VkPipelineLayout, offset: u32, values: &[T]) {
+		self.cmd_push_constants(command_buffer, layout, core::VK_SHADER_STAGE_VERTEX_BIT, offset, values);
+	}
+
+	#[inline(always)]
+	pub fn cmd_push_constants_for_fragment_stages<T: marker::Sized>(&self, command_buffer: core::VkCommandBuffer, layout: core::VkPipelineLayout, offset: u32, values: &[T]) {
+		self.cmd_push_constants(command_buffer, layout, core::VK_SHADER_STAGE_FRAGMENT_BIT, offset, values);
+	}
+
+	#[inline(always)]
+	pub fn cmd_push_constants_for_compute_stages<T: marker::Sized>(&self, command_buffer: core::VkCommandBuffer, layout: core::VkPipelineLayout, offset: u32, values: &[T]) {
+		self.cmd_push_constants(command_buffer, layout, core::VK_SHADER_STAGE_COMPUTE_BIT, offset, values);
+	}
+
+	#[inline(always)]
+	pub fn cmd_push_constants_for_graphics_stages<T: marker::Sized>(&self, command_buffer: core::VkCommandBuffer, layout: core::VkPipelineLayout, offset: u32, values: &[T]) {
+		// NOTE: Only vertex and fragment stages, but could be extended
+		// to other stages like tessellation, geometry, mesh, etc.
+		let flags = core::VK_SHADER_STAGE_VERTEX_BIT | core::VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		self.cmd_push_constants(command_buffer, layout, flags, offset, values);
+	}
+
 	#[inline(always)]
 	pub fn cmd_draw_indexed(&self, command_buffer: core::VkCommandBuffer, index_count: u32, instance_count: u32, first_index: u32, vertex_offset: i32, first_instance: u32) {
 		unsafe { (self.cmd_draw_indexed)(command_buffer, index_count, instance_count, first_index, vertex_offset, first_instance) }
@@ -1757,7 +1916,13 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
-	pub fn create_descriptor_set_layout(&self, device: core::VkDevice, create_info: &core::VkDescriptorSetLayoutCreateInfo, allocator: &AllocationCallbacks, set_layout: &mut core::VkDescriptorSetLayout) -> core::VkResult {
+	pub fn create_descriptor_set_layout(
+		&self,
+		device: core::VkDevice,
+		create_info: &core::VkDescriptorSetLayoutCreateInfo,
+		allocator: &AllocationCallbacks,
+		set_layout: &mut core::VkDescriptorSetLayout,
+	) -> core::VkResult {
 		unsafe { (self.create_descriptor_set_layout)(device, create_info, allocator.as_ptr(), set_layout) }
 	}
 
@@ -1767,7 +1932,13 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
-	pub fn create_descriptor_pool(&self, device: core::VkDevice, create_info: &core::VkDescriptorPoolCreateInfo, allocator: &AllocationCallbacks, descriptor_pool: &mut core::VkDescriptorPool) -> core::VkResult {
+	pub fn create_descriptor_pool(
+		&self,
+		device: core::VkDevice,
+		create_info: &core::VkDescriptorPoolCreateInfo,
+		allocator: &AllocationCallbacks,
+		descriptor_pool: &mut core::VkDescriptorPool,
+	) -> core::VkResult {
 		unsafe { (self.create_descriptor_pool)(device, create_info, allocator.as_ptr(), descriptor_pool) }
 	}
 
