@@ -20,6 +20,33 @@ use super::{
 };
 
 //
+// Default Vulkan filenames per platform:
+//
+
+#[cfg(target_os = "linux")]
+pub const VULKAN_LIBRARY_FILENAME: &str = "libvulkan.so.1\0";
+
+#[cfg(target_os = "freebsd")]
+pub const VULKAN_LIBRARY_FILENAME: &str = "libvulkan.so.1\0";
+
+#[cfg(target_os = "openbsd")]
+pub const VULKAN_LIBRARY_FILENAME: &str = "libvulkan.so.1\0";
+
+#[cfg(target_os = "netbsd")]
+pub const VULKAN_LIBRARY_FILENAME: &str = "libvulkan.so.1\0";
+
+#[cfg(target_os = "android")]
+pub const VULKAN_LIBRARY_FILENAME: &str = "libvulkan.so\0";
+
+#[cfg(target_os = "windows")]
+pub const VULKAN_LIBRARY_FILENAME: &str = "vulkan-1.dll\0";
+
+#[cfg(target_os = "macos")]
+pub const VULKAN_LIBRARY_FILENAME: &str = "libvulkan.1.dylib\0";
+
+pub const MOLTENVK_LIBRARY_FILENAME: &str = "libMoltenVK.dylib\0";
+
+//
 // get_proc_addr helper macro:
 //
 
@@ -151,7 +178,7 @@ impl Loader {
 
 	#[inline(always)]
 	pub fn get_instance_proc_addr<Fn: 'static>(&self, instance: core::VkInstance) -> core::PFN_vkVoidFunction {
-		unsafe { (self.get_instance_proc_addr)(instance, super::fn_typename::<Fn>()) }
+		unsafe { (self.get_instance_proc_addr)(instance, super::fn_cstr_typename::<Fn>()) }
 	}
 
 	#[inline(always)]
@@ -332,7 +359,7 @@ impl InstanceFnTable {
 
 	#[inline(always)]
 	pub fn get_device_proc_addr<Fn: 'static>(&self, device: core::VkDevice) -> core::PFN_vkVoidFunction {
-		unsafe { (self.get_device_proc_addr)(device, super::fn_typename::<Fn>()) }
+		unsafe { (self.get_device_proc_addr)(device, super::fn_cstr_typename::<Fn>()) }
 	}
 
 	pub fn enumerate_physical_devices(&self, instance: core::VkInstance, list: &mut [core::VkPhysicalDevice]) -> (u32, u32) {
