@@ -77,6 +77,74 @@ macro_rules! get_proc_addr {
 }
 
 //
+// InstanceExtension and DeviceExtension:
+//
+
+pub enum InstanceExtension {
+	None,
+
+	Surface(SurfaceFnTable),
+
+	XcbSurface(XcbSurfaceFnTable),
+
+	WaylandSurface(WaylandSurfaceFnTable),
+
+	HeadlessSurface(HeadlessSurfaceFnTable),
+
+	DebugUtils(DebugUtilsFnTable),
+
+	Display(DisplayFnTable),
+}
+
+impl InstanceExtension {
+	pub const fn extension_name(&self) -> &str {
+		match self {
+			Self::None => "",
+
+			Self::Surface(table) => table.extension_name,
+
+			Self::XcbSurface(table) => table.extension_name,
+
+			Self::WaylandSurface(table) => table.extension_name,
+
+			Self::HeadlessSurface(table) => table.extension_name,
+
+			Self::DebugUtils(table) => table.extension_name,
+
+			Self::Display(table) => table.extension_name,
+		}
+	}
+}
+
+pub enum DeviceExtension {
+	None,
+
+	Swapchain(SwapchainFnTable),
+
+	PushDescriptor(PushDescriptorFnTable),
+
+	RayTracingPipeline(RayTracingPipelineFnTable),
+
+	AccelerationStructure(AccelerationStructureFnTable),
+}
+
+impl DeviceExtension {
+	pub const fn extension_name(&self) -> &str {
+		match self {
+			Self::None => "",
+
+			Self::Swapchain(table) => table.extension_name,
+
+			Self::PushDescriptor(table) => table.extension_name,
+
+			Self::RayTracingPipeline(table) => table.extension_name,
+
+			Self::AccelerationStructure(table) => table.extension_name,
+		}
+	}
+}
+
+//
 // AllocationCallbacks:
 //
 

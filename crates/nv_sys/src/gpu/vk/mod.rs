@@ -24,9 +24,9 @@ pub use dispatch::VULKAN_LIBRARY_FILENAME;
 
 pub use dispatch::MOLTENVK_LIBRARY_FILENAME;
 
-pub use dispatch::InstanceExtensionName;
+pub use dispatch::InstanceExtension;
 
-pub use dispatch::DeviceExtensionName;
+pub use dispatch::DeviceExtension;
 
 pub use dispatch::AllocationCallbacks;
 
@@ -801,19 +801,19 @@ pub fn sort_dedicated_queue_family_indices(family_list: &[pod::QueueFamilyProper
 
 		if (graphics_index != u32::MAX) && (graphics_count < graphics_list.len()) {
 			graphics_list[graphics_count] = graphics_index;
-			exclude_mask |= (1 << graphics_index);
+			exclude_mask |= 1 << graphics_index;
 			graphics_count += 1;
 		}
 
 		if (compute_index != u32::MAX) && (compute_index != graphics_index) && (compute_count < compute_list.len()) {
 			compute_list[compute_count] = compute_index;
-			exclude_mask |= (1 << compute_index);
+			exclude_mask |= 1 << compute_index;
 			compute_count += 1;
 		}
 
 		if (transfer_index != u32::MAX) && (transfer_index != compute_index) && (transfer_index != graphics_index) && (transfer_count < transfer_list.len()) {
 			transfer_list[transfer_count] = transfer_index;
-			exclude_mask |= (1 << transfer_index);
+			exclude_mask |= 1 << transfer_index;
 			transfer_count += 1;
 		}
 
