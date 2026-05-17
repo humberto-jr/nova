@@ -77,28 +77,6 @@ macro_rules! get_proc_addr {
 }
 
 //
-// InstanceExtensionName and DeviceExtensionName:
-//
-
-pub struct InstanceExtensionName;
-
-impl InstanceExtensionName {
-	pub const COUNT: usize = 6;
-
-	pub const SURFACE: &str = unsafe { str::from_utf8_unchecked(core::VK_KHR_SURFACE_EXTENSION_NAME) };
-
-	pub const XCB_SURFACE: &str = unsafe { str::from_utf8_unchecked(xcb::VK_KHR_XCB_SURFACE_EXTENSION_NAME) };
-
-	pub const WAYLAND_SURFACE: &str = unsafe { str::from_utf8_unchecked(wl::VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME) };
-
-	pub const HEADLESS_SURFACE: &str = unsafe { str::from_utf8_unchecked(core::VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME) };
-
-	pub const DEBUG_UTILS: &str = unsafe { str::from_utf8_unchecked(core::VK_EXT_DEBUG_UTILS_EXTENSION_NAME) };
-
-	pub const DISPLAY: &str = unsafe { str::from_utf8_unchecked(core::VK_KHR_DISPLAY_EXTENSION_NAME) };
-}
-
-//
 // AllocationCallbacks:
 //
 
@@ -219,6 +197,130 @@ impl Loader {
 	#[inline(always)]
 	pub fn enumerate_instance_version(&self, api_version: &mut u32) -> core::VkResult {
 		unsafe { (self.enumerate_instance_version)(api_version) }
+	}
+
+	pub fn load_surface_table_unchecked(&self, instance: core::VkInstance) -> SurfaceFnTable {
+		let get_instance_proc_addr = self.get_instance_proc_addr;
+
+		SurfaceFnTable {
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_KHR_SURFACE_EXTENSION_NAME) },
+
+			destroy_surface_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkDestroySurfaceKHR\0"),
+
+			get_physical_device_surface_capabilities_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR\0"),
+
+			get_physical_device_surface_formats_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkGetPhysicalDeviceSurfaceFormatsKHR\0"),
+
+			get_physical_device_surface_present_modes_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkGetPhysicalDeviceSurfacePresentModesKHR\0"),
+
+			get_physical_device_surface_support_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkGetPhysicalDeviceSurfaceSupportKHR\0"),
+		}
+	}
+
+	pub fn load_xcb_surface_table_unchecked(&self, instance: core::VkInstance) -> XcbSurfaceFnTable {
+		let get_instance_proc_addr = self.get_instance_proc_addr;
+
+		XcbSurfaceFnTable {
+			extension_name: unsafe { str::from_utf8_unchecked(xcb::VK_KHR_XCB_SURFACE_EXTENSION_NAME) },
+
+			create_xcb_surface_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkCreateXcbSurfaceKHR\0"),
+
+			get_physical_device_xcb_presentation_support_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkGetPhysicalDeviceXcbPresentationSupportKHR\0"),
+		}
+	}
+
+	pub fn load_wayland_surface_table_unchecked(&self, instance: core::VkInstance) -> WaylandSurfaceFnTable {
+		let get_instance_proc_addr = self.get_instance_proc_addr;
+
+		WaylandSurfaceFnTable {
+			extension_name: unsafe { str::from_utf8_unchecked(wl::VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME) },
+
+			create_wayland_surface_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkCreateWaylandSurfaceKHR\0"),
+
+			get_physical_device_wayland_presentation_support_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkGetPhysicalDeviceWaylandPresentationSupportKHR\0"),
+		}
+	}
+
+	pub fn load_headless_surface_table_unchecked(&self, instance: core::VkInstance) -> HeadlessSurfaceFnTable {
+		let get_instance_proc_addr = self.get_instance_proc_addr;
+
+		HeadlessSurfaceFnTable {
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME) },
+
+			create_headless_surface_ext: get_proc_addr!(get_instance_proc_addr, instance, "vkCreateHeadlessSurfaceEXT\0"),
+		}
+	}
+
+	pub fn load_debug_utils_table_unchecked(&self, instance: core::VkInstance) -> DebugUtilsFnTable {
+		let get_instance_proc_addr = self.get_instance_proc_addr;
+
+		DebugUtilsFnTable {
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_EXT_DEBUG_UTILS_EXTENSION_NAME) },
+
+			create_debug_utils_messenger_ext: get_proc_addr!(get_instance_proc_addr, instance, "vkCreateDebugUtilsMessengerEXT\0"),
+
+			destroy_debug_utils_messenger_ext: get_proc_addr!(get_instance_proc_addr, instance, "vkDestroyDebugUtilsMessengerEXT\0"),
+
+			submit_debug_utils_message_ext: get_proc_addr!(get_instance_proc_addr, instance, "vkSubmitDebugUtilsMessageEXT\0"),
+		}
+	}
+
+	pub fn load_display_table_unchecked(&self, instance: core::VkInstance) -> DisplayFnTable {
+		let get_instance_proc_addr = self.get_instance_proc_addr;
+
+		DisplayFnTable {
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_KHR_DISPLAY_EXTENSION_NAME) },
+
+			create_display_plane_surface_khr: get_proc_addr!(get_instance_proc_addr, instance, "vkCreateDisplayPlaneSurfaceKHR\0"),
+		}
+	}
+
+	pub fn load_extension_tables_unchecked(&self, instance: core::VkInstance, name_list: &[&[u8]], extension_list: &mut [super::InstanceExtension]) {
+		crate::panic_if!(name_list.len() != extension_list.len());
+
+		for (n, name) in name_list.iter().enumerate() {
+			let name = *name;
+
+			if name == core::VK_KHR_SURFACE_EXTENSION_NAME {
+				let table = self.load_surface_table_unchecked(instance);
+
+				extension_list[n] = super::InstanceExtension::Surface(table);
+			}
+			//
+			else if name == xcb::VK_KHR_XCB_SURFACE_EXTENSION_NAME {
+				let table = self.load_xcb_surface_table_unchecked(instance);
+
+				extension_list[n] = super::InstanceExtension::XcbSurface(table);
+			}
+			//
+			else if name == wl::VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME {
+				let table = self.load_wayland_surface_table_unchecked(instance);
+
+				extension_list[n] = super::InstanceExtension::WaylandSurface(table);
+			}
+			//
+			else if name == core::VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME {
+				let table = self.load_headless_surface_table_unchecked(instance);
+
+				extension_list[n] = super::InstanceExtension::HeadlessSurface(table);
+			}
+			//
+			else if name == core::VK_EXT_DEBUG_UTILS_EXTENSION_NAME {
+				let table = self.load_debug_utils_table_unchecked(instance);
+
+				extension_list[n] = super::InstanceExtension::DebugUtils(table);
+			}
+			//
+			else if name == core::VK_KHR_DISPLAY_EXTENSION_NAME {
+				let table = self.load_display_table_unchecked(instance);
+
+				extension_list[n] = super::InstanceExtension::Display(table);
+			}
+			//
+			else {
+				extension_list[n] = super::InstanceExtension::None;
+			}
+		}
 	}
 
 	pub fn load_instance_table(&self, instance: core::VkInstance) -> InstanceFnTable {
