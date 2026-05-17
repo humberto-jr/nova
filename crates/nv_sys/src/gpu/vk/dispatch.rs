@@ -82,8 +82,6 @@ macro_rules! get_proc_addr {
 
 pub struct InstanceExtensionName;
 
-pub struct DeviceExtensionName;
-
 impl InstanceExtensionName {
 	pub const COUNT: usize = 6;
 
@@ -98,18 +96,6 @@ impl InstanceExtensionName {
 	pub const DEBUG_UTILS: &str = unsafe { str::from_utf8_unchecked(core::VK_EXT_DEBUG_UTILS_EXTENSION_NAME) };
 
 	pub const DISPLAY: &str = unsafe { str::from_utf8_unchecked(core::VK_KHR_DISPLAY_EXTENSION_NAME) };
-}
-
-impl DeviceExtensionName {
-	pub const COUNT: usize = 4;
-
-	pub const SWAPCHAIN: &str = unsafe { str::from_utf8_unchecked(core::VK_KHR_SWAPCHAIN_EXTENSION_NAME) };
-
-	pub const PUSH_DESCRIPTOR: &str = unsafe { str::from_utf8_unchecked(core::VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME) };
-
-	pub const RAY_TRACING_PIPELINE: &str = unsafe { str::from_utf8_unchecked(core::VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) };
-
-	pub const ACCELERATION_STRUCTURE: &str = unsafe { str::from_utf8_unchecked(core::VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) };
 }
 
 //
@@ -448,7 +434,7 @@ impl InstanceFnTable {
 		let get_device_proc_addr = self.get_device_proc_addr;
 
 		SwapchainFnTable {
-			extension_name: DeviceExtensionName::SWAPCHAIN,
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_KHR_SWAPCHAIN_EXTENSION_NAME) },
 
 			create_swapchain_khr: get_proc_addr!(get_device_proc_addr, device, "vkCreateSwapchainKHR\0"),
 
@@ -470,7 +456,7 @@ impl InstanceFnTable {
 		let get_device_proc_addr = self.get_device_proc_addr;
 
 		PushDescriptorFnTable {
-			extension_name: DeviceExtensionName::PUSH_DESCRIPTOR,
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME) },
 
 			cmd_push_descriptor_set_khr: get_proc_addr!(get_device_proc_addr, device, "vkCmdPushDescriptorSetKHR\0"),
 
@@ -482,7 +468,7 @@ impl InstanceFnTable {
 		let get_device_proc_addr = self.get_device_proc_addr;
 
 		RayTracingPipelineFnTable {
-			extension_name: DeviceExtensionName::RAY_TRACING_PIPELINE,
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) },
 
 			create_ray_tracing_pipelines_khr: get_proc_addr!(get_device_proc_addr, device, "vkCreateRayTracingPipelinesKHR\0"),
 
@@ -504,7 +490,7 @@ impl InstanceFnTable {
 		let get_device_proc_addr = self.get_device_proc_addr;
 
 		AccelerationStructureFnTable {
-			extension_name: DeviceExtensionName::ACCELERATION_STRUCTURE,
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) },
 
 			create_acceleration_structure_khr: get_proc_addr!(get_device_proc_addr, device, "vkCreateAccelerationStructureKHR\0"),
 
@@ -538,31 +524,31 @@ impl InstanceFnTable {
 		}
 	}
 
-	pub fn load_extensions_unchecked(&self, device: core::VkDevice, name_list: &[&str], extension_list: &mut [super::DeviceExtension]) {
+	pub fn load_extension_tables_unchecked(&self, device: core::VkDevice, name_list: &[&[u8]], extension_list: &mut [super::DeviceExtension]) {
 		crate::panic_if!(name_list.len() != extension_list.len());
 
 		for (n, name) in name_list.iter().enumerate() {
 			let name = *name;
 
-			if name == DeviceExtensionName::SWAPCHAIN {
+			if name == core::VK_KHR_SWAPCHAIN_EXTENSION_NAME {
 				let table = self.load_swapchain_table_unchecked(device);
 
 				extension_list[n] = super::DeviceExtension::Swapchain(table);
 			}
 			//
-			else if name == DeviceExtensionName::PUSH_DESCRIPTOR {
+			else if name == core::VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME {
 				let table = self.load_push_descriptor_table_unchecked(device);
 
 				extension_list[n] = super::DeviceExtension::PushDescriptor(table);
 			}
 			//
-			else if name == DeviceExtensionName::RAY_TRACING_PIPELINE {
+			else if name == core::VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME {
 				let table = self.load_ray_tracing_pipeline_table_unchecked(device);
 
 				extension_list[n] = super::DeviceExtension::RayTracingPipeline(table);
 			}
 			//
-			else if name == DeviceExtensionName::ACCELERATION_STRUCTURE {
+			else if name == core::VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME {
 				let table = self.load_acceleration_structure_table_unchecked(device);
 
 				extension_list[n] = super::DeviceExtension::AccelerationStructure(table);
