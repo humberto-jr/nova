@@ -447,6 +447,28 @@ impl Loader {
 }
 
 //
+// StaticLoader:
+//
+
+pub enum StaticLoader {
+	None,
+	Ready(Loader),
+}
+
+impl ops::Deref for StaticLoader {
+	type Target = Loader;
+
+	#[inline(always)]
+	fn deref(&self) -> &Self::Target {
+		if let Self::Ready(loader) = self {
+			loader
+		} else {
+			crate::panic!("Attempt to use an uninitialized Vulkan library");
+		}
+	}
+}
+
+//
 // InstanceFnTable:
 //
 
