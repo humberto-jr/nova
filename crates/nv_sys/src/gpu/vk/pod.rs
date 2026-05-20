@@ -1592,7 +1592,21 @@ impl ExtensionProperties {
 	}
 }
 
-impl LayerProperties {}
+impl LayerProperties {
+	pub fn match_name(&self, name: &[u8]) -> bool {
+		if name.len() == 0 {
+			return false;
+		}
+
+		for n in 0..cmp::min(self.layerName.len(), name.len()) {
+			if (self.layerName[n] as u8) != name[n] {
+				return false;
+			}
+		}
+
+		true
+	}
+}
 
 impl SubmitInfo {
 	pub const fn new(command_buffers: &[core::VkCommandBuffer], wait_semaphores: &[core::VkSemaphore], signal_semaphores: &[core::VkSemaphore], wait_dst_stage: &[core::VkPipelineStageFlags]) -> Self {
@@ -1767,6 +1781,27 @@ impl ImageCreateInfo {
 	#[inline]
 	pub const fn for_depth_buffers(format: core::VkFormat, extent: &core::VkExtent3D) -> Self {
 		Self::new(format, extent, core::VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 1)
+	}
+
+	#[inline]
+	pub const fn for_cubemaps(format: core::VkFormat, face_size: u32, mip_levels: u32) -> Self {
+		Self(core::VkImageCreateInfo {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+			pNext: mem::null(),
+			flags: core::VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT,
+			imageType: core::VK_IMAGE_TYPE_2D,
+			format,
+			extent: Extent3D::new(face_size, face_size, 1).0,
+			mipLevels: mip_levels,
+			arrayLayers: 6,
+			samples: core::VK_SAMPLE_COUNT_1_BIT,
+			tiling: core::VK_IMAGE_TILING_OPTIMAL,
+			usage: core::VK_IMAGE_USAGE_SAMPLED_BIT | core::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | core::VK_IMAGE_USAGE_TRANSFER_SRC_BIT | core::VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+			sharingMode: core::VK_SHARING_MODE_EXCLUSIVE,
+			queueFamilyIndexCount: 0,
+			pQueueFamilyIndices: mem::null(),
+			initialLayout: core::VK_IMAGE_LAYOUT_UNDEFINED,
+		})
 	}
 }
 
