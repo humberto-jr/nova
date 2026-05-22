@@ -2121,6 +2121,45 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
+	pub fn cmd_copy_image_to_buffer(
+		&self,
+		command_buffer: core::VkCommandBuffer,
+		src_image: core::VkImage,
+		src_image_layout: core::VkImageLayout,
+		dst_buffer: core::VkBuffer,
+		regions: &[core::VkBufferImageCopy],
+	) {
+		unsafe { (self.cmd_copy_image_to_buffer)(command_buffer, src_image, src_image_layout, dst_buffer, regions.len() as _, regions.as_ptr()) }
+	}
+
+	#[inline(always)]
+	pub fn cmd_pipeline_barrier(
+		&self,
+		command_buffer: core::VkCommandBuffer,
+		src_stage_mask: core::VkPipelineStageFlags,
+		dst_stage_mask: core::VkPipelineStageFlags,
+		dependency_flags: core::VkDependencyFlags,
+		memory_barriers: &[core::VkMemoryBarrier],
+		buffer_memory_barriers: &[core::VkBufferMemoryBarrier],
+		image_memory_barriers: &[core::VkImageMemoryBarrier],
+	) {
+		unsafe {
+			(self.cmd_pipeline_barrier)(
+				command_buffer,
+				src_stage_mask,
+				dst_stage_mask,
+				dependency_flags,
+				memory_barriers.len() as _,
+				memory_barriers.as_ptr(),
+				buffer_memory_barriers.len() as _,
+				buffer_memory_barriers.as_ptr(),
+				image_memory_barriers.len() as _,
+				image_memory_barriers.as_ptr(),
+			)
+		}
+	}
+
+	#[inline(always)]
 	pub fn create_descriptor_set_layout(
 		&self,
 		device: core::VkDevice,
