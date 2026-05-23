@@ -45,13 +45,17 @@ macro_rules! panic_if {
 
 #[macro_export]
 macro_rules! coerce_unsized_block {
-	($unsized_type:ty, $block:expr) => {
+	($unsized_type:ty, $block:expr) => {{
+		extern crate alloc;
+
+		use mem::AllocatedBlock;
+
 		unsafe {
 			let (raw, count) = $block.into_raw();
 
-			let boxed: ::alloc::boxed::Box<$unsized_type> = ::alloc::boxed::Box::from_raw(raw);
+			let boxed: alloc::boxed::Box<$unsized_type> = alloc::boxed::Box::from_raw(raw);
 
-			$crate::mem::UnsizedBlock::<$unsized_type>::from_raw(raw, ::alloc::boxed::Box::leak(boxed), count)
+			$crate::mem::UnsizedBlock::<$unsized_type>::from_raw(raw, alloc::boxed::Box::leak(boxed), count)
 		}
-	};
+	}};
 }
