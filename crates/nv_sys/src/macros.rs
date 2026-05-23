@@ -48,7 +48,7 @@ macro_rules! coerce_unsized_block {
 	($unsized_type:ty, $block:expr) => {{
 		extern crate alloc;
 
-		use mem::AllocatedBlock;
+		use $crate::mem::AllocatedBlock;
 
 		unsafe {
 			let (raw, count) = $block.into_raw();
