@@ -1874,8 +1874,10 @@ impl DeviceFnTable {
 	}
 
 	#[inline(always)]
-	pub fn allocate_command_buffers(&self, device: core::VkDevice, allocate_info: &core::VkCommandBufferAllocateInfo, command_buffer: &mut core::VkCommandBuffer) -> core::VkResult {
-		unsafe { (self.allocate_command_buffers)(device, allocate_info, command_buffer) }
+	pub fn allocate_command_buffers(&self, device: core::VkDevice, allocate_info: &core::VkCommandBufferAllocateInfo, command_buffers: &mut [core::VkCommandBuffer]) -> core::VkResult {
+		crate::panic_if!(command_buffers.len() < allocate_info.commandBufferCount as usize);
+
+		unsafe { (self.allocate_command_buffers)(device, allocate_info, command_buffers.as_mut_ptr()) }
 	}
 
 	#[inline(always)]
