@@ -1446,10 +1446,10 @@ impl DrawIndirectCommand {}
 
 impl ImageSubresourceRange {
 	#[inline]
-	pub const fn new() -> Self {
+	pub const fn new(base_mip_level: u32) -> Self {
 		Self(core::VkImageSubresourceRange {
 			aspectMask: core::VK_IMAGE_ASPECT_COLOR_BIT,
-			baseMipLevel: 0,
+			baseMipLevel: base_mip_level,
 			levelCount: 1,
 			baseArrayLayer: 0,
 			layerCount: 1,
@@ -1457,7 +1457,177 @@ impl ImageSubresourceRange {
 	}
 }
 
-impl ImageMemoryBarrier {}
+impl ImageMemoryBarrier {
+	#[inline]
+	pub const fn from_undefined_to_destination_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: 0,
+			dstAccessMask: core::VK_ACCESS_TRANSFER_WRITE_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_UNDEFINED,
+			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_destination_to_present_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: core::VK_ACCESS_TRANSFER_WRITE_BIT,
+			dstAccessMask: 0,
+			oldLayout: core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			newLayout: core::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_destination_to_readonly_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: core::VK_ACCESS_TRANSFER_WRITE_BIT,
+			dstAccessMask: core::VK_ACCESS_SHADER_READ_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			newLayout: core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_readonly_to_destination_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: core::VK_ACCESS_SHADER_READ_BIT,
+			dstAccessMask: core::VK_ACCESS_TRANSFER_WRITE_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_destination_to_source_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: core::VK_ACCESS_TRANSFER_WRITE_BIT,
+			dstAccessMask: core::VK_ACCESS_TRANSFER_READ_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_source_to_readonly_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: core::VK_ACCESS_TRANSFER_READ_BIT,
+			dstAccessMask: core::VK_ACCESS_SHADER_READ_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+			newLayout: core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_undefined_to_source_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: 0,
+			dstAccessMask: core::VK_ACCESS_TRANSFER_READ_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_UNDEFINED,
+			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_source_to_destination_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: core::VK_ACCESS_TRANSFER_READ_BIT,
+			dstAccessMask: core::VK_ACCESS_TRANSFER_WRITE_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_readonly_to_source_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: core::VK_ACCESS_SHADER_READ_BIT,
+			dstAccessMask: core::VK_ACCESS_TRANSFER_READ_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	pub fn new(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange, old_layout: core::VkImageLayout, new_layout: core::VkImageLayout) -> Self {
+		match (old_layout, new_layout) {
+			(core::VK_IMAGE_LAYOUT_UNDEFINED, core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) => Self::from_undefined_to_destination_layout(image, subresource_range),
+
+			(core::VK_IMAGE_LAYOUT_UNDEFINED, core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL) => Self::from_undefined_to_source_layout(image, subresource_range),
+
+			(core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) => Self::from_destination_to_readonly_layout(image, subresource_range),
+
+			(core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL) => Self::from_destination_to_source_layout(image, subresource_range),
+
+			(core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, core::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR) => Self::from_destination_to_present_layout(image, subresource_range),
+
+			(core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) => Self::from_source_to_destination_layout(image, subresource_range),
+
+			(core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) => Self::from_source_to_readonly_layout(image, subresource_range),
+
+			(core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) => Self::from_readonly_to_destination_layout(image, subresource_range),
+
+			(core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL) => Self::from_readonly_to_source_layout(image, subresource_range),
+
+			_ => {
+				crate::panic!("Image layout transition not available; from VkImageLayout = {old_layout} to VkImageLayout = {new_layout}");
+			},
+		}
+	}
+}
 
 impl MemoryBarrier {}
 
