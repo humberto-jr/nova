@@ -1436,7 +1436,22 @@ impl BaseInStructure {}
 
 impl BaseOutStructure {}
 
-impl BufferMemoryBarrier {}
+impl BufferMemoryBarrier {
+	#[inline]
+	pub const fn new(buffer: core::VkBuffer, offset: core::VkDeviceSize, size: core::VkDeviceSize, src_access_mask: core::VkAccessFlags, dst_access_mask: core::VkAccessFlags) -> Self {
+		Self(core::VkBufferMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: src_access_mask,
+			dstAccessMask: dst_access_mask,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			buffer,
+			offset,
+			size,
+		})
+	}
+}
 
 impl DispatchIndirectCommand {}
 
@@ -1446,9 +1461,31 @@ impl DrawIndirectCommand {}
 
 impl ImageSubresourceRange {
 	#[inline]
-	pub const fn new(base_mip_level: u32) -> Self {
+	pub const fn for_color_aspect_views(base_mip_level: u32) -> Self {
 		Self(core::VkImageSubresourceRange {
 			aspectMask: core::VK_IMAGE_ASPECT_COLOR_BIT,
+			baseMipLevel: base_mip_level,
+			levelCount: 1,
+			baseArrayLayer: 0,
+			layerCount: 1,
+		})
+	}
+
+	#[inline]
+	pub const fn for_depth_aspect_views(base_mip_level: u32) -> Self {
+		Self(core::VkImageSubresourceRange {
+			aspectMask: core::VK_IMAGE_ASPECT_DEPTH_BIT,
+			baseMipLevel: base_mip_level,
+			levelCount: 1,
+			baseArrayLayer: 0,
+			layerCount: 1,
+		})
+	}
+
+	#[inline]
+	pub const fn for_depth_stencil_aspect_views(base_mip_level: u32) -> Self {
+		Self(core::VkImageSubresourceRange {
+			aspectMask: core::VK_IMAGE_ASPECT_DEPTH_BIT | core::VK_IMAGE_ASPECT_STENCIL_BIT,
 			baseMipLevel: base_mip_level,
 			levelCount: 1,
 			baseArrayLayer: 0,
@@ -1467,6 +1504,54 @@ impl ImageMemoryBarrier {
 			dstAccessMask: core::VK_ACCESS_TRANSFER_WRITE_BIT,
 			oldLayout: core::VK_IMAGE_LAYOUT_UNDEFINED,
 			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_undefined_to_color_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: 0,
+			dstAccessMask: core::VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_UNDEFINED,
+			newLayout: core::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_undefined_to_depth_stencil_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: 0,
+			dstAccessMask: core::VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | core::VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_UNDEFINED,
+			newLayout: core::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_undefined_to_source_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: 0,
+			dstAccessMask: core::VK_ACCESS_TRANSFER_READ_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_UNDEFINED,
+			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
 			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
 			image,
@@ -1523,6 +1608,38 @@ impl ImageMemoryBarrier {
 	}
 
 	#[inline]
+	pub const fn from_present_to_color_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: 0,
+			dstAccessMask: core::VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+			oldLayout: core::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+			newLayout: core::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
+	pub const fn from_color_to_present_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
+		Self(core::VkImageMemoryBarrier {
+			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+			pNext: mem::null(),
+			srcAccessMask: core::VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+			dstAccessMask: 0,
+			oldLayout: core::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+			newLayout: core::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
+			image,
+			subresourceRange: *subresource_range,
+		})
+	}
+
+	#[inline]
 	pub const fn from_destination_to_source_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
 		Self(core::VkImageMemoryBarrier {
 			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
@@ -1547,22 +1664,6 @@ impl ImageMemoryBarrier {
 			dstAccessMask: core::VK_ACCESS_SHADER_READ_BIT,
 			oldLayout: core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 			newLayout: core::VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
-			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
-			image,
-			subresourceRange: *subresource_range,
-		})
-	}
-
-	#[inline]
-	pub const fn from_undefined_to_source_layout(image: core::VkImage, subresource_range: &core::VkImageSubresourceRange) -> Self {
-		Self(core::VkImageMemoryBarrier {
-			sType: core::VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-			pNext: mem::null(),
-			srcAccessMask: 0,
-			dstAccessMask: core::VK_ACCESS_TRANSFER_READ_BIT,
-			oldLayout: core::VK_IMAGE_LAYOUT_UNDEFINED,
-			newLayout: core::VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 			srcQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
 			dstQueueFamilyIndex: core::VK_QUEUE_FAMILY_IGNORED,
 			image,
@@ -1908,7 +2009,7 @@ impl BufferViewCreateInfo {}
 
 impl ImageCreateInfo {
 	#[inline]
-	pub const fn new(format: core::VkFormat, extent: &core::VkExtent3D, usage: core::VkImageUsageFlagBits, mip_levels: u32) -> Self {
+	pub const fn new(format: core::VkFormat, extent: &core::VkExtent3D, usage: core::VkImageUsageFlagBits, mip_levels: u32, array_layers: u32, samples: core::VkSampleCountFlags) -> Self {
 		Self(core::VkImageCreateInfo {
 			sType: core::VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 			pNext: mem::null(),
@@ -1916,15 +2017,21 @@ impl ImageCreateInfo {
 
 			imageType: if extent.depth > 1 {
 				core::VK_IMAGE_TYPE_3D
-			} else {
+			}
+			//
+			else if extent.height > 1 {
 				core::VK_IMAGE_TYPE_2D
+			}
+			//
+			else {
+				core::VK_IMAGE_TYPE_1D
 			},
 
 			format,
 			extent: *extent,
 			mipLevels: mip_levels,
-			arrayLayers: 1,
-			samples: core::VK_SAMPLE_COUNT_1_BIT,
+			arrayLayers: array_layers,
+			samples,
 			tiling: core::VK_IMAGE_TILING_OPTIMAL,
 			usage,
 			sharingMode: core::VK_SHARING_MODE_EXCLUSIVE,
@@ -1935,26 +2042,38 @@ impl ImageCreateInfo {
 	}
 
 	#[inline]
-	pub const fn for_sampled_textures(format: core::VkFormat, extent: &core::VkExtent3D, mip_levels: u32) -> Self {
-		let usage = core::VK_IMAGE_USAGE_SAMPLED_BIT | core::VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	pub const fn for_sampled_textures(format: core::VkFormat, extent: &core::VkExtent3D, mip_levels: u32, image_layers: u32) -> Self {
+		let usage = core::VK_IMAGE_USAGE_SAMPLED_BIT | core::VK_IMAGE_USAGE_TRANSFER_SRC_BIT | core::VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
-		Self::new(format, extent, usage, mip_levels)
+		Self::new(format, extent, usage, mip_levels, image_layers, core::VK_SAMPLE_COUNT_1_BIT)
 	}
 
 	#[inline]
-	pub const fn for_render_targets(format: core::VkFormat, extent: &core::VkExtent3D) -> Self {
+	pub const fn for_render_targets(format: core::VkFormat, extent: &core::VkExtent3D, image_layers: u32, samples: core::VkSampleCountFlags) -> Self {
 		let usage = core::VK_IMAGE_USAGE_SAMPLED_BIT | core::VK_IMAGE_USAGE_TRANSFER_SRC_BIT | core::VK_IMAGE_USAGE_TRANSFER_DST_BIT | core::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-		Self::new(format, extent, usage, 1)
+		Self::new(format, extent, usage, 1, image_layers, samples)
 	}
 
 	#[inline]
-	pub const fn for_depth_buffers(format: core::VkFormat, extent: &core::VkExtent3D) -> Self {
-		Self::new(format, extent, core::VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 1)
+	pub const fn for_depth_buffers(format: core::VkFormat, extent: &core::VkExtent3D, image_layers: u32, samples: core::VkSampleCountFlags) -> Self {
+		let usage = core::VK_IMAGE_USAGE_SAMPLED_BIT | core::VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+
+		Self::new(format, extent, usage, 1, image_layers, samples)
 	}
 
 	#[inline]
-	pub const fn for_cubemaps(format: core::VkFormat, face_size: u32, mip_levels: u32) -> Self {
+	pub const fn for_storage_images(format: core::VkFormat, extent: &core::VkExtent3D, mip_levels: u32, image_layers: u32) -> Self {
+		let usage = core::VK_IMAGE_USAGE_STORAGE_BIT | core::VK_IMAGE_USAGE_SAMPLED_BIT | core::VK_IMAGE_USAGE_TRANSFER_SRC_BIT | core::VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+
+		Self::new(format, extent, usage, mip_levels, image_layers, core::VK_SAMPLE_COUNT_1_BIT)
+	}
+
+	#[inline]
+	pub const fn for_static_cubemaps(format: core::VkFormat, face_size: u32, mip_levels: u32) -> Self {
+		// NOTE: This is the setup for a static cubemap. For dynamic ones the usage field will
+		// require the VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT so that its underlying image can be
+		// written to in shaders. Apparently, having this bit set by default would imply an overhead.
 		Self(core::VkImageCreateInfo {
 			sType: core::VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
 			pNext: mem::null(),
@@ -1966,7 +2085,7 @@ impl ImageCreateInfo {
 			arrayLayers: 6,
 			samples: core::VK_SAMPLE_COUNT_1_BIT,
 			tiling: core::VK_IMAGE_TILING_OPTIMAL,
-			usage: core::VK_IMAGE_USAGE_SAMPLED_BIT | core::VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | core::VK_IMAGE_USAGE_TRANSFER_SRC_BIT | core::VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+			usage: core::VK_IMAGE_USAGE_SAMPLED_BIT | core::VK_IMAGE_USAGE_TRANSFER_SRC_BIT | core::VK_IMAGE_USAGE_TRANSFER_DST_BIT,
 			sharingMode: core::VK_SHARING_MODE_EXCLUSIVE,
 			queueFamilyIndexCount: 0,
 			pQueueFamilyIndices: mem::null(),
@@ -2163,7 +2282,12 @@ impl PipelineRasterizationStateCreateInfo {
 			rasterizerDiscardEnable: core::VK_FALSE,
 			polygonMode: core::VK_POLYGON_MODE_FILL,
 			cullMode: core::VK_CULL_MODE_BACK_BIT,
+
+			// NOTE: This is valid to emulate the OpenGL coordinate system
+			// in the VkViewport definition; see the corresponding note in
+			// Viewport::new().
 			frontFace: core::VK_FRONT_FACE_CLOCKWISE,
+
 			depthBiasEnable: core::VK_FALSE,
 			depthBiasConstantFactor: 0.0,
 			depthBiasClamp: 0.0,
@@ -2220,20 +2344,34 @@ impl PipelineDepthStencilStateCreateInfo {
 			front: StencilOpState::new().0,
 			back: StencilOpState::new().0,
 			minDepthBounds: 0.0,
-			maxDepthBounds: 0.0,
+			maxDepthBounds: 1.0,
 		})
 	}
 }
 
 impl PipelineColorBlendAttachmentState {
 	#[inline]
-	pub const fn new() -> Self {
+	pub const fn with_blending() -> Self {
 		Self(core::VkPipelineColorBlendAttachmentState {
 			blendEnable: core::VK_TRUE,
 			srcColorBlendFactor: core::VK_BLEND_FACTOR_SRC_ALPHA,
 			dstColorBlendFactor: core::VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
 			colorBlendOp: core::VK_BLEND_OP_ADD,
-			srcAlphaBlendFactor: core::VK_BLEND_FACTOR_SRC_ALPHA,
+			srcAlphaBlendFactor: core::VK_BLEND_FACTOR_ONE,
+			dstAlphaBlendFactor: core::VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+			alphaBlendOp: core::VK_BLEND_OP_ADD,
+			colorWriteMask: core::VK_COLOR_COMPONENT_R_BIT | core::VK_COLOR_COMPONENT_G_BIT | core::VK_COLOR_COMPONENT_B_BIT | core::VK_COLOR_COMPONENT_A_BIT,
+		})
+	}
+
+	#[inline]
+	pub const fn without_blending() -> Self {
+		Self(core::VkPipelineColorBlendAttachmentState {
+			blendEnable: core::VK_FALSE,
+			srcColorBlendFactor: core::VK_BLEND_FACTOR_SRC_ALPHA,
+			dstColorBlendFactor: core::VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+			colorBlendOp: core::VK_BLEND_OP_ADD,
+			srcAlphaBlendFactor: core::VK_BLEND_FACTOR_ONE,
 			dstAlphaBlendFactor: core::VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
 			alphaBlendOp: core::VK_BLEND_OP_ADD,
 			colorWriteMask: core::VK_COLOR_COMPONENT_R_BIT | core::VK_COLOR_COMPONENT_G_BIT | core::VK_COLOR_COMPONENT_B_BIT | core::VK_COLOR_COMPONENT_A_BIT,
