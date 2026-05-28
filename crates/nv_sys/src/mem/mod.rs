@@ -7,6 +7,7 @@ use core::{
 	mem,
 	pin,
 	ptr,
+	slice,
 };
 
 use crate::{
@@ -178,6 +179,16 @@ pub const unsafe fn uninit<T>() -> T {
 #[inline]
 pub const fn uninit_array<T, const MAX_LEN: usize>() -> [mem::MaybeUninit<T>; MAX_LEN] {
 	[const { mem::MaybeUninit::uninit() }; MAX_LEN]
+}
+
+#[inline]
+pub const fn as_bytes<T>(buf: &[T]) -> &[host::Byte] {
+	unsafe { slice::from_raw_parts(buf.as_ptr() as *const host::Byte, buf.len() * mem::size_of::<T>()) }
+}
+
+#[inline]
+pub const fn as_mut_bytes<T>(buf: &mut [T]) -> &mut [host::Byte] {
+	unsafe { slice::from_raw_parts_mut(buf.as_mut_ptr() as *mut host::Byte, buf.len() * mem::size_of::<T>()) }
 }
 
 //

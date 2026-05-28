@@ -95,6 +95,11 @@ impl super::InterfaceVariable {
 		super::Typename::from(self.unwrap())
 	}
 
+	#[inline]
+	pub const fn is_built_in(&self) -> bool {
+		self.unwrap().built_in > -1
+	}
+
 	//
 	// Internals:
 	//
