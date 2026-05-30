@@ -1,6 +1,7 @@
 use ::core;
 use core::{
 	cell, //
+	clone,
 	cmp,
 	fmt,
 	hint,
@@ -26,7 +27,16 @@ unsafe impl<T: marker::Send> marker::Send for SpinLock<T> {}
 
 unsafe impl<T: marker::Send + marker::Sync> marker::Sync for SpinLock<T> {}
 
+impl<T: clone::Clone> clone::Clone for SpinLock<T> {
+	#[inline]
+	fn clone(&self) -> Self {
+		let copy = (*self.shared_read()).clone();
+		Self::new(copy)
+	}
+}
+
 impl<'s, T> SpinLock<T> {
+	#[inline]
 	pub const fn new(value: T) -> Self {
 		Self {
 			state: atomic::AtomicU32::new(0),
