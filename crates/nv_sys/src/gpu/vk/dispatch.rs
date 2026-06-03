@@ -622,6 +622,30 @@ impl InstanceFnTable {
 		unsafe { (self.get_physical_device_format_properties)(physical_device, format, properties) }
 	}
 
+	pub fn select_supported_format(&self, physical_device: core::VkPhysicalDevice, format_list: &[core::VkFormat], features: core::VkFormatFeatureFlagBits) -> core::VkFormat {
+		let mut result: core::VkFormat = core::VK_FORMAT_UNDEFINED;
+
+		for format in format_list {
+			let format = *format;
+
+			let mut properties: core::VkFormatProperties = unsafe { mem::zeroed() };
+
+			self.get_physical_device_format_properties(physical_device, format, &mut properties);
+
+			if (properties.optimalTilingFeatures & features) == features {
+				result = format;
+				break;
+			}
+
+			if (properties.linearTilingFeatures & features) == features {
+				result = format;
+				break;
+			}
+		}
+
+		result
+	}
+
 	pub fn load_swapchain_table_unchecked(&self, device: core::VkDevice) -> SwapchainFnTable {
 		let get_device_proc_addr = self.get_device_proc_addr;
 
@@ -2103,6 +2127,11 @@ impl DeviceFnTable {
 		let flags = core::VK_SHADER_STAGE_VERTEX_BIT | core::VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		self.cmd_push_constants(command_buffer, layout, flags, offset, values);
+	}
+
+	#[inline(always)]
+	pub fn cmd_draw(&self, command_buffer: core::VkCommandBuffer, vertex_count: u32, instance_count: u32, first_vertex: u32, first_instance: u32) {
+		unsafe { (self.cmd_draw)(command_buffer, vertex_count, instance_count, first_vertex, first_instance) }
 	}
 
 	#[inline(always)]
