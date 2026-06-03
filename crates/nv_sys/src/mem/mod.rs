@@ -44,6 +44,8 @@ pub use mem::transmute;
 
 pub use ptr::null_mut as null;
 
+pub use ptr::copy_nonoverlapping as copy;
+
 pub use mem::MaybeUninit;
 
 pub use mem::ManuallyDrop;
