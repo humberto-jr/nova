@@ -21,7 +21,24 @@ impl spec::PointerButton {
 
 			evdev::BTN_MISC => Self::Other,
 
-			_ => return Self::Unknown,
+			_ => Self::Unknown,
+		}
+	}
+
+	pub const fn from_xcb_button(button: u8) -> Self {
+		match button {
+			1 => Self::Left,
+			2 => Self::Middle,
+			3 => Self::Right,
+
+			4 | 5 => Self::Wheel,
+
+			8 => Self::Forward,
+			9 => Self::Backward,
+
+			10 => Self::Other,
+
+			_ => Self::Unknown,
 		}
 	}
 }
