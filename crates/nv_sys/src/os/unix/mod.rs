@@ -1,3 +1,5 @@
+use ::core::marker;
+
 use crate::spec;
 
 mod impl_dynamic_library;
@@ -32,6 +34,15 @@ pub type OpaquePtr = *mut ();
 pub struct File(pub Descriptor);
 
 pub struct DynamicLibrary(pub OpaquePtr);
+
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum Clock {
+	Realtime,
+	Monotonic,
+	ProcessCPUTimeID,
+	ThreadCPUTimeID,
+}
 
 pub use base::TimeSpec;
 
