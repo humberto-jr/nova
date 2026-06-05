@@ -2,6 +2,9 @@
 
 use ::core::ops;
 
+pub extern crate nv_ffi;
+pub use nv_ffi as ffi;
+
 pub mod bit;
 pub mod gpu;
 pub mod macros;
@@ -28,6 +31,8 @@ pub use host::Byte;
 
 pub use host::Time;
 
+pub use host::OpaquePtr;
+
 pub use spec::Error;
 
 pub use spec::Result;
@@ -35,6 +40,8 @@ pub use spec::Result;
 pub use spec::LogicalKey;
 
 pub use spec::PointerButton;
+
+pub use spec::JoystickButton;
 
 //
 // Windowing system:
@@ -113,7 +120,7 @@ impl File {
 pub struct DynamicLibrary(host::DynamicLibrary);
 
 impl ops::Deref for DynamicLibrary {
-	type Target = dyn spec::DynamicLibrary<Address = *const ()>;
+	type Target = dyn spec::DynamicLibrary<Address = host::OpaquePtr>;
 
 	#[inline(always)]
 	fn deref(&self) -> &Self::Target {
