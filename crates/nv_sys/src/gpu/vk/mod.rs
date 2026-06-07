@@ -64,6 +64,28 @@ pub fn loader() -> spec::Result<Loader> {
 }
 
 //
+// Shader helpers:
+//
+
+pub use shader::MAX_STAGE_COUNT;
+
+pub use shader::MAX_VERTEX_ATTRIBUTE_COUNT;
+
+pub use shader::MAX_DESCRIPTOR_SET_COUNT;
+
+pub use shader::MAX_DESCRIPTOR_BINDING_COUNT;
+
+pub use shader::Stage as ShaderStage;
+
+pub use shader::EntryPoint as ShaderEntryPoint;
+
+pub use shader::EntryPointList as ShaderEntryPointList;
+
+pub use shader::FoundEntryPoint as FoundShaderEntryPoint;
+
+pub use shader::PipelineAssembly;
+
+//
 // Base types:
 //
 
