@@ -3,3 +3,4 @@ pub mod linux;
 pub mod pthread;
 pub mod wayland;
 pub mod x11;
+pub mod xkbcommon;
