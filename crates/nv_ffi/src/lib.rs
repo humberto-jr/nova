@@ -7,6 +7,8 @@ pub extern crate libc;
 
 pub mod khronos;
 pub mod stb;
+
+#[cfg(unix)]
 pub mod unix;
 
 pub use ::core;
