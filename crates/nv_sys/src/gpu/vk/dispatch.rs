@@ -121,6 +121,8 @@ pub enum DeviceExtension {
 
 	Swapchain(SwapchainFnTable),
 
+	DebugUtils(DeviceDebugUtilsFnTable),
+
 	PushDescriptor(PushDescriptorFnTable),
 
 	RayTracingPipeline(RayTracingPipelineFnTable),
@@ -134,6 +136,8 @@ impl DeviceExtension {
 			Self::None => "",
 
 			Self::Swapchain(table) => table.extension_name,
+
+			Self::DebugUtils(table) => table.extension_name,
 
 			Self::PushDescriptor(table) => table.extension_name,
 
@@ -668,6 +672,30 @@ impl InstanceFnTable {
 		}
 	}
 
+	pub fn load_debug_utils_table_unchecked(&self, device: core::VkDevice) -> DeviceDebugUtilsFnTable {
+		let get_device_proc_addr = self.get_device_proc_addr;
+
+		DeviceDebugUtilsFnTable {
+			extension_name: unsafe { str::from_utf8_unchecked(core::VK_EXT_DEBUG_UTILS_EXTENSION_NAME) },
+
+			set_debug_utils_object_name_ext: get_proc_addr!(get_device_proc_addr, device, "vkSetDebugUtilsObjectNameEXT\0"),
+
+			set_debug_utils_object_tag_ext: get_proc_addr!(get_device_proc_addr, device, "vkSetDebugUtilsObjectTagEXT\0"),
+
+			queue_begin_debug_utils_label_ext: get_proc_addr!(get_device_proc_addr, device, "vkQueueBeginDebugUtilsLabelEXT\0"),
+
+			queue_end_debug_utils_label_ext: get_proc_addr!(get_device_proc_addr, device, "vkQueueEndDebugUtilsLabelEXT\0"),
+
+			queue_insert_debug_utils_label_ext: get_proc_addr!(get_device_proc_addr, device, "vkQueueInsertDebugUtilsLabelEXT\0"),
+
+			cmd_begin_debug_utils_label_ext: get_proc_addr!(get_device_proc_addr, device, "vkCmdBeginDebugUtilsLabelEXT\0"),
+
+			cmd_end_debug_utils_label_ext: get_proc_addr!(get_device_proc_addr, device, "vkCmdEndDebugUtilsLabelEXT\0"),
+
+			cmd_insert_debug_utils_label_ext: get_proc_addr!(get_device_proc_addr, device, "vkCmdInsertDebugUtilsLabelEXT\0"),
+		}
+	}
+
 	pub fn load_push_descriptor_table_unchecked(&self, device: core::VkDevice) -> PushDescriptorFnTable {
 		let get_device_proc_addr = self.get_device_proc_addr;
 
@@ -750,6 +778,12 @@ impl InstanceFnTable {
 				let table = self.load_swapchain_table_unchecked(device);
 
 				extension_list[n] = super::DeviceExtension::Swapchain(table);
+			}
+			//
+			else if name == core::VK_EXT_DEBUG_UTILS_EXTENSION_NAME {
+				let table = self.load_debug_utils_table_unchecked(device);
+
+				extension_list[n] = super::DeviceExtension::DebugUtils(table);
 			}
 			//
 			else if name == core::VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME {
@@ -2314,6 +2348,34 @@ impl SwapchainFnTable {
 	}
 }
 
+//
+// DeviceDebugUtilsFnTable:
+//
+
+pub struct DeviceDebugUtilsFnTable {
+	pub extension_name: &'static str,
+
+	pub set_debug_utils_object_name_ext: core::PFN_vkSetDebugUtilsObjectNameEXT,
+
+	pub set_debug_utils_object_tag_ext: core::PFN_vkSetDebugUtilsObjectTagEXT,
+
+	pub queue_begin_debug_utils_label_ext: core::PFN_vkQueueBeginDebugUtilsLabelEXT,
+
+	pub queue_end_debug_utils_label_ext: core::PFN_vkQueueEndDebugUtilsLabelEXT,
+
+	pub queue_insert_debug_utils_label_ext: core::PFN_vkQueueInsertDebugUtilsLabelEXT,
+
+	pub cmd_begin_debug_utils_label_ext: core::PFN_vkCmdBeginDebugUtilsLabelEXT,
+
+	pub cmd_end_debug_utils_label_ext: core::PFN_vkCmdEndDebugUtilsLabelEXT,
+
+	pub cmd_insert_debug_utils_label_ext: core::PFN_vkCmdInsertDebugUtilsLabelEXT,
+}
+
+//
+// PushDescriptorFnTable:
+//
+
 pub struct PushDescriptorFnTable {
 	pub extension_name: &'static str,
 
@@ -2321,6 +2383,10 @@ pub struct PushDescriptorFnTable {
 
 	pub cmd_push_descriptor_set_with_template_khr: core::PFN_vkCmdPushDescriptorSetWithTemplateKHR,
 }
+
+//
+// RayTracingPipelineFnTable:
+//
 
 pub struct RayTracingPipelineFnTable {
 	pub extension_name: &'static str,
@@ -2339,6 +2405,10 @@ pub struct RayTracingPipelineFnTable {
 
 	pub cmd_set_ray_tracing_pipeline_stack_size_khr: core::PFN_vkCmdSetRayTracingPipelineStackSizeKHR,
 }
+
+//
+// AccelerationStructureFnTable:
+//
 
 pub struct AccelerationStructureFnTable {
 	pub extension_name: &'static str,
