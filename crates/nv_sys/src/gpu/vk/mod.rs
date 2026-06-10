@@ -44,7 +44,9 @@ pub use dispatch::WaylandSurfaceFnTable;
 
 pub use dispatch::HeadlessSurfaceFnTable;
 
-pub use dispatch::DebugUtilsFnTable;
+pub use dispatch::InstanceDebugUtilsFnTable;
+
+pub use dispatch::DeviceDebugUtilsFnTable;
 
 pub use dispatch::DisplayFnTable;
 

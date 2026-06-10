@@ -91,7 +91,7 @@ pub enum InstanceExtension {
 
 	HeadlessSurface(HeadlessSurfaceFnTable),
 
-	DebugUtils(DebugUtilsFnTable),
+	DebugUtils(InstanceDebugUtilsFnTable),
 
 	Display(DisplayFnTable),
 }
@@ -319,10 +319,10 @@ impl Loader {
 		}
 	}
 
-	pub fn load_debug_utils_table_unchecked(&self, instance: core::VkInstance) -> DebugUtilsFnTable {
+	pub fn load_debug_utils_table_unchecked(&self, instance: core::VkInstance) -> InstanceDebugUtilsFnTable {
 		let get_instance_proc_addr = self.get_instance_proc_addr;
 
-		DebugUtilsFnTable {
+		InstanceDebugUtilsFnTable {
 			extension_name: unsafe { str::from_utf8_unchecked(core::VK_EXT_DEBUG_UTILS_EXTENSION_NAME) },
 
 			create_debug_utils_messenger_ext: get_proc_addr!(get_instance_proc_addr, instance, "vkCreateDebugUtilsMessengerEXT\0"),
@@ -1299,6 +1299,20 @@ pub struct HeadlessSurfaceFnTable {
 	pub extension_name: &'static str,
 
 	pub create_headless_surface_ext: core::PFN_vkCreateHeadlessSurfaceEXT,
+}
+
+//
+// InstanceDebugUtilsFnTable:
+//
+
+pub struct InstanceDebugUtilsFnTable {
+	pub extension_name: &'static str,
+
+	pub create_debug_utils_messenger_ext: core::PFN_vkCreateDebugUtilsMessengerEXT,
+
+	pub destroy_debug_utils_messenger_ext: core::PFN_vkDestroyDebugUtilsMessengerEXT,
+
+	pub submit_debug_utils_message_ext: core::PFN_vkSubmitDebugUtilsMessageEXT,
 }
 
 //
