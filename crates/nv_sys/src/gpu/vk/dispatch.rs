@@ -2254,6 +2254,65 @@ impl DeviceFnTable {
 		unsafe { (self.destroy_descriptor_set_layout)(device, set_layout, allocator.as_ptr()) }
 	}
 
+	pub fn create_pipeline_layouts_from_assembly(
+		&self,
+		device: core::VkDevice,
+		allocator: &AllocationCallbacks,
+		assembly: &shader::PipelineAssembly,
+		set_layouts: &mut [core::VkDescriptorSetLayout],
+		pipeline_layout: &mut core::VkPipelineLayout,
+	) -> core::VkResult {
+		crate::panic_if!(set_layouts.len() > shader::MAX_DESCRIPTOR_SET_COUNT);
+
+		for set in 0..set_layouts.len() {
+			let set_index = set as u32;
+
+			let bindings = assembly.descriptor_set_layout_bindings(set_index);
+
+			let create_info = core::VkDescriptorSetLayoutCreateInfo {
+				sType: core::VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+				pNext: mem::null(),
+				flags: 0,
+				bindingCount: bindings.len() as _,
+				pBindings: bindings.as_ptr(),
+			};
+
+			let result = self.create_descriptor_set_layout(device, &create_info, allocator, &mut set_layouts[set]);
+
+			if result != core::VK_SUCCESS {
+				// NOTE: All descriptor set layouts created up to
+				// this point are to be destroyed by the caller.
+				return result;
+			}
+		}
+
+		let push_constant = assembly.push_constant_range();
+
+		let create_info = if (push_constant.stageFlags != 0) && (push_constant.size > 0) {
+			core::VkPipelineLayoutCreateInfo {
+				sType: core::VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+				pNext: mem::null(),
+				flags: 0,
+				setLayoutCount: set_layouts.len() as _,
+				pSetLayouts: set_layouts.as_ptr(),
+				pushConstantRangeCount: 1,
+				pPushConstantRanges: push_constant,
+			}
+		} else {
+			core::VkPipelineLayoutCreateInfo {
+				sType: core::VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+				pNext: mem::null(),
+				flags: 0,
+				setLayoutCount: set_layouts.len() as _,
+				pSetLayouts: set_layouts.as_ptr(),
+				pushConstantRangeCount: 0,
+				pPushConstantRanges: mem::null(),
+			}
+		};
+
+		self.create_pipeline_layout(device, &create_info, allocator, pipeline_layout)
+	}
+
 	#[inline(always)]
 	pub fn create_descriptor_pool(
 		&self,
@@ -2345,6 +2404,11 @@ impl SwapchainFnTable {
 		image_index: &mut u32,
 	) -> core::VkResult {
 		unsafe { (self.acquire_next_image_khr)(device, swapchain, timeout, semaphore, fence, image_index) }
+	}
+
+	#[inline(always)]
+	pub fn queue_present(&self, queue: core::VkQueue, present_info: &core::VkPresentInfoKHR) -> core::VkResult {
+		unsafe { (self.queue_present_khr)(queue, present_info) }
 	}
 }
 
