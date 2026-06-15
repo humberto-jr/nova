@@ -118,6 +118,16 @@ impl<T: marker::Sized> super::Block<T> {
 	}
 
 	#[inline(always)]
+	pub const fn as_ptr(&self) -> *const T {
+		self.raw
+	}
+
+	#[inline(always)]
+	pub const fn as_mut_ptr(&self) -> *mut T {
+		self.raw
+	}
+
+	#[inline(always)]
 	pub const fn as_slice<'b>(&'b self) -> &'b [T] {
 		unsafe { slice::from_raw_parts::<'b, T>(self.raw, self.count) }
 	}
