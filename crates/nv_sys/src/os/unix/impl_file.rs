@@ -1,6 +1,10 @@
 use ::core::ops;
 
-use crate::spec;
+use crate::{
+	mem, //
+	spec,
+	spec::AllocatedBlock,
+};
 
 use super::syscall;
 
@@ -59,6 +63,20 @@ impl spec::File for super::File {
 		let _ = syscall::flush(self.0)?;
 
 		spec::Result::Ok(())
+	}
+
+	#[inline]
+	fn map(&self, offset: usize, size: usize, prot: spec::BlockProtection, vis: spec::BlockSharing) -> spec::Result<mem::Block<super::Byte>> {
+		let raw = syscall::memory_map(0, size, prot, vis, self.0, offset)?;
+
+		unsafe { spec::Result::Ok(mem::Block::from_raw(raw, size)) }
+	}
+
+	#[inline]
+	fn unmap(&self, block: mem::Block<super::Byte>) -> spec::Result<()> {
+		let (raw, size) = unsafe { block.into_raw() };
+
+		syscall::memory_unmap(raw, size)
 	}
 
 	#[inline]

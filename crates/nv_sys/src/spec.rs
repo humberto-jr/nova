@@ -9,7 +9,8 @@ use core::{
 use crate::{
 	ffi::unix::wayland::client::protocol as wl, //
 	ffi::unix::x11,
-    host,
+	host,
+	mem,
 	time,
 };
 
@@ -79,12 +80,11 @@ pub trait AllocatedBlock<T: ?marker::Sized> {
 }
 
 pub trait Allocator {
-	fn allocate<T, B>(&mut self, count: usize) -> Result<B>
+	fn allocate<T>(&mut self, count: usize) -> Result<mem::UninitBlock<T>>
 	where
-		T: marker::Sized,
-		B: AllocatedBlock<T>;
+		T: marker::Sized;
 
-	fn reallocate<T, B>(&mut self, count: usize, block: B) -> Result<B>
+	fn reallocate<T, B>(&mut self, count: usize, block: B) -> Result<mem::UninitBlock<T>>
 	where
 		T: marker::Sized,
 		B: AllocatedBlock<T>;
@@ -129,7 +129,7 @@ pub trait Window {
 
 	fn register_task_waker(&mut self, waker: task::Waker);
 
-	fn set_dispatcher(&self, dispatcher: &mut crate::Dispatcher);
+	fn set_dispatcher(&mut self, dispatcher: &mut crate::Dispatcher);
 
 	fn raw_window_handle(&self) -> WindowBackend;
 
@@ -394,6 +394,24 @@ pub enum PointerButton {
 	Other,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum JoystickButton {
+	Unknown,
+
+	Up,
+	Left,
+	Right,
+	Down,
+
+	Start,
+	Select,
+
+	LeftTrigger,
+	RightTrigger,
+
+	Button,
+}
+
 //
 // OS abstractions:
 //
@@ -475,6 +493,10 @@ pub trait File {
 	fn seek(&mut self, pos: SeekFrom) -> Result<usize>;
 
 	fn flush(&mut self) -> Result<()>;
+
+	fn map(&self, offset: usize, size: usize, prot: BlockProtection, vis: BlockSharing) -> Result<mem::Block<host::Byte>>;
+
+	fn unmap(&self, block: mem::Block<host::Byte>) -> Result<()>;
 
 	fn close(&mut self) -> Result<()>;
 }
