@@ -1,4 +1,5 @@
-use ::core::{
+use ::core;
+use core::{
 	cmp, //
 	marker,
 };
@@ -247,4 +248,11 @@ pub fn epoll_wait(epfd: unix::Descriptor, events: &mut [eventpoll::epoll_event],
 	let info = unsafe { abi::syscall4(nr::EPOLL_WAIT, epfd as _, events.as_mut_ptr() as _, events.len(), timeout as _) };
 
 	kernel_result!(info, spec::Error::from_file_errors, info as _)
+}
+
+#[inline]
+pub unsafe fn exit(status: i32) -> ! {
+	let _ = unsafe { abi::syscall1(nr::EXIT, status as _) };
+
+	core::hint::unreachable_unchecked();
 }
