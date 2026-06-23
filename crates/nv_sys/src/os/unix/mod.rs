@@ -80,7 +80,7 @@ pub use wayland::Window;
 
 #[inline]
 pub fn monotonic_time() -> Time {
-	let result = syscall::clock_get_time(Clock::Monotonic).unwrap();
+	let result: TimeSpec = syscall::clock_get_time(Clock::Monotonic).unwrap();
 
 	((result.tv_sec * 1_000_000_000) + result.tv_nsec) as Time
 }
@@ -115,3 +115,8 @@ pub fn memory_map<T: marker::Sized>(count: usize, prot: spec::BlockProtection, v
 }
 
 pub use syscall::memory_unmap;
+
+#[inline(always)]
+pub fn exit_thread(status: i32) -> ! {
+	unsafe { syscall::exit(status) }
+}

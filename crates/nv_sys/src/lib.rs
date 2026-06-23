@@ -201,3 +201,9 @@ impl Dispatcher {
 		Self(host::Dispatcher::new())
 	}
 }
+
+//
+// Termination:
+//
+
+pub use host::exit_thread;
