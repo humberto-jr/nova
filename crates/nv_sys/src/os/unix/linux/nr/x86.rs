@@ -25,3 +25,7 @@ pub const EPOLL_CREATE: usize = ffi::__NR_epoll_create1;
 pub const EPOLL_CONTROL: usize = ffi::__NR_epoll_ctl;
 
 pub const EPOLL_WAIT: usize = ffi::__NR_epoll_wait;
+
+pub const EXIT: usize = ffi::__NR_exit;
+
+pub const EXIT_GROUP: usize = ffi::__NR_exit_group;
