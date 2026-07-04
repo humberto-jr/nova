@@ -12,8 +12,6 @@ use crate::{
 // to implement the Wayland side, which is why it is renamed as ffi.
 use crate::ffi::unix::x11::xkb as x11;
 
-use super::syscall;
-
 const INVALID_KEY: Key = Key {
 	keycode: 0,
 	symbol: spec::LogicalKey::Unknown,
@@ -42,7 +40,11 @@ pub struct KeyboardMetadata {
 impl KeyboardMetadata {
 	pub fn for_wayland(fd: i32, format: u32, size: u32) -> Self {
 		unsafe {
-			let c_str = syscall::memory_map(0, size as _, spec::BlockProtection::ReadOnly, spec::BlockSharing::Public, fd, 0).unwrap() as *const i8;
+			let file = super::File::from(fd);
+
+			let block = file.map(0, size as _, spec::BlockProtection::ReadOnly, spec::BlockSharing::Public).unwrap();
+
+			let c_str = block.as_ptr() as *const i8;
 
 			let context = ffi::xkb_context_new(ffi::XKB_CONTEXT_NO_FLAGS);
 
@@ -56,9 +58,7 @@ impl KeyboardMetadata {
 
 			crate::panic_if!(state.is_null());
 
-			syscall::memory_unmap(c_str, size as _);
-
-			syscall::close(fd);
+			let _ = file.unmap(block);
 
 			Self {
 				context,
