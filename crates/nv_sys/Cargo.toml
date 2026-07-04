@@ -8,3 +8,8 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 nv_ffi = { path = "../nv_ffi" }
+
+[features]
+default = ["use_libc"]
+use_libc = []
+use_std = []

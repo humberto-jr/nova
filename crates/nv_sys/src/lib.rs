@@ -1,4 +1,5 @@
 #![no_implicit_prelude]
+#![cfg_attr(not(feature = "use_std"), no_std)]
 
 use ::core::ops;
 
