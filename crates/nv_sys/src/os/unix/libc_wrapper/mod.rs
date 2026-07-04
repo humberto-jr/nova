@@ -22,6 +22,8 @@ mod impl_thread;
 
 pub type Byte = u8;
 
+pub type Time = u64;
+
 pub struct File(ffi::c_int);
 
 pub struct DynamicLibrary(*mut ffi::c_void);
@@ -107,4 +109,14 @@ pub fn memory_unmap<T: marker::Sized>(raw: *const T, count: usize) -> spec::Resu
 	} else {
 		spec::Result::Err(spec::Error::AllocatorBlockUnknown)
 	}
+}
+
+#[inline]
+pub fn exit_thread(_status: i32) -> ! {
+	unsafe { ffi::pthread_exit(mem::null()) }
+}
+
+#[inline]
+pub fn exit_process(status: i32) -> ! {
+	unsafe { ffi::exit(status) }
 }
