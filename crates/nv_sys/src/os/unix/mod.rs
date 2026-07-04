@@ -2,8 +2,6 @@ use ::core::marker;
 
 use crate::spec;
 
-mod impl_dynamic_library;
-mod impl_file;
 mod utils;
 mod xkb;
 
@@ -17,46 +15,25 @@ mod linux;
 #[cfg(target_os = "linux")]
 use linux as base;
 
-pub use base::syscall;
+#[cfg(all(target_os = "linux", feature = "use_libc"))]
+mod libc_wrapper;
+
+#[cfg(all(target_os = "linux", feature = "use_libc"))]
+pub use libc_wrapper::*;
 
 //
 // Definitions:
 //
 
-pub type Byte = u8;
-
-pub type Time = u64;
-
 pub type Descriptor = i32;
 
 pub type OpaquePtr = *mut ();
-
-pub struct File(pub Descriptor);
-
-pub struct DynamicLibrary(pub OpaquePtr);
-
-#[repr(u8)]
-#[derive(Debug, Copy, Clone, PartialEq)]
-pub enum Clock {
-	Realtime,
-	Monotonic,
-	ProcessCPUTimeID,
-	ThreadCPUTimeID,
-}
-
-pub use base::TimeSpec;
-
-pub use base::Dispatcher;
 
 pub use utils::DispatchHandle;
 
 pub use base::STDIN_FILENAME;
 
 pub use base::STDOUT_FILENAME;
-
-pub const POSIX_FAILURE_FLAG: isize = -1;
-
-pub const INVALID_DESCRIPTOR: Descriptor = POSIX_FAILURE_FLAG as _;
 
 //
 // Windowing system:
@@ -77,13 +54,6 @@ pub use wayland::Window;
 //
 // Utils:
 //
-
-#[inline]
-pub fn monotonic_time() -> Time {
-	let result: TimeSpec = syscall::clock_get_time(Clock::Monotonic).unwrap();
-
-	((result.tv_sec * 1_000_000_000) + result.tv_nsec) as Time
-}
 
 pub fn stdin() -> crate::File {
 	let mut file = crate::File::new();
@@ -107,16 +77,4 @@ pub fn stdout() -> crate::File {
 	} else {
 		file
 	}
-}
-
-#[inline]
-pub fn memory_map<T: marker::Sized>(count: usize, prot: spec::BlockProtection, vis: spec::BlockSharing) -> spec::Result<*mut T> {
-	syscall::memory_map(0, count, prot, vis, INVALID_DESCRIPTOR, 0)
-}
-
-pub use syscall::memory_unmap;
-
-#[inline(always)]
-pub fn exit_thread(status: i32) -> ! {
-	unsafe { syscall::exit(status) }
 }
