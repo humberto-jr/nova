@@ -139,6 +139,11 @@ impl super::File {
 	pub const fn new() -> Self {
 		Self(super::INVALID_DESCRIPTOR)
 	}
+
+	#[inline]
+	pub const fn from(fd: ffi::c_int) -> crate::File {
+		crate::File(Self(fd))
+	}
 }
 
 //
