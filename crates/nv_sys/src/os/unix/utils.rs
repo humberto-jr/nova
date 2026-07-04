@@ -1,10 +1,88 @@
-use ::core::task;
+use ::core::{
+	default, //
+	ops,
+	task,
+};
 
 use crate::{
 	mem, //
 	os,
 	sync,
 };
+
+//
+// ThreadTaskMember<T>:
+//
+
+pub enum ThreadTaskMember<T> {
+	None,
+	Set(T),
+}
+
+impl<T> ThreadTaskMember<T> {
+	pub fn take(&mut self) -> T {
+		if let Self::Set(member) = mem::replace(self, Self::None) {
+			member
+		} else {
+			crate::panic!("Attempt to take ownership over an empty thread task member; this is a bug");
+		}
+	}
+}
+
+//
+// ThreadTask<Fn, In, Out>:
+//
+
+pub struct ThreadTask<Fn, In, Out>
+where
+	Fn: ops::FnOnce(In) -> Out,
+{
+	routine: ThreadTaskMember<Fn>,
+	inputs: ThreadTaskMember<In>,
+	result: sync::SpinLock<ThreadTaskMember<Out>>,
+}
+
+impl<Fn, In, Out> default::Default for ThreadTask<Fn, In, Out>
+where
+	Fn: ops::FnOnce(In) -> Out,
+{
+	#[inline]
+	fn default() -> Self {
+		Self {
+			routine: ThreadTaskMember::None,
+			inputs: ThreadTaskMember::None,
+			result: sync::SpinLock::new(ThreadTaskMember::None),
+		}
+	}
+}
+
+impl<Fn, In, Out> ThreadTask<Fn, In, Out>
+where
+	Fn: ops::FnOnce(In) -> Out,
+{
+	#[inline]
+	pub fn set_routine(&mut self, routine: Fn, args: In) {
+		self.routine = ThreadTaskMember::Set(routine);
+		self.inputs = ThreadTaskMember::Set(args);
+	}
+
+	pub fn execute(&mut self) {
+		let routine = self.routine.take();
+
+		let args = self.inputs.take();
+
+		let result = (routine)(args);
+
+		let mut lock = self.result.exclusive_write();
+
+		*lock = ThreadTaskMember::Set(result);
+	}
+
+	#[inline]
+	pub fn take_result(&self) -> Out {
+		self.result.exclusive_write().take()
+	}
+}
 
 //
 // DispatchHandle:

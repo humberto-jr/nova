@@ -30,9 +30,7 @@ where
 
 		let mut task = allocate_thread_task();
 
-		task.routine = utils::ThreadTaskMember::Set(routine);
-
-		task.inputs = utils::ThreadTaskMember::Set(args);
+		task.set_routine(routine, args);
 
 		let task_ptr = task.as_mut_ptr() as *mut ffi::c_void;
 
@@ -48,14 +46,14 @@ where
 		}
 	}
 
-	fn stop(mut self) -> Out {
+	fn stop(self) -> Out {
 		let info = unsafe { ffi::pthread_join(self.handle, &mut mem::null()) };
 
 		if info != 0 {
 			crate::panic!("pthread_join() failed with error code {info}");
 		}
 
-		self.task.result.take()
+		self.task.take_result()
 	}
 }
 
@@ -68,13 +66,7 @@ where
 
 		let task = unsafe { &mut (*task_ptr) };
 
-		let routine = task.routine.take();
-
-		let args = task.inputs.take();
-
-		let result = (routine)(args);
-
-		task.result = utils::ThreadTaskMember::Set(result);
+		task.execute();
 		mem::null()
 	}
 }
