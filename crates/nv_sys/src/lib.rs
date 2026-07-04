@@ -207,3 +207,5 @@ impl Dispatcher {
 //
 
 pub use host::exit_thread;
+
+pub use host::exit_process;
