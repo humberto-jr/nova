@@ -204,8 +204,10 @@ impl Dispatcher {
 }
 
 //
-// Termination:
+// Utils:
 //
+
+pub use host::env;
 
 pub use host::exit_thread;
 
