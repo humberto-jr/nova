@@ -470,6 +470,7 @@ pub enum FileAccess {
 	ReadOnly,
 	WriteOnly,
 	ReadAndWrite,
+	Temporary,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -485,6 +486,8 @@ pub trait File {
 	fn is_open(&self) -> bool;
 
 	fn size(&self) -> Result<usize>;
+
+	fn resize(&mut self, len: usize) -> Result<()>;
 
 	fn write(&mut self, buf: &[host::Byte]) -> Result<usize>;
 

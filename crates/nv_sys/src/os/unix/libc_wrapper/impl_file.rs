@@ -29,6 +29,8 @@ impl ops::Drop for super::File {
 
 impl spec::File for super::File {
 	fn open(&mut self, filename: &str, access: spec::FileAccess) -> spec::Result<()> {
+		let filename = crate::ffi::c_str!(filename);
+
 		let flags = match access {
 			spec::FileAccess::Append => ffi::O_APPEND | ffi::O_NONBLOCK,
 
@@ -37,11 +39,19 @@ impl spec::File for super::File {
 			spec::FileAccess::WriteOnly => ffi::O_WRONLY | ffi::O_CREAT | ffi::O_NONBLOCK,
 
 			spec::FileAccess::ReadAndWrite => ffi::O_RDWR | ffi::O_CREAT | ffi::O_NONBLOCK,
+
+			spec::FileAccess::Temporary => ffi::O_RDWR | ffi::O_CREAT | ffi::O_NONBLOCK,
 		};
 
-		self.0 = unsafe { ffi::open(crate::ffi::c_str!(filename), flags) };
+		unsafe {
+			self.0 = ffi::open(filename, flags);
 
-		libc_result!(self.0, ())
+			if let spec::FileAccess::Temporary = access {
+				let _ = ffi::unlink(filename);
+			}
+
+			libc_result!(self.0, ())
+		}
 	}
 
 	#[inline]
@@ -57,6 +67,12 @@ impl spec::File for super::File {
 
 			libc_result!(info, stat.assume_init_ref().st_size as usize)
 		}
+	}
+
+	fn resize(&mut self, len: usize) -> spec::Result<()> {
+		let info = unsafe { ffi::ftruncate(self.0, len as _) };
+
+		libc_result!(info, ())
 	}
 
 	fn write(&mut self, buf: &[super::Byte]) -> spec::Result<usize> {
