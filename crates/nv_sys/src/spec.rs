@@ -127,8 +127,6 @@ pub trait Window {
 
 	fn flush_queued_events(&mut self) -> &[Self::Event];
 
-	fn register_task_waker(&mut self, waker: task::Waker);
-
 	fn set_dispatcher(&mut self, dispatcher: &mut crate::Dispatcher);
 
 	fn raw_window_handle(&self) -> WindowBackend;
