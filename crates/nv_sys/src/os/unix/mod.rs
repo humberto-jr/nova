@@ -25,7 +25,7 @@ pub use libc_wrapper::*;
 // Definitions:
 //
 
-pub type Descriptor = i32;
+pub type Descriptor = <Dispatcher as spec::Dispatcher>::Descriptor;
 
 pub type OpaquePtr = *mut ();
 
