@@ -4,7 +4,8 @@ use ::core::{
 };
 
 use crate::{
-	ffi::libc as ffi, //
+	ffi::CStr, //
+	ffi::libc as ffi,
 	mem,
 	spec,
 };
@@ -24,7 +25,7 @@ pub type Byte = u8;
 
 pub type Time = u64;
 
-pub struct File(ffi::c_int);
+pub struct File(pub ffi::c_int);
 
 pub struct DynamicLibrary(*mut ffi::c_void);
 
@@ -119,4 +120,16 @@ pub fn exit_thread(_status: i32) -> ! {
 #[inline]
 pub fn exit_process(status: i32) -> ! {
 	unsafe { ffi::exit(status) }
+}
+
+pub fn env(name: &str) -> &str {
+	unsafe {
+		let val = ffi::getenv(crate::ffi::c_str!(name));
+
+		if val.is_null() {
+			""
+		} else {
+			CStr::from_ptr(val).to_str().unwrap_or("")
+		}
+	}
 }
