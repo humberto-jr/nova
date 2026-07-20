@@ -87,7 +87,7 @@ unsafe extern "C" {
 
 	pub fn stbi_set_flip_vertically_on_load(flag_true_if_should_flip: i32);
 
-	//	pub fn stbi_set_unpremultiply_on_load_thread(flag_true_if_should_unpremultiply: i32);
+	// pub fn stbi_set_unpremultiply_on_load_thread(flag_true_if_should_unpremultiply: i32);
 
 	pub fn stbi_convert_iphone_png_to_rgb_thread(flag_true_if_should_convert: i32);
 
