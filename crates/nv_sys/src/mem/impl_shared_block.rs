@@ -31,6 +31,18 @@ impl<T: marker::Sized> super::AllocatedBlock<T> for super::SharedBlock<T> {
 	}
 }
 
+// NOTE: SharedBlock<T> owns a single contiguous heap allocation that remains valid for its entire
+// lifetime and is released exactly once when ownership is transferred back into a Block<T>. All
+// safe access to the allocation is synchronized through the internal SpinLock<*mut T>. The guard
+// types only expose shared or exclusive references, while the corresponding lock is held, and the
+// inner raw pointer is never exposed directly, preventing aliasing violations. Thus, ownership of
+// the allocation may only be transferred through consuming operations, which wait for current
+// readers or writers to finish before releasing ownership. So, moving a SharedBlock<T> between
+// threads is safe whenever T is Send and sharing &SharedBlock<T> between threads is safe whenever
+// T is Sync.
+unsafe impl<T: marker::Send> marker::Send for super::SharedBlock<T> {}
+unsafe impl<T: marker::Sync> marker::Sync for super::SharedBlock<T> {}
+
 impl<T: marker::Sized> super::SharedBlock<T> {
 	#[inline(always)]
 	pub const fn capacity(&self) -> usize {
