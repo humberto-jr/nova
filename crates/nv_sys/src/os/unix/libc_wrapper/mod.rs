@@ -7,6 +7,7 @@ use crate::{
 	ffi::CStr, //
 	ffi::libc as ffi,
 	mem,
+	os,
 	spec,
 };
 
@@ -123,8 +124,10 @@ pub fn exit_process(status: i32) -> ! {
 }
 
 pub fn env(name: &str) -> &str {
+	let name = os::CStr128::from_str(name);
+
 	unsafe {
-		let val = ffi::getenv(crate::ffi::c_str!(name));
+		let val = ffi::getenv(name.as_cstr());
 
 		if val.is_null() {
 			""

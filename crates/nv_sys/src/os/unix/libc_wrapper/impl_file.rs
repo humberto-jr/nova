@@ -2,6 +2,7 @@ use ::core::ops;
 
 use crate::{
 	mem, //
+	os,
 	spec,
 	spec::AllocatedBlock,
 };
@@ -29,7 +30,7 @@ impl ops::Drop for super::File {
 
 impl spec::File for super::File {
 	fn open(&mut self, filename: &str, access: spec::FileAccess) -> spec::Result<()> {
-		let filename = crate::ffi::c_str!(filename);
+		let filename = os::CStr512::from_str(filename);
 
 		let flags = match access {
 			spec::FileAccess::Append => ffi::O_APPEND | ffi::O_NONBLOCK,
@@ -44,10 +45,10 @@ impl spec::File for super::File {
 		};
 
 		unsafe {
-			self.0 = ffi::open(filename, flags);
+			self.0 = ffi::open(filename.as_cstr(), flags);
 
 			if let spec::FileAccess::Temporary = access {
-				let _ = ffi::unlink(filename);
+				let _ = ffi::unlink(filename.as_cstr());
 			}
 
 			libc_result!(self.0, ())

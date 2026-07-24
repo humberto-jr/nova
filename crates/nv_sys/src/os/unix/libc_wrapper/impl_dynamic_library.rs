@@ -1,6 +1,9 @@
 use ::core::ops;
 
-use crate::spec;
+use crate::{
+	os, //
+	spec,
+};
 
 use super::ffi;
 
@@ -19,7 +22,9 @@ impl spec::DynamicLibrary for super::DynamicLibrary {
 	type Address = *mut ();
 
 	fn load(&mut self, filename: &str) -> spec::Result<()> {
-		let handle = unsafe { ffi::dlopen(crate::ffi::c_str!(filename), ffi::RTLD_LAZY | ffi::RTLD_LOCAL) };
+		let filename = os::CStr512::from_str(filename);
+
+		let handle = unsafe { ffi::dlopen(filename.as_cstr(), ffi::RTLD_LAZY | ffi::RTLD_LOCAL) };
 
 		if handle.is_null() {
 			spec::Result::Err(spec::Error::Unknown)
@@ -35,7 +40,9 @@ impl spec::DynamicLibrary for super::DynamicLibrary {
 	}
 
 	fn find_symbol(&self, name: &str) -> spec::Result<Self::Address> {
-		let symbol_addr = unsafe { ffi::dlsym(self.0, crate::ffi::c_str!(name)) };
+		let name = os::CStr128::from_str(name);
+
+		let symbol_addr = unsafe { ffi::dlsym(self.0, name.as_cstr()) };
 
 		if symbol_addr.is_null() {
 			spec::Result::Err(spec::Error::SymbolAddressNotFound)
