@@ -20,3 +20,23 @@ pub struct WindowEventList {
 	event_count: sync::SpinLock<u16>,
 	event_list: [EventBuffer; 2],
 }
+
+//
+// BaseCStr:
+//
+
+pub mod impl_base_cstr;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct BaseCStr<const MAX_LEN: usize> {
+	len: u16,
+	buf: [u8; MAX_LEN],
+}
+
+pub type CStr8 = BaseCStr<8>;
+pub type CStr16 = BaseCStr<16>;
+pub type CStr64 = BaseCStr<64>;
+pub type CStr128 = BaseCStr<128>;
+pub type CStr256 = BaseCStr<256>;
+pub type CStr512 = BaseCStr<512>;
+pub type CStr1024 = BaseCStr<1024>;
