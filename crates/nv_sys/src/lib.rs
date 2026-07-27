@@ -21,7 +21,7 @@ pub mod time;
 
 mod os;
 
-#[cfg(target_os = "linux")]
+#[cfg(unix)]
 use os::unix as host;
 
 //
@@ -212,3 +212,36 @@ pub use host::env;
 pub use host::exit_thread;
 
 pub use host::exit_process;
+
+//
+// C helpers:
+//
+
+pub use os::CStr8;
+pub use os::CStr16;
+pub use os::CStr64;
+pub use os::CStr128;
+pub use os::CStr256;
+pub use os::CStr512;
+pub use os::CStr1024;
+
+pub use ffi::CStr;
+
+pub use ffi::c_char;
+pub use ffi::c_double;
+pub use ffi::c_float;
+pub use ffi::c_int;
+pub use ffi::c_long;
+pub use ffi::c_longlong;
+pub use ffi::c_ptrdiff_t;
+pub use ffi::c_schar;
+pub use ffi::c_short;
+pub use ffi::c_size_t;
+pub use ffi::c_uchar;
+pub use ffi::c_uint;
+pub use ffi::c_ulong;
+pub use ffi::c_ulonglong;
+pub use ffi::c_ushort;
+pub use ffi::c_void;
+
+pub use ffi::is_nul_terminated;
