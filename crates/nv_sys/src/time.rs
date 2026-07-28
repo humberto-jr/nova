@@ -11,9 +11,19 @@ use super::host;
 pub struct Instant(host::Time);
 
 impl Instant {
-	#[inline]
+	#[inline(always)]
+	pub const fn begin() -> Self {
+		Self(0)
+	}
+
+	#[inline(always)]
 	pub fn now() -> Self {
 		Self(host::monotonic_time())
+	}
+
+	#[inline(always)]
+	pub const fn end() -> Self {
+		Self(host::Time::MAX)
 	}
 
 	#[inline(always)]
