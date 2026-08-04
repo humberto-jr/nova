@@ -109,6 +109,7 @@ macro_rules! impl_simd_base {
 		impl_simd_index!($base, $simd, u8);
 		impl_simd_index!($base, $simd, u16);
 		impl_simd_index!($base, $simd, u32);
+		impl_simd_index!($base, $simd, i32);
 		impl_simd_index!($base, $simd, u64);
 		impl_simd_index!($base, $simd, usize);
 	};
