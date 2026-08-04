@@ -1,6 +1,20 @@
+use crate::{
+	spec, //
+	sync,
+};
+
+#[cfg(unix)]
+pub mod unix;
+
+// NOTE: Some default implementations of public types that belong nowhere
+// else are placed here, e.g. spec::Error, spec::WindowEvent, etc. Additional
+// platform-specific methods may or may not be implemented inside each of the
+// platform submodules.
 mod impls;
 
-pub mod unix;
+pub const MAX_DISPATCHER_WAKER_COUNT: usize = 512;
+
+pub const MAX_WINDOW_EVENT_COUNT: usize = 32;
 
 //
 // EventBuffer and WindowEventList:
