@@ -1,7 +1,11 @@
 #![no_implicit_prelude]
 #![cfg_attr(not(feature = "use_std"), no_std)]
 
-use ::core::ops;
+use ::core::{
+	fmt, //
+	ops,
+	result,
+};
 
 pub extern crate nv_ffi;
 pub use nv_ffi as ffi;
@@ -104,6 +108,16 @@ impl ops::DerefMut for File {
 	#[inline(always)]
 	fn deref_mut(&mut self) -> &mut Self::Target {
 		&mut self.0
+	}
+}
+
+impl fmt::Write for File {
+	fn write_str(&mut self, s: &str) -> result::Result<(), fmt::Error> {
+		if let spec::Result::Ok(_) = spec::File::write(&mut self.0, s.as_bytes()) {
+			result::Result::Ok(())
+		} else {
+			result::Result::Err(fmt::Error)
+		}
 	}
 }
 
