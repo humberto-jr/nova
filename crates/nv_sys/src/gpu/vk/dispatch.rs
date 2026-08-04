@@ -174,7 +174,7 @@ impl AllocationCallbacks {
 //
 
 pub struct Loader {
-	lib: crate::DynamicLibrary,
+	_lib: crate::DynamicLibrary,
 
 	pub get_instance_proc_addr: core::PFN_vkGetInstanceProcAddr,
 
@@ -189,16 +189,16 @@ pub struct Loader {
 
 impl Loader {
 	pub fn new(filename: &str) -> spec::Result<Self> {
-		let mut lib = crate::DynamicLibrary::new();
+		let mut _lib = crate::DynamicLibrary::new();
 
-		lib.load(filename)?;
+		_lib.load(filename)?;
 
-		let fn_addr = lib.find_symbol("vkGetInstanceProcAddr\0")?;
+		let fn_addr = _lib.find_symbol("vkGetInstanceProcAddr\0")?;
 
 		let get_instance_proc_addr: core::PFN_vkGetInstanceProcAddr = unsafe { mem::transmute(fn_addr) };
 
 		spec::Result::Ok(Self {
-			lib,
+			_lib,
 
 			get_instance_proc_addr,
 
